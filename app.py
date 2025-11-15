@@ -61,14 +61,24 @@ app.secret_key = 'supersecretkey'
 
 @app.route('/')
 def home():
-    dati, saldo_totale = get_transazioni_con_saldo()
-    # Ora riceviamo anche il saldo_eur_lightning dalla funzione aggiornata
+    dati, saldo_totale_eur = get_transazioni_con_saldo()
     dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
-    # sarà la homepage
+    dati_onchain, saldo_totale_btc = get_transazioni_con_saldo_onchain()
+
+    # Calcola controvalore BTC per il tracker EUR
+    saldo_btc_da_eur = sum(float(t[6]) for t in dati if t[6] is not None)
+
+    # Calcola controvalore EUR per on-chain
+    saldo_eur_onchain = sum(float(t[9])
+                            for t in dati_onchain if t[9] is not None)
+
     return render_template('index.html',
-                           saldo_totale=saldo_totale,
-                           saldo_totale_satoshi=saldo_totale_satoshi,  # PASSATO ALLA TEMPLATE
-                           saldo_eur_lightning=saldo_eur_lightning  # PASSATO ALLA TEMPLATE
+                           saldo_totale_eur=saldo_totale_eur,
+                           saldo_btc_da_eur=saldo_btc_da_eur,
+                           saldo_totale_satoshi=saldo_totale_satoshi,
+                           saldo_eur_lightning=saldo_eur_lightning,
+                           saldo_totale_btc=saldo_totale_btc,
+                           saldo_eur_onchain=saldo_eur_onchain
                            )
 
 
@@ -311,8 +321,11 @@ def modifica_transazione_web_lightning(id_transazione):
         else:
             flash("⚠️ Impossibile ottenere il valore BTC per la data selezionata. Verifica la connessione o riprova più tardi.", "error")
 
-        dati_lightning, saldo_totale_satoshi = get_transazioni_con_saldo_lightning()
-        return render_template('transazioni_lightning.html', transazioni_lightning=dati_lightning, saldo_totale_satoshi=saldo_totale_satoshi)
+        dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
+        return render_template('transazioni_lightning.html',
+                               transazioni_lightning=dati_lightning,
+                               saldo_totale_satoshi=saldo_totale_satoshi,
+                               saldo_eur_lightning=saldo_eur_lightning)
 
     # Se GET, mostra il form con i dati precompilati
     return render_template(

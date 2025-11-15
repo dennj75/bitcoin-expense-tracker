@@ -69,6 +69,22 @@ button:hover {
   font-weight: bold;
 }
 
+/* Stile unificato per i saldi principali */
+.saldo-principale {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Stile per i saldi secondari (controvalori) */
+.saldo-secondario {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+/* Manteniamo la classe saldo-totale per retrocompatibilità */
 .saldo-totale {
     text-align: center;
     color: #4caf50;
@@ -187,4 +203,52 @@ li.euro-success, li.lightning-success {
 li.euro-error, li.lightning-error {
   color: red;
   list-style-type: "❌ ";
+}
+.donation-box {
+    margin-top: 30px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.donation-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap; /* per adattarsi su mobile */
+}
+
+.donation-card {
+    flex: 1;
+    min-width: 250px;
+    background: #121212;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.donation-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.donation-address {
+    font-family: monospace;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    word-break: break-all;
+}
+
+.qr-img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+    padding: 8px;
+    border: 1px solid #444;
+    margin-top: 10px;
 }

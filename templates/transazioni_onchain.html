@@ -2,17 +2,17 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <title>🔗 Transazioni On-chain 🔗</title>
+    <title>🔗 Transazioni ₿itcoin On-chain 🔗</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
   </head>
   <body>
-    <h1>🔗 Transazioni On-chain 🔗</h1>
+    <h1>🔗 Transazioni ₿itcoin On-chain 🔗</h1>
     <!-- 🔹 Saldo SATOSHI -->
     <p class="saldo-totale">
-      💰 Saldo On-chain🔗: {{ "%.8f"|format(saldo_totale_btc) }} BTC
+      💰 Saldo ₿itcoin On-chain🔗: {{ "%.8f"|format(saldo_totale_btc) }} BTC
     </p>
     <!-- 🔹 Controvalore totale in EUR (opzionale) -->
     {% if transazioni_onchain %} {% set totale_eur = transazioni_onchain |
