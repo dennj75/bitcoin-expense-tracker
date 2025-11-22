@@ -1,3 +1,5 @@
+from db.db_utils import get_user_by_id
+from flask_login import LoginManager, login_required, UserMixin
 from flask import Flask, render_template, request, redirect, url_for, flash
 from db.db_utils import get_transazioni_con_saldo_lightning, leggi_transazioni_da_db, salva_su_db, elimina_transazione_da_db, modifica_transazione_db, inizializza_db, salva_su_db_lightning, leggi_transazioni_da_db_lightning, modifica_transazione_db_lightning, elimina_transazione_da_db_lightning, leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain, elimina_transazione_da_db_onchain, modifica_transazione_db_onchain
 from flask import send_file
@@ -6,6 +8,7 @@ from utils.crypto import ottieni_valore_btc_eur, euro_to_btc
 from utils.helpers import normalizza_importo
 import json
 import sqlite3
+from flask_login import LoginManager, login_remembered, current_user
 
 inizializza_db()  # <<--- aggiungi questa riga
 CATEGORIE = {
@@ -22,8 +25,8 @@ CATEGORIE = {
 }
 
 
-def get_transazioni_con_saldo_lightning():
-    transazioni_lightning = leggi_transazioni_da_db_lightning()
+def get_transazioni_con_saldo_lightning(user_id):
+    transazioni_lightning = leggi_transazioni_da_db_lightning(user_id)
     # t[6] è la colonna 'satoshi'
     saldo_satoshi = sum(float(t[6])
                         for t in transazioni_lightning if t[6] is not None)
@@ -34,21 +37,21 @@ def get_transazioni_con_saldo_lightning():
     return transazioni_lightning, saldo_satoshi, saldo_eur_lightning
 
 
-def get_transazioni_con_saldo():
-    transazioni = leggi_transazioni_da_db()
+def get_transazioni_con_saldo(user_id):
+    transazioni = leggi_transazioni_da_db(user_id)
     saldo = sum(float(t[5]) for t in transazioni if t[5] is not None)
     return transazioni, saldo
 
 
-def get_transazioni_con_saldo_onchain():
-    transazioni = leggi_transazioni_da_db_onchain()
+def get_transazioni_con_saldo_onchain(user_id):
+    transazioni = leggi_transazioni_da_db_onchain(user_id)
     saldo_totale_btc = sum(float(t[7])
                            for t in transazioni if t[7] is not None)
     return transazioni, saldo_totale_btc
 
 
-def get_transazioni_con_saldo_satoshi_onchain():
-    transazioni_onchain = leggi_transazioni_da_db_onchain()
+def get_transazioni_con_saldo_satoshi_onchain(user_id):
+    transazioni_onchain = leggi_transazioni_da_db_onchain(user_id)
     saldo_totale_btc = sum(float(t[7])
                            for t in transazioni_onchain if t[7] is not None)
     return transazioni_onchain, saldo_totale_btc
@@ -58,12 +61,37 @@ app = Flask(__name__)
 # Chiave necessaria per i flash e da cambiare in produzione
 app.secret_key = 'supersecretkey'
 
+# LOGIN: inizializzazione minimale di Flask-Login
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+
+# Minimal user loader so `current_user` is available in templates
+class SimpleUser(UserMixin):
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        row = get_user_by_id(int(user_id))
+    except Exception:
+        return None
+    if not row:
+        return None
+    return SimpleUser(id=row[0], username=row[1])
+
 
 @app.route('/')
 def home():
-    dati, saldo_totale_eur = get_transazioni_con_saldo()
-    dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
-    dati_onchain, saldo_totale_btc = get_transazioni_con_saldo_onchain()
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.login'))
+    dati, saldo_totale_eur = get_transazioni_con_saldo(current_user.id)
+    dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning(current_user.id)
+    dati_onchain, saldo_totale_btc = get_transazioni_con_saldo_onchain(current_user.id)
 
     # Calcola controvalore BTC per il tracker EUR
     saldo_btc_da_eur = sum(float(t[6]) for t in dati if t[6] is not None)
@@ -83,12 +111,14 @@ def home():
 
 
 @app.route('/transazioni')
+@login_required
 def transazioni():
-    dati, saldo_totale = get_transazioni_con_saldo()
+    dati, saldo_totale = get_transazioni_con_saldo(current_user.id)
     return render_template('transazioni.html', transazioni=dati, saldo_totale=saldo_totale)
 
 
 @app.route('/nuova_transazione', methods=['GET', 'POST'])
+@login_required
 def nuova_transazione():
     if request.method == 'POST':
         data = request.form['data']
@@ -108,7 +138,7 @@ def nuova_transazione():
                 importo, valore_btc_eur) if valore_btc_eur else None
 
         # Salviamo sia valore controvalore (btc) che BTC (€/BTC)
-            salva_su_db(data, descrizione, categoria, sottocategoria,
+            salva_su_db(current_user.id, data, descrizione, categoria, sottocategoria,
                         importo, controvalore_btc, valore_btc_eur)
             return redirect(url_for('transazioni'))
         except ValueError:
@@ -124,17 +154,19 @@ def nuova_transazione():
 
 
 @app.route('/elimina-transazione/<int:id_transazione>', methods=['POST'])
+@login_required
 def elimina_transazione_web(id_transazione):
-    elimina_transazione_da_db(id_transazione)
+    elimina_transazione_da_db(id_transazione, current_user.id)
     flash("Transazione eliminata con successo", "success")
-    dati, saldo_totale = get_transazioni_con_saldo()
+    dati, saldo_totale = get_transazioni_con_saldo(current_user.id)
     return render_template('transazioni.html', transazioni=dati, saldo_totale=saldo_totale)
 
 
 @app.route('/modifica-transazione/<int:id_transazione>', methods=['GET', 'POST'])
+@login_required
 def modifica_transazione_web(id_transazione):
     # Leggi tutte le transazioni e e cerca quella con id = id_transazione
-    transazioni = leggi_transazioni_da_db()
+    transazioni = leggi_transazioni_da_db(current_user.id)
     t = None
     for tr in transazioni:
         if tr[0] == id_transazione:
@@ -158,25 +190,25 @@ def modifica_transazione_web(id_transazione):
         importo = float(importo_normalizzato)
 
         # chiama la funzione di modifica
-        modifica_transazione_db(id_transazione, 'data', data)
-        modifica_transazione_db(id_transazione, 'descrizione', descrizione)
-        modifica_transazione_db(id_transazione, 'categoria', categoria)
+        modifica_transazione_db(id_transazione, 'data', data, current_user.id)
+        modifica_transazione_db(id_transazione, 'descrizione', descrizione, current_user.id)
+        modifica_transazione_db(id_transazione, 'categoria', categoria, current_user.id)
         modifica_transazione_db(
-            id_transazione, 'sottocategoria', sottocategoria)
-        modifica_transazione_db(id_transazione, 'importo', importo)
+            id_transazione, 'sottocategoria', sottocategoria, current_user.id)
+        modifica_transazione_db(id_transazione, 'importo', importo, current_user.id)
         # Ricalcola e aggiorna BTC
         valore_btc_eur = ottieni_valore_btc_eur(data)
 
         if valore_btc_eur is not None:
             controvalore_btc = euro_to_btc(importo, valore_btc_eur)
             modifica_transazione_db(
-                id_transazione, 'valore_btc_eur', valore_btc_eur)
+                id_transazione, 'valore_btc_eur', valore_btc_eur, current_user.id)
             modifica_transazione_db(
-                id_transazione, 'controvalore_btc', controvalore_btc)
+                id_transazione, 'controvalore_btc', controvalore_btc, current_user.id)
         else:
             flash("⚠️ Impossibile ottenere il valore BTC per la data selezionata. Verifica la connessione o riprova più tardi.", "error")
 
-        dati, saldo_totale = get_transazioni_con_saldo()
+        dati, saldo_totale = get_transazioni_con_saldo(current_user.id)
         return render_template('transazioni.html', transazioni=dati, saldo_totale=saldo_totale)
         # return redirect(url_for('transazioni'))
 
@@ -190,13 +222,15 @@ def modifica_transazione_web(id_transazione):
 
 
 @app.route('/scarica-csv')
+@login_required
 def scarica_csv():
     nome_file = 'exports/transazioni.csv'
-    esporta_csv(nome_file)  # Genera il csv aggiornato
+    esporta_csv(nome_file, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
     return send_file(nome_file, as_attachment=True, download_name=f"transazioni.csv")
 
 
 @app.route('/scarica-csv-mese', methods=['GET', 'POST'])
+@login_required
 def scarica_csv_per_mese():
     if request.method == 'POST':
         mese = request.form['mese']  # esempio formato YYYY-MM
@@ -205,17 +239,18 @@ def scarica_csv_per_mese():
             return redirect(url_for('scarica_csv_per_mese'))
 
         nome_file = f'exports/transazioni_{mese}.csv'
-        esporta_csv_per_mese(mese)  # Genera il csv aggiornato
+        esporta_csv_per_mese(mese, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
         return send_file(nome_file, as_attachment=True, download_name=f"transazioni_{mese}.csv")
 
     return render_template('scarica_csv_per_mese.html')
 
 
 @app.route('/transazioni_lightning')
+@login_required
 def transazioni_lightning():
 
     # Questa funzione restituisce 3 valori (lista, saldo sats, saldo eur)
-    dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
+    dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning(current_user.id)
 
     # *CAMBIARE 'index.html' con 'transazioni_lightning.html'*
     return render_template("transazioni_lightning.html",
@@ -226,6 +261,7 @@ def transazioni_lightning():
 
 
 @app.route('/nuova_transazione_lightning', methods=['GET', 'POST'])
+@login_required
 def nuova_transazione_lightning():
     if request.method == 'POST':
         data = request.form['data']
@@ -241,6 +277,7 @@ def nuova_transazione_lightning():
                 valore_btc_eur if valore_btc_eur else None
 
             salva_su_db_lightning(
+                user_id=current_user.id,
                 data=data,
                 wallet=wallet,
                 descrizione=descrizione,
@@ -266,10 +303,11 @@ def nuova_transazione_lightning():
 
 
 @app.route('/elimina_transazione_lightning/<int:id_transazione>', methods=['POST'])
+@login_required
 def elimina_transazione_web_lightning(id_transazione):
-    elimina_transazione_da_db_lightning(id_transazione)
+    elimina_transazione_da_db_lightning(id_transazione, current_user.id)
     flash("Transazione eliminata con successo", "success")
-    dati_Lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
+    dati_Lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning(current_user.id)
     return render_template('transazioni_lightning.html',
                            transazioni_lightning=dati_Lightning,
                            saldo_totale_satoshi=saldo_totale_satoshi,
@@ -277,9 +315,10 @@ def elimina_transazione_web_lightning(id_transazione):
 
 
 @app.route('/modifica-transazione_lightning/<int:id_transazione>', methods=['GET', 'POST'])
+@login_required
 def modifica_transazione_web_lightning(id_transazione):
     # Leggi tutte le transazioni e e cerca quella con id = id_transazione
-    transazioni_lightning = leggi_transazioni_da_db_lightning()
+    transazioni_lightning = leggi_transazioni_da_db_lightning(current_user.id)
     t = None
     for tr in transazioni_lightning:
         if tr[0] == id_transazione:
@@ -297,15 +336,15 @@ def modifica_transazione_web_lightning(id_transazione):
         sottocategoria = request.form['sottocategoria']
         satoshi = request.form['satoshi']
         # chiama la funzione di modifica
-        modifica_transazione_db_lightning(id_transazione, 'data', data)
-        modifica_transazione_db_lightning(id_transazione, 'wallet', wallet)
+        modifica_transazione_db_lightning(id_transazione, 'data', data, current_user.id)
+        modifica_transazione_db_lightning(id_transazione, 'wallet', wallet, current_user.id)
         modifica_transazione_db_lightning(
-            id_transazione, 'descrizione', descrizione)
+            id_transazione, 'descrizione', descrizione, current_user.id)
         modifica_transazione_db_lightning(
-            id_transazione, 'categoria', categoria)
+            id_transazione, 'categoria', categoria, current_user.id)
         modifica_transazione_db_lightning(
-            id_transazione, 'sottocategoria', sottocategoria)
-        modifica_transazione_db_lightning(id_transazione, 'satoshi', satoshi)
+            id_transazione, 'sottocategoria', sottocategoria, current_user.id)
+        modifica_transazione_db_lightning(id_transazione, 'satoshi', satoshi, current_user.id)
         # Ricalcola e aggiorna BTC
         valore_btc_eur = ottieni_valore_btc_eur(data)
 
@@ -315,17 +354,17 @@ def modifica_transazione_web_lightning(id_transazione):
 
             # Aggiorna i campi corretti nel DB
             modifica_transazione_db_lightning(
-                id_transazione, 'valore_btc_eur', valore_btc_eur)
+                id_transazione, 'valore_btc_eur', valore_btc_eur, current_user.id)
             modifica_transazione_db_lightning(
-                id_transazione, 'controvalore_eur', controvalore_eur)
+                id_transazione, 'controvalore_eur', controvalore_eur, current_user.id)
         else:
             flash("⚠️ Impossibile ottenere il valore BTC per la data selezionata. Verifica la connessione o riprova più tardi.", "error")
 
-        dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning()
+        dati_lightning, saldo_totale_satoshi, saldo_eur_lightning = get_transazioni_con_saldo_lightning(current_user.id)
         return render_template('transazioni_lightning.html',
-                               transazioni_lightning=dati_lightning,
-                               saldo_totale_satoshi=saldo_totale_satoshi,
-                               saldo_eur_lightning=saldo_eur_lightning)
+                       transazioni_lightning=dati_lightning,
+                       saldo_totale_satoshi=saldo_totale_satoshi,
+                       saldo_eur_lightning=saldo_eur_lightning)
 
     # Se GET, mostra il form con i dati precompilati
     return render_template(
@@ -337,13 +376,15 @@ def modifica_transazione_web_lightning(id_transazione):
 
 
 @app.route('/scarica_csv_lightning')
+@login_required
 def scarica_csv_lightning():
     nome_file = 'exports/transazioni_lightning.csv'
-    esporta_csv_lightning(nome_file)  # Genera il csv aggiornato
+    esporta_csv_lightning(nome_file, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
     return send_file(nome_file, as_attachment=True, download_name=f"transazioni_lightning.csv")
 
 
 @app.route('/scarica_csv_lightning_per_mese', methods=['GET', 'POST'])
+@login_required
 def scarica_csv_per_mese_lightning():
     if request.method == 'POST':
         mese = request.form['mese']  # esempio formato YYYY-MM
@@ -352,19 +393,21 @@ def scarica_csv_per_mese_lightning():
             return redirect(url_for('scarica_csv_per_mese_lightning'))
 
         nome_file = f'exports/transazioni_{mese}_lightning.csv'
-        esporta_csv_per_mese_lightning(mese)  # Genera il csv aggiornato
+        esporta_csv_per_mese_lightning(mese, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
         return send_file(nome_file, as_attachment=True, download_name=f"transazioni_{mese}_lightning.csv")
 
     return render_template('scarica_csv_per_mese_lightning.html')
 
 
 @app.route('/transazioni_onchain')
+@login_required
 def transazioni_onchain():
-    dati_onchain, saldo_totale_btc = get_transazioni_con_saldo_onchain()
+    dati_onchain, saldo_totale_btc = get_transazioni_con_saldo_onchain(current_user.id)
     return render_template("transazioni_onchain.html", transazioni_onchain=dati_onchain, saldo_totale_btc=saldo_totale_btc)
 
 
 @app.route('/nuova_transazione_onchain', methods=['GET', 'POST'])
+@login_required
 def nuova_transazione_onchain():
     if request.method == 'POST':
         data = request.form['data']
@@ -381,6 +424,7 @@ def nuova_transazione_onchain():
             valore_btc_eur if valore_btc_eur else None
 
             salva_su_db_onchain(
+                user_id=current_user.id,
                 data=data,
                 wallet=wallet,
                 descrizione=descrizione,
@@ -410,17 +454,19 @@ def nuova_transazione_onchain():
 
 
 @app.route('/elimina_transazione_onchain/<int:id_transazione>', methods=['POST'])
+@login_required
 def elimina_transazione_web_onchain(id_transazione):
-    elimina_transazione_da_db_onchain(id_transazione)
+    elimina_transazione_da_db_onchain(id_transazione, current_user.id)
     flash("Transazione eliminata con successo", "success")
-    dati_onchain, saldo_totale_satoshi_onchain = get_transazioni_con_saldo_satoshi_onchain()
+    dati_onchain, saldo_totale_satoshi_onchain = get_transazioni_con_saldo_satoshi_onchain(current_user.id)
     return render_template('transazioni_onchain.html', transazioni_lightning=dati_onchain, saldo_totale_satoshi=saldo_totale_satoshi_onchain)
 
 
 @app.route('/modifica-transazione_onchain/<int:id_transazione>', methods=['GET', 'POST'])
+@login_required
 def modifica_transazione_web_onchain(id_transazione):
     # Leggi tutte le transazioni e e cerca quella con id = id_transazione
-    transazioni_onchain = leggi_transazioni_da_db_onchain()
+    transazioni_onchain = leggi_transazioni_da_db_onchain(current_user.id)
     t = None
     for tr in transazioni_onchain:
         if tr[0] == id_transazione:
@@ -440,27 +486,27 @@ def modifica_transazione_web_onchain(id_transazione):
         importo_btc = float(request.form['importo_btc'])
         fee = float(request.form['fee'])
         # chiama la funzione di modifica
-        modifica_transazione_db_onchain(id_transazione, 'data', data)
-        modifica_transazione_db_onchain(id_transazione, 'wallet', wallet)
+        modifica_transazione_db_onchain(id_transazione, 'data', data, current_user.id)
+        modifica_transazione_db_onchain(id_transazione, 'wallet', wallet, current_user.id)
         modifica_transazione_db_onchain(
-            id_transazione, 'descrizione', descrizione)
+            id_transazione, 'descrizione', descrizione, current_user.id)
         modifica_transazione_db_onchain(
-            id_transazione, 'categoria', categoria)
+            id_transazione, 'categoria', categoria, current_user.id)
         modifica_transazione_db_onchain(
-            id_transazione, 'sottocategoria', sottocategoria)
+            id_transazione, 'sottocategoria', sottocategoria, current_user.id)
         modifica_transazione_db_onchain(
-            id_transazione, 'transactionID', transactionID)
+            id_transazione, 'transactionID', transactionID, current_user.id)
         modifica_transazione_db_onchain(
-            id_transazione, 'importo_btc', importo_btc)
-        modifica_transazione_db_onchain(id_transazione, 'fee', fee)
+            id_transazione, 'importo_btc', importo_btc, current_user.id)
+        modifica_transazione_db_onchain(id_transazione, 'fee', fee, current_user.id)
         # Ricalcola e aggiorna BTC
         valore_btc_eur = ottieni_valore_btc_eur(data)
         if valore_btc_eur:
             controvalore_eur = importo_btc * valore_btc_eur
             modifica_transazione_db_onchain(
-                id_transazione, 'valore_btc_eur', valore_btc_eur)
+                id_transazione, 'valore_btc_eur', valore_btc_eur, current_user.id)
             modifica_transazione_db_onchain(
-                id_transazione, 'controvalore_eur', controvalore_eur)
+                id_transazione, 'controvalore_eur', controvalore_eur, current_user.id)
         else:
             flash("⚠️ Impossibile ottenere il valore BTC/EUR", "error")
 
@@ -477,13 +523,15 @@ def modifica_transazione_web_onchain(id_transazione):
 
 
 @app.route('/scarica_csv_onchain')
+@login_required
 def scarica_csv_onchain():
     nome_file = 'exports/transazioni_onchain.csv'
-    esporta_csv_onchain(nome_file)  # Genera il csv aggiornato
+    esporta_csv_onchain(nome_file, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
     return send_file(nome_file, as_attachment=True, download_name=f"transazioni_onchain.csv")
 
 
 @app.route('/scarica_csv_onchain_per_mese', methods=['GET', 'POST'])
+@login_required
 def scarica_csv_per_mese_onchain():
     if request.method == 'POST':
         mese = request.form['mese']  # esempio formato YYYY-MM
@@ -492,11 +540,17 @@ def scarica_csv_per_mese_onchain():
             return redirect(url_for('scarica_csv_per_mese_onchain'))
 
         nome_file = f'exports/transazioni_{mese}_onchain.csv'
-        esporta_csv_per_mese_lightning(mese)  # Genera il csv aggiornato
+        esporta_csv_per_mese_onchain(mese, user_id=current_user.id)  # Genera il csv aggiornato filtrato per utente
         return send_file(nome_file, as_attachment=True, download_name=f"transazioni_{mese}_onchain.csv")
 
     return render_template('scarica_csv_per_mese_onchain.html')
 
 
 if __name__ == '__main__':
+    # register auth blueprint lazily to avoid circular import at module load
+    try:
+        from auth import auth_bp
+        app.register_blueprint(auth_bp)
+    except Exception:
+        pass
     app.run(debug=True)

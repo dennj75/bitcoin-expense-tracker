@@ -1,3 +1,62 @@
+⭐ Overview
+
+Project: Bitcoin Expense Tracker — simple expense tracker in EUR, Lightning, and on-chain with multi-user support.
+
+Status: Functional for development — Flask authentication + per-user data isolation, filtered CSV export.
+
+🧪 Quick tests (end-to-end)
+
+Run the multi-user verification script:
+
+python test_multiuser_e2e.py
+
+This script recreates transazioni.db (removes it if present) and checks that two separate users only see their own transactions and that delete/modify operations require ownership.
+
+🔄 Recent major changes
+👥 Multi-user support: each transaction now includes user_id; read/save functions filter by user.
+
+Involved files: db/db_utils.py, app.py, utils/export.py.
+
+🔐 Security improvements:
+Added ownership checks for delete/modify on the tables (transazioni, transazioni_lightning, transazioni_onchain). Functions raise PermissionError on unauthorized access.
+
+📤 Improved CSV export:
+CSV export functions now accept user_id and generate files containing only the authenticated user’s transactions.
+
+🐞 Bugfixes:
+Fixed parameterized SQL queries (various string/tuple issues in SELECT and LIKE queries).
+
+💾 **Relevant files**
+app.py: updated routes to pass current_user.id to DB functions.
+
+db/db_utils.py: updated CRUD functions (accept/check user_id).
+
+utils/export.py: CSV exports filtered by user.
+
+test_multiuser_e2e.py: end-to-end test script (creates users, inserts transactions, verifies isolation).
+
+🧠**Good practices and notes**
+Always use current_user.id for DB operations in protected routes.
+
+Queries are parameterized (?) to avoid SQL injection.
+
+In production, replace app.secret_key with a secure value and use a WSGI server (gunicorn/uwsgi) and persistent/backup-enabled DB.
+
+🎯**Recommended roadmap**
+Make user_id mandatory in export functions to avoid unintended exports.
+
+Add unit tests and CI (GitHub Actions) to run pytest on each PR.
+
+Improve input validation in forms and refine UX error messages.
+
+Consider rate-limiting or caching for external requests (e.g., CoinGecko) if you add historical BTC conversion.
+
+## 📞Contacts / contributions
+
+Open an issue or PR on the GitHub repository for suggestions, bugs, or contributions.
+
+Automatically updated after local changes: db/db_utils.py, app.py, utils/export.py.
+
 # EE - Bitcoin & Euro Expense Tracker
 
 A personal finance tracker built specifically for Bitcoiners. Track your expenses in EUR while automatically calculating Bitcoin (BTC) equivalents, including Lightning Network and on-chain transactions.
@@ -121,7 +180,7 @@ EE/
 
 ## 🎯 Roadmap
 
-- [ ] Multi-user support with authentication
+- [x] Multi-user support with authentication
 - [ ] Cloud deployment option
 - [ ] Mobile-responsive design improvements
 - [ ] Tax report generation for crypto transactions

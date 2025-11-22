@@ -6,10 +6,24 @@ import os
 DB_PATH = 'transazioni.db'
 
 
+def verifica_ownership_transazione(id_transazione, user_id, tabella):
+    """
+    Verifica che la transazione appartiene a user_id nella tabella specificata.
+    Ritorna True se l'utente è il proprietario, False altrimenti.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(f'SELECT user_id FROM {tabella} WHERE id = ?', (id_transazione,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return False
+    return row[0] == user_id
+
+
 def inizializza_db():
-    # Rimuove il vecchio DB per ricrearlo da zero con nuova struttura
-    if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
+    # Crea il DB se non esiste e crea le tabelle mancanti.
+    # ATTENZIONE: non cancellare automaticamente il DB esistente per evitare perdita dati.
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
@@ -24,7 +38,11 @@ def inizializza_db():
             valore_btc_eur REAL
         )
     ''')
-
+    try:
+        cursor.execute(
+            'ALTER TABLE transazioni ADD COLUMN user_id INTEGER DEFAULT 1')
+    except sqlite3.OperationalError:
+        pass
     # Tabella per Lightning Network
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transazioni_lightning(
@@ -39,6 +57,11 @@ def inizializza_db():
             valore_btc_eur REAL NOT NULL
         )
     ''')
+    try:
+        cursor.execute(
+            'ALTER TABLE transazioni_lightning ADD COLUMN user_id INTEGER DEFAULT 1')
+    except sqlite3.OperationalError:
+        pass
 
     # Tabella per Bitcoin on-chain
     cursor.execute('''
@@ -56,66 +79,87 @@ def inizializza_db():
             valore_btc_eur REAL NOT NULL
         )
     ''')
+    try:
+        cursor.execute(
+            'ALTER TABLE transazioni_onchain ADD COLUMN user_id INTEGER DEFAULT 1')
+    except sqlite3.OperationalError:
+        pass
+
+    # Tabella per utenti (auth)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE,
+            password_hash TEXT NOT NULL
+        )
+    ''')
     conn.commit()
     conn.close()
 
 
-def salva_su_db_onchain(data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur):
+def salva_su_db_onchain(user_id, data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO transazioni_onchain(data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, float(controvalore_eur), float(valore_btc_eur)))
+    INSERT INTO transazioni_onchain(user_id, data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, float(controvalore_eur), float(valore_btc_eur)))
     conn.commit()
     conn.close()
 
 
-def leggi_transazioni_da_db_onchain():
+def leggi_transazioni_da_db_onchain(user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
     SELECT id, data, wallet, descrizione, categoria, sottocategoria,
            transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur
-    FROM transazioni_onchain
-    ORDER BY data ASC''')
+    FROM transazioni_onchain WHERE user_id = ? ORDER BY data ASC
+    ''', (user_id,))
     righe = cursor.fetchall()
     conn.close()
     return righe
 
 
-def elimina_transazione_da_db_onchain(id_transazione):
+def elimina_transazione_da_db_onchain(id_transazione, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni_onchain'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di eliminare questa transazione")
     cursor.execute(
         'DELETE FROM transazioni_onchain WHERE id = ?', (id_transazione,))
     conn.commit()
     conn.close()
 
 
-def modifica_transazione_db_onchain(id_transazione, campo, nuovo_valore):
+def modifica_transazione_db_onchain(id_transazione, campo, nuovo_valore, user_id):
     campi_consentiti = {'data', 'wallet', 'descrizione', 'categoria', 'sottocategoria',
                         'transactionID', 'importo_btc', 'fee', 'controvalore_eur', 'valore_btc_eur'}
     if campo not in campi_consentiti:
         raise ValueError("Campo non valido")
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni_onchain'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di modificare questa transazione")
     query = f'UPDATE transazioni_onchain SET {campo} = ? WHERE id = ?'
     cursor.execute(query, (nuovo_valore, id_transazione))
     conn.commit()
     conn.close()
 
 
-def leggi_transazioni_filtrate_onchain(filtro_data):
+def leggi_transazioni_filtrate_onchain(filtro_data, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     query = '''
         SELECT id, data, wallet, descrizione, categoria, sottocategoria, transactionID, importo_btc, fee, controvalore_eur, valore_btc_eur
         FROM transazioni_onchain
-        WHERE data LIKE ?
+        WHERE user_id = ? AND data LIKE ?
         ORDER BY data ASC
     '''
-    cursor.execute(query, (filtro_data + '%',))
+    cursor.execute(query, (user_id, filtro_data + '%'))
     righe = cursor.fetchall()
     conn.close()
     return righe
@@ -131,7 +175,7 @@ def get_transazioni_con_saldo_lightning():
 
     # Legge tutte le transazioni
     cursor.execute('''
-    SELECT id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur 
+    SELECT id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur
     FROM transazioni_lightning
     ORDER BY data ASC''')
     dati_lightning = cursor.fetchall()
@@ -150,100 +194,116 @@ def get_transazioni_con_saldo_lightning():
     return dati_lightning, saldo_totale_satoshi
 
 
-def salva_su_db_lightning(data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur):
+def salva_su_db_lightning(user_id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO transazioni_lightning(data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (data, wallet, descrizione, categoria, sottocategoria, satoshi, float(controvalore_eur), float(valore_btc_eur)))
+    INSERT INTO transazioni_lightning(user_id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, data, wallet, descrizione, categoria, sottocategoria, satoshi, float(controvalore_eur), float(valore_btc_eur)))
     conn.commit()
     conn.close()
 
 
-def leggi_transazioni_da_db_lightning():
+def leggi_transazioni_da_db_lightning(user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
-        'SELECT id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur FROM transazioni_lightning')
+        'SELECT id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur FROM transazioni_lightning WHERE user_id = ? ORDER BY data ASC', (
+            user_id,)
+    )
     righe = cursor.fetchall()
     conn.close()
     return righe
 
 
-def elimina_transazione_da_db_lightning(id_transazione):
+def elimina_transazione_da_db_lightning(id_transazione, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni_lightning'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di eliminare questa transazione")
     cursor.execute(
         'DELETE FROM transazioni_lightning WHERE id = ?', (id_transazione,))
     conn.commit()
     conn.close()
 
 
-def modifica_transazione_db_lightning(id_transazione, campo, nuovo_valore):
+def modifica_transazione_db_lightning(id_transazione, campo, nuovo_valore, user_id):
     campi_consentiti = {'data', 'wallet', 'descrizione', 'categoria', 'sottocategoria',
                         'satoshi', 'controvalore_eur', 'valore_btc_eur'}
     if campo not in campi_consentiti:
         raise ValueError("Campo non valido")
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni_lightning'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di modificare questa transazione")
     query = f'UPDATE transazioni_lightning SET {campo} = ? WHERE id = ?'
     cursor.execute(query, (nuovo_valore, id_transazione))
     conn.commit()
     conn.close()
 
 
-def leggi_transazioni_filtrate_lightning(filtro_data):
+def leggi_transazioni_filtrate_lightning(filtro_data, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     query = '''
         SELECT id, data, wallet, descrizione, categoria, sottocategoria, satoshi, controvalore_eur, valore_btc_eur
         FROM transazioni_lightning
-        WHERE data LIKE ?
+        WHERE user_id = ? AND data LIKE ?
         ORDER BY data ASC
     '''
-    cursor.execute(query, (filtro_data + '%',))
+    cursor.execute(query, (user_id, filtro_data + '%'))
     righe = cursor.fetchall()
     conn.close()
     return righe
 
 
-def salva_su_db(data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur):
+def salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO transazioni(data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur)
-    VALUES(?, ?, ?, ?, ?, ?, ?)
-    ''', (data, descrizione, categoria, sottocategoria, float(importo), controvalore_btc, valore_btc_eur))
+    INSERT INTO transazioni(user_id, data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, data, descrizione, categoria, sottocategoria, float(importo), controvalore_btc, valore_btc_eur))
     conn.commit()
     conn.close()
 
 
-def leggi_transazioni_da_db():
+def leggi_transazioni_da_db(user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute(
-        'SELECT id, data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur FROM transazioni')
+        'SELECT id, data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur FROM transazioni WHERE user_id = ? ORDER BY data ASC',
+        (user_id,)  # ← TUPLA FUORI dalla query, come parametro di execute()
+    )
     righe = cursor.fetchall()
     conn.close()
     return righe
 
 
-def elimina_transazione_da_db(id_transazione):
+def elimina_transazione_da_db(id_transazione, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di eliminare questa transazione")
     cursor.execute('DELETE FROM transazioni WHERE id = ?', (id_transazione,))
     conn.commit()
     conn.close()
 
 
-def modifica_transazione_db(id_transazione, campo, nuovo_valore):
+def modifica_transazione_db(id_transazione, campo, nuovo_valore, user_id):
     campi_consentiti = {'data', 'descrizione', 'categoria', 'sottocategoria',
                         'importo', 'controvalore_btc', 'valore_btc_eur'}
     if campo not in campi_consentiti:
         raise ValueError("Campo non valido")
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    if not verifica_ownership_transazione(id_transazione, user_id, 'transazioni'):
+        conn.close()
+        raise PermissionError(f"Non hai il permesso di modificare questa transazione")
     query = f'UPDATE transazioni SET {campo} = ? WHERE id = ?'
     cursor.execute(query, (nuovo_valore, id_transazione))
     conn.commit()
@@ -260,16 +320,51 @@ def saldo_iniziale_esistente():
     return count > 0
 
 
-def leggi_transazioni_filtrate(filtro_data):
+def leggi_transazioni_filtrate(filtro_data, user_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     query = '''
         SELECT id, data, descrizione, categoria, sottocategoria, importo, controvalore_btc, valore_btc_eur
         FROM transazioni
-        WHERE data LIKE ?
+        WHERE user_id = ? AND data LIKE ?
         ORDER BY data ASC
     '''
-    cursor.execute(query, (filtro_data + '%',))
+    cursor.execute(query, (user_id, filtro_data + '%'))
     righe = cursor.fetchall()
     conn.close()
     return righe
+
+# Funzioni utenti
+
+
+def crea_utente(username, email, password_hash):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+    INSERT INTO users(username, email, password_hash)
+    VALUES(?, ?, ?)
+    ''', (username, email, password_hash))
+    conn.commit()
+    user_id = cursor.lastrowid
+    conn.close()
+    return user_id
+
+
+def get_user_by_username(username):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT id, username, email, password_hash FROM users WHERE username = ?', (username,))
+    row = cursor.fetchone()
+    conn.close()
+    return row
+
+
+def get_user_by_id(user_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT id, username, email, password_hash FROM users WHERE id = ?', (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return row

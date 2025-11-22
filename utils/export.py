@@ -3,12 +3,12 @@ import os
 from db.db_utils import leggi_transazioni_da_db, leggi_transazioni_filtrate, leggi_transazioni_da_db_lightning, leggi_transazioni_filtrate_lightning, leggi_transazioni_filtrate_onchain, leggi_transazioni_da_db_onchain
 
 
-def esporta_csv_onchain(nome_file='exports/transazioni_onchain.csv'):
+def esporta_csv_onchain(nome_file='exports/transazioni_onchain.csv', user_id=None):
     # Crea la cartella exports se non esiste
     cartella_export = os.path.dirname(nome_file)
     os.makedirs(cartella_export, exist_ok=True)
 
-    transazioni_onchain = leggi_transazioni_da_db_onchain()
+    transazioni_onchain = leggi_transazioni_da_db_onchain(user_id)
 
     with open(nome_file, mode='w', newline='', encoding='utf-8') as file_csv:
         intestazioni = [
@@ -53,8 +53,8 @@ def esporta_csv_onchain(nome_file='exports/transazioni_onchain.csv'):
         f"✅ File '{nome_file}' esportato correttamente con saldo totale di {saldo_totale_btc} satoshi.")
 
 
-def esporta_csv_per_mese_onchain(mese):
-    transazioni_onchain = leggi_transazioni_filtrate_onchain(mese)
+def esporta_csv_per_mese_onchain(mese, user_id=None):
+    transazioni_onchain = leggi_transazioni_filtrate_onchain(mese, user_id)
     if not transazioni_onchain:
         print(f"⚠️ Nessuna transazione trovata per il mese {mese} ")
         return
@@ -107,12 +107,12 @@ def esporta_csv_per_mese_onchain(mese):
     print(f"\n✅ File '{nome_file}' esportato correttamente con il saldo.")
 
 
-def esporta_csv_lightning(nome_file='exports/transazioni_lightning.csv'):
+def esporta_csv_lightning(nome_file='exports/transazioni_lightning.csv', user_id=None):
     # Crea la cartella exports se non esiste
     cartella_export = os.path.dirname(nome_file)
     os.makedirs(cartella_export, exist_ok=True)
 
-    transazioni_lightning = leggi_transazioni_da_db_lightning()
+    transazioni_lightning = leggi_transazioni_da_db_lightning(user_id)
 
     with open(nome_file, mode='w', newline='', encoding='utf-8') as file_csv:
         intestazioni = [
@@ -153,8 +153,8 @@ def esporta_csv_lightning(nome_file='exports/transazioni_lightning.csv'):
         f"✅ File '{nome_file}' esportato correttamente con saldo totale di {saldo_satoshi} satoshi.")
 
 
-def esporta_csv_per_mese_lightning(mese):
-    transazioni_lightning = leggi_transazioni_filtrate_lightning(mese)
+def esporta_csv_per_mese_lightning(mese, user_id=None):
+    transazioni_lightning = leggi_transazioni_filtrate_lightning(mese, user_id)
     if not transazioni_lightning:
         print(f"⚠️ Nessuna transazione trovata per il mese {mese} ")
         return
@@ -203,8 +203,8 @@ def esporta_csv_per_mese_lightning(mese):
     print(f"\n✅ File '{nome_file}' esportato correttamente con il saldo.")
 
 
-def esporta_csv(nome_file='exports/transazioni.csv'):
-    transazioni = leggi_transazioni_da_db()
+def esporta_csv(nome_file='exports/transazioni.csv', user_id=None):
+    transazioni = leggi_transazioni_da_db(user_id)
     with open(nome_file, mode='w', newline='', encoding='utf-8') as file_csv:
         intestazioni = ['id', 'data', 'descrizione', 'categoria',
                         'sottocategoria', 'importo', 'controvalore_btc', 'valore_btc_eur']
@@ -239,8 +239,8 @@ def esporta_csv(nome_file='exports/transazioni.csv'):
     print(f"\n✅ File '{nome_file}' esportato correttamente con il saldo.")
 
 
-def esporta_csv_per_mese(mese):
-    transazioni = leggi_transazioni_filtrate(mese)
+def esporta_csv_per_mese(mese, user_id=None):
+    transazioni = leggi_transazioni_filtrate(mese, user_id)
     if not transazioni:
         print(f"⚠️ Nessuna transazione trovata per il mese {mese} ")
         return
