@@ -1,96 +1,82 @@
-⭐ Overview
+# ₿ Bitcoin Expense Tracker (₿-ET)
 
-Project: Bitcoin Expense Tracker — simple expense tracker in EUR, Lightning, and on-chain with multi-user support.
+A personal finance tracker built specifically for **Bitcoiners**. Track your expenses in EUR while automatically calculating real-time Bitcoin (**BTC**) equivalents, with full support for the Lightning Network and on-chain transactions.
 
-Status: Functional for development — Flask authentication + per-user data isolation, filtered CSV export.
+[![GitHub license](https://img.shields.io/github/license/dennj75/bitcoin-expense-tracker?style=flat-square)](LICENSE)
+[![GitHub stars](https://imgpl.io/github/stars/dennj75/bitcoin-expense-tracker?style=flat-square)](https://github.com/dennj75/bitcoin-expense-tracker/stargazers)
 
-🧪 Quick tests (end-to-end)
+---
 
-Run the multi-user verification script:
+## 🌟 Why This Project?
 
-python test_multiuser_e2e.py
+Most expense trackers treat Bitcoin as just another "crypto asset." Bitcoin Expense Tracker is different:
 
-This script recreates transazioni.db (removes it if present) and checks that two separate users only see their own transactions and that delete/modify operations require ownership.
+- ⚡ **Native Lightning Network:** Track your Lightning transactions separately with satoshi precision.
+- 🔗 **On-chain Transaction Tracking:** Full support for regular Bitcoin transactions and fee management.
+- 💱 **Automatic BTC/EUR Conversion:** Uses historical BTC prices for accurate expense tracking.
+- 🔐 **Privacy-First:** Your data stays local, stored in an SQLite database on your machine.
+- 🆔 **Nostr Authentication:** Log in with your Nostr identity (via nos2x browser extension).
+- 👥 **Multi-user Support:** Complete data isolation between different users.
+- 🌐 **Open Source:** Built in public, contributions are welcome.
 
-🔄 Recent major changes
-👥 Multi-user support: each transaction now includes user_id; read/save functions filter by user.
+---
 
-Involved files: db/db_utils.py, app.py, utils/export.py.
+## 📸 Screenshots
 
-🔐 Security improvements:
-Added ownership checks for delete/modify on the tables (transazioni, transazioni_lightning, transazioni_onchain). Functions raise PermissionError on unauthorized access.
+Here are some views of the Bitcoin Expense Tracker interface:
 
-📤 Improved CSV export:
-CSV export functions now accept user_id and generate files containing only the authenticated user’s transactions.
+### Dashboard & EUR Tracking
 
-🐞 Bugfixes:
-Fixed parameterized SQL queries (various string/tuple issues in SELECT and LIKE queries).
+![Screenshot of the main dashboard showing EUR transactions and Bitcoin conversion.](static/dashboard.png)
 
-💾 **Relevant files**
-app.py: updated routes to pass current_user.id to DB functions.
+### Lightning Transaction View
 
-db/db_utils.py: updated CRUD functions (accept/check user_id).
+![Screenshot of the Lightning Transaction input screen.](static/lightning.png)
 
-utils/export.py: CSV exports filtered by user.
-
-test_multiuser_e2e.py: end-to-end test script (creates users, inserts transactions, verifies isolation).
-
-🧠**Good practices and notes**
-Always use current_user.id for DB operations in protected routes.
-
-Queries are parameterized (?) to avoid SQL injection.
-
-In production, replace app.secret_key with a secure value and use a WSGI server (gunicorn/uwsgi) and persistent/backup-enabled DB.
-
-🎯**Recommended roadmap**
-Make user_id mandatory in export functions to avoid unintended exports.
-
-Add unit tests and CI (GitHub Actions) to run pytest on each PR.
-
-Improve input validation in forms and refine UX error messages.
-
-Consider rate-limiting or caching for external requests (e.g., CoinGecko) if you add historical BTC conversion.
-
-## 📞Contacts / contributions
-
-Open an issue or PR on the GitHub repository for suggestions, bugs, or contributions.
-
-Automatically updated after local changes: db/db_utils.py, app.py, utils/export.py.
-
-# EE - Bitcoin & Euro Expense Tracker
-
-A personal finance tracker built specifically for Bitcoiners. Track your expenses in EUR while automatically calculating Bitcoin (BTC) equivalents, including Lightning Network and on-chain transactions.
-
-## 🌟 Why EE?
-
-Most expense trackers treat Bitcoin as just another "crypto asset". EE is different:
-
-- **Native Lightning Network support** - Track your Lightning transactions separately
-- **On-chain transaction tracking** - Full support for regular Bitcoin transactions
-- **Automatic BTC/EUR conversion** - Uses historical BTC prices for accurate tracking
-- **Privacy-first** - Your data stays local, SQLite database on your machine
-- **Open Source** - Built in public, contributions welcome
+---
 
 ## ✨ Features
 
-- 📊 **Multi-currency tracking**: EUR, Bitcoin (on-chain), Lightning Network (satoshis)
-- 🏷️ **Detailed categorization**: 10+ categories with custom subcategories
-- 💱 **Automatic BTC conversion**: Fetches historical BTC prices via CoinGecko API
-- 📈 **Balance tracking**: Real-time balance in EUR, BTC, and satoshis
-- 📤 **CSV Export**: Export transactions by month or all-time
-- 🌐 **Web Interface**: Clean Flask-based UI (plus CLI for power users)
-- 🔐 **Local-first**: Your financial data never leaves your computer
+### 💰 Multi-Currency Tracking
+
+- **EUR** - Traditional fiat transactions.
+- **Bitcoin (On-chain)** - Regular BTC transactions with fee tracking.
+- **Lightning Network** - Satoshi-level precision for Lightning payments.
+
+### 🔐 Flexible Authentication
+
+- **Traditional Login** - Standard Username/Password authentication.
+- ⚡ **Nostr Login** - Decentralized authentication using NIP-07 (nos2x extension):
+  - Sign in with your existing Nostr identity.
+  - Schnorr signature verification (BIP340).
+  - No password needed.
+
+### 📊 Financial Management
+
+- **Detailed Categorization:** 10+ categories with custom subcategories.
+- **Automatic BTC Conversion:** Fetches historical BTC prices via CoinGecko API.
+- **Real-time Balance:** View your balance in EUR, BTC, and satoshis.
+- **CSV Export:** Export transactions by month or all-time.
+
+### 🛡️ Security & Privacy
+
+- **Local-First:** Your financial data never leaves your computer.
+- **User Data Isolation:** Complete separation between user accounts.
+- **SQL Injection Protection:** Uses parameterized queries.
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.8+
-- pip
+- **Python** 3.8+
+- **pip** (Python package manager)
+- _Optional:_ **nos2x** browser extension for Nostr login.
 
 ### Installation
 
-1. Clone the repository:
+1.  Clone the repository
 
 ```bash
 git clone https://github.com/yourusername/EE.git
@@ -99,97 +85,132 @@ cd EE
 
 2. Create virtual environment:
 
+Windows:
+
 ```bash
 python -m venv .venv
+.venv\Scripts\activate
 ```
 
-3. Activate virtual environment:
+inux / Mac:
 
-- Windows: `.venv\Scripts\activate`
-- Linux/Mac: `source .venv/bin/activate`
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-4. Install dependencies:
+3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-5. Run the web app:
+4. Run the application
 
 ```bash
 python app.py
 ```
 
-6. Open browser at `http://127.0.0.1:5000`
+5. Open your browser  
+   Access the application at: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-### CLI Usage
+### 📖 Usage WorkflowFirst Time SetupCreate an Account:
 
-For command-line interface:
+Click **_"Registrati"_** for a traditional account OR Click **_"Login with Nostr"_** if you have the nos2x extension installed.
 
-```bash
-python main.py
+- Start Tracking:Use **_"Nuova Transazione"_** for EUR expenses.
+- Use **_"Transazioni Lightning"_** for Lightning payments.
+- Use **_"Transazioni On-chain"_** for regular Bitcoin transactions.
+- Adding EUR Transactions (Automatic Conversion)Go to "Nuova Transazione".
+  - Select date, category, and amount in EUR.The system automatically converts to BTC based on the historical price for that date.
+
+### Adding Lightning / On-chain
+
+- TransactionsLightning:  
+  Navigate to "Transazioni Lightning" and enter the amount in satoshis. The system calculates the EUR equivalent.On-chain: Go to "Transazioni On-chain" and enter transaction details, including fees.
+
+### Exporting DataExport all transactions:
+
+- Click "Scarica CSV."Export by month: Select the month in YYYY-MM format.
+
+## ⚡ Nostr Login Details
+
+Bitcoin Expense Tracker leverages the Nostr protocol for decentralized authentication:FeatureDescriptionPassword-lessAuthentication based on the cryptographic signature of your Nostr key.Unified IdentityUse the same Nostr identity you use for other Nostr-enabled apps.  
+NIP-07 StandardUses browser extensions (like nos2x) to sign requests without exposing your private key.  
+How to Use Nostr LoginInstall nos2x:
+
+- Install the nos2x extension (Chrome/Brave/Firefox).
+- Set up Keys: Generate new keys or import your existing Nostr keys (NPUB/NSEC) in the extension.
+
+### Log in to App 🚀:
+
+- On the login page, click "Login with Nostr.  
+  The nos2x extension will prompt you to approve the signature of a challenge.Approve the request, and you are logged in!
+
+### 🧪 TestingRunning
+
+Multi-user Tests (E2E)Verify that user data isolation works correctly by running the End-to-End test script:Bashpython test_multiuser_e2e.py  
+ This automated script performs the following checks:Creates multiple test users.Inserts transactions for each user.Verifies that each user only sees their own data.Tests ownership checks during delete/modify operations.
+
+### 📁 Project Structure bitcoin-expense-tracker/
+
+```
+├── app.py # Main Flask web application
+├── auth.py # Authentication blueprint (traditional & Nostr)
+├── requirements.txt # Python dependencies
+├── db/
+│ └── db_utils.py # SQLite database utilities
+├── utils/
+│ ├── crypto.py # BTC price fetching (CoinGecko) and conversion
+│ └── export.py # CSV export logic
+├── templates/ # HTML templates (login, index, transactions, etc.)
+└── static/ # CSS, JavaScript, images
 ```
 
-## 📸 Screenshots
+### 🛠️ TechStack
 
-_Coming soon - adding screenshots of the web interface_
-
-## 🗂️ Project Structure
-
-```
-EE/
-├── app.py              # Flask web application
-├── main.py             # CLI interface
-├── cli.py              # CLI utilities
-├── requirements.txt    # Python dependencies
-├── db/                 # Database utilities
-│   └── db_utils.py    # DB functions
-├── utils/             # Helper modules
-│   ├── crypto.py      # BTC price fetching & conversion
-│   ├── export.py      # CSV export functions
-│   └── helpers.py     # General utilities
-├── templates/         # HTML templates
-└── static/           # CSS, JS, images
-```
-
-## 🛠️ Tech Stack
+Component Technology Role
 
 - **Backend**: Flask (Python)
 - **Database**: SQLite
 - **API**: CoinGecko (BTC prices)
 - **Frontend**: HTML, CSS, JavaScript (Vanilla)
+- **_Authentication_** Flask-Login + Nostr (NIP-07)Session management and Nostr login Cryptography coincurve BIP340/Schnorr signatures implementation External
 
-## 📝 Usage Examples
+## 🔄 Change Log v2.0
 
-### Adding a Transaction (Web)
+### 🦤Nostr Authentication (Latest)
 
-1. Navigate to "Nuova Transazione"
-2. Select date, category, amount in EUR
-3. Automatic BTC conversion happens based on historical price
+⚡ Nostr login implemented with nos2x extension support.  
+🔐 BIP340 Schnorr signature verification.  
+📝 Database separation: transazioni.db (transactions) and database.db (users).v1.5 - Multi-user Support  
+👥 Each transaction linked by user_id.  
+🔒 Ownership checks for delete/modify operations enforced.  
+📊 Per-user data isolation and filtered CSV exports.v1.0 - Core Features  
+💰 EUR, Lightning, and on-chain tracking.💱 Automatic BTC conversion via CoinGecko.  
+🏷️ Category and subcategory management.
 
-### Adding Lightning Transaction
+## 🗺️ Roadmap
 
-1. Go to "Transazioni Lightning"
-2. Enter amount in satoshis
-3. System calculates EUR equivalent
+### 🎯 Priority Goal
 
-### Exporting Data
+### Short Term
 
-- Export all transactions: `/scarica-csv`
-- Export by month: `/scarica-csv-mese` (format: YYYY-MM)
+- [ ] Mobile responsive design improvements and Dark Mode support.
+- [ ] Transaction search and advanced filtering functionality.
 
-## 🎯 Roadmap
+### Medium Term
 
-- [x] Multi-user support with authentication
-- [ ] Cloud deployment option
-- [ ] Mobile-responsive design improvements
-- [ ] Tax report generation for crypto transactions
-- [ ] Budget planning & forecasting
-- [ ] Recurring transaction support
-- [ ] Charts & analytics dashboard
-- [ ] Integration with wallet APIs (auto-import)
+- [ ] Charts & analytics dashboard for financial insights.
+- [ ] Recurring transaction support and tax report generation.
+
+### Long Term
+
+- [ ] Integration with Lightning wallet APIs (automatic import).
 
 ## 🤝 Contributing
+
+### Contributions are welcome!
 
 This is a learning project built in public! Contributions, issues, and feature requests are welcome.
 
@@ -199,20 +220,21 @@ This is a learning project built in public! Contributions, issues, and feature r
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+### Development Guidelines
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Always use parameterized SQL queries to prevent SQL injection.  
+ Always check current_user.id for data modification operations.  
+ Add tests for new features.
 
-## 🙏 Acknowledgments
+## ⚠️ Disclaimer and Security
 
-- CoinGecko API for BTC price data
-- Flask framework
-- The Bitcoin community
+This is an early-stage project built for learning purposes. Use at your own risk.
 
-## 📧 Contact
+## ⚠️ Backup:
 
-Building in public - follow the journey!
+Always backup your transazioni.db and database.db files regularly.  
+ 🔒 Nostr Keys: Never share your Nostr private keys (NSEC).  
+ ⚙️ Production: For production deployment, use a strong app.secret_key, enable HTTPS, and consider using a WSGI server (e.g., Gunicorn/uWSGI).  
+ 📬 Contact & SupportIssues: GitHub IssuesDiscussions: GitHub
 
----
-
-**Note**: This is an early-stage project. Use at your own risk. Always backup your `transazioni.db` file regularly.
+Discussions Building in public 🚀 | Stay humble, stack sats ⚡
