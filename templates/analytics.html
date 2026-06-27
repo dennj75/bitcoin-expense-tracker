@@ -1,12 +1,12 @@
-{% extends "base.html" %} {% block title %}{{ titolo_pagina }}{% endblock %} {%
-block content %}
+{% extends "base.html" %} {% block title %}{{ _('Statistiche') }}{% endblock %}
+{% block content %}
 <div class="row mb-4">
   <div class="col-md-4">
     <div
       class="card text-center shadow p-3 mb-2"
       style="background-color: #1a1a1a; border-left: 5px solid #2ecc71"
     >
-      <h6 style="color: #888">📥 Entrate</h6>
+      <h6 style="color: #888">📥 {{ _('Entrate') }}</h6>
       <h3 style="color: #2ecc71">
         {{ "%.2f"|format(tot_entrate) if tipo != 'ONCHAIN' else
         "%.8f"|format(tot_entrate) }}
@@ -18,7 +18,7 @@ block content %}
       class="card text-center shadow p-3 mb-2"
       style="background-color: #1a1a1a; border-left: 5px solid #e74c3c"
     >
-      <h6 style="color: #888">📤 Uscite</h6>
+      <h6 style="color: #888">📤 {{ _('Uscite') }}</h6>
       <h3 style="color: #e74c3c">
         {{ "%.2f"|format(tot_spese) if tipo != 'ONCHAIN' else
         "%.8f"|format(tot_spese) }}
@@ -30,7 +30,7 @@ block content %}
       class="card text-center shadow p-3 mb-2"
       style="background-color: #1a1a1a; border-left: 5px solid #f39c12"
     >
-      <h6 style="color: #888">⚖️ Delta (Bilancio)</h6>
+      <h6 style="color: #888">⚖️ {{ _('Delta (Bilancio)') }}</h6>
       <h3
         style="{% if delta >= 0 %}color: #2ecc71;{% else %}color: #e74c3c;{% endif %}"
       >
@@ -49,7 +49,7 @@ block content %}
     >
       <div class="d-flex justify-content-between align-items-center">
         <h6 style="color: #888; margin: 0">
-          📈 Savings Rate (Efficienza del Risparmio)
+          {{ _('📈 Savings Rate (Efficienza del Risparmio)') }}
         </h6>
         <span style="font-weight: bold; color: #3498db; font-size: 1.2rem"
           >{{ "%.1f"|format(savings_rate) }}%</span
@@ -66,9 +66,10 @@ block content %}
         ></div>
       </div>
       <p style="font-size: 0.8rem; color: #666; margin-top: 10px">
-        {% if savings_rate >= 50 %} 🚀 Livello Leggenda! {% elif savings_rate >=
-        20 %} ✅ Ottimo lavoro! {% elif savings_rate > 0 %} ⚠️ Buono, ma
-        ottimizzabile. {% else %} 🚨 Deficit mensile. {% endif %}
+        {% if savings_rate >= 50 %} 🚀 {{ _('Livello Leggenda!') }} {% elif
+        savings_rate >= 20 %} ✅ {{ _('Ottimo lavoro!') }} {% elif savings_rate
+        > 0 %} ⚠️ {{ _('Buono, ma ottimizzabile.') }} {% else %} 🚨 {{
+        _('Deficit mensile.') }} {% endif %}
       </p>
     </div>
   </div>
@@ -88,13 +89,13 @@ block content %}
       "
     >
       <span style="color: #888; font-size: 0.8rem; display: block"
-        >VISTA MENSILE</span
+        >{{ _('VISTA MENSILE') }}</span
       >
       <span style="color: #f39c12; font-size: 1.1rem; font-weight: bold"
-        >{{ mese_selezionato }}</span
+        >{{ _('mese_selezionato') }}</span
       >
     </div>
-    {% elif anno_selezionato %}
+    {% elif ('anno_selezionato') %}
     <div
       class="badge p-3 shadow-sm"
       style="
@@ -104,10 +105,10 @@ block content %}
       "
     >
       <span style="color: #888; font-size: 0.8rem; display: block"
-        >VISTA ANNUALE</span
+        >{{ _('VISTA ANNUALE') }}</span
       >
       <span style="color: #3498db; font-size: 1.1rem; font-weight: bold"
-        >{{ anno_selezionato }}</span
+        >{{ _('anno_selezionato') }}</span
       >
     </div>
     {% else %}
@@ -120,7 +121,7 @@ block content %}
       "
     >
       <span style="color: #2ecc71; font-size: 1.1rem; font-weight: bold"
-        >📊 Totale Storico</span
+        >📊 {{ _('Totale Storico') }}</span
       >
     </div>
     {% endif %}
@@ -132,73 +133,77 @@ block content %}
         id="filterForm"
         method="GET"
         action="{{ url_for('analytics', tipo=tipo) }}"
-        class="d-flex justify-content-center align-items-end gap-2 mb-4"
+        class="mb-4"
       >
-        <div class="text-start">
-          <label style="color: #888; font-size: 0.7rem; margin-left: 5px"
-            >Mese specifico</label
-          >
-          <input
-            type="month"
-            name="mese"
-            class="form-control"
-            id="inputMese"
-            value="{{ mese_selezionato or '' }}"
-            onchange="document.getElementById('inputAnno').value = ''"
-            style="max-width: 180px"
-          />
+        <div class="d-flex justify-content-center align-items-end gap-2 mb-4">
+          <div class="text-start">
+            <label style="color: #888; font-size: 0.7rem; margin-left: 5px"
+              >{{ _('Mese specifico') }}</label
+            >
+            <input
+              type="month"
+              name="mese"
+              class="form-control"
+              id="inputMese"
+              value="{{ mese_selezionato or '' }}"
+              onchange="document.getElementById('inputAnno').value = ''"
+              style="max-width: 180px"
+            />
+          </div>
+          <div class="text-center" style="color: #444; padding-bottom: 8px">
+            {{ _('oppure') }}
+          </div>
+          <div class="text-start">
+            <label style="color: #888; font-size: 0.7rem; margin-left: 5px"
+              >{{ _('Solo Anno') }}</label
+            >
+            <input
+              type="number"
+              name="anno"
+              class="form-control"
+              id="inputAnno"
+              value="{{ anno_selezionato or '' }}"
+              placeholder="2026"
+              onchange="document.getElementById('inputMese').value = ''"
+              style="max-width: 120px"
+            />
+          </div>
         </div>
-        <div class="text-center" style="color: #444; padding-bottom: 8px">
-          oppure
-        </div>
-        <div class="text-start">
-          <label style="color: #888; font-size: 0.7rem; margin-left: 5px"
-            >Solo Anno</label
+
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+          <button
+            type="submit"
+            class="tracker-button"
+            style="padding: 10px 25px; min-width: 120px"
           >
-          <input
-            type="number"
-            name="anno"
-            class="form-control"
-            id="inputAnno"
-            value="{{ anno_selezionato or '' }}"
-            placeholder="2026"
-            onchange="document.getElementById('inputMese').value = ''"
-            style="max-width: 120px"
-          />
+            🔍 {{ _('Filtra') }}
+          </button>
+          <a
+            href="{{ url_for('analytics', tipo=tipo) }}"
+            class="tracker-button"
+            style="
+              padding: 10px 25px;
+              background-color: #444;
+              text-decoration: none;
+            "
+            >🔄 {{ _('Reset') }}</a
+          >
+          <button
+            type="button"
+            onclick="window.print()"
+            class="tracker-button"
+            style="padding: 10px 25px; background-color: #3498db"
+          >
+            📄 {{ _('Esporta Report') }}
+          </button>
         </div>
       </form>
-
-      <div class="d-flex justify-content-center flex-wrap gap-2">
-        <button
-          type="submit"
-          form="filterForm"
-          class="tracker-button"
-          style="padding: 10px 25px; min-width: 120px"
-        >
-          🔍 Filtra
-        </button>
-        <a
-          href="{{ url_for('analytics', tipo=tipo) }}"
-          class="tracker-button"
-          style="
-            padding: 10px 25px;
-            background-color: #444;
-            text-decoration: none;
-          "
-          >🔄 Reset</a
-        >
-        <button
-          onclick="window.print()"
-          class="tracker-button"
-          style="padding: 10px 25px; background-color: #3498db"
-        >
-          📄 Esporta Report
-        </button>
-      </div>
     </div>
   </div>
 
-  <h2 class="text-center mb-4" style="color: #e74c3c">Analisi Uscite</h2>
+  <h2 class="text-center mb-4" style="color: #e74c3c">
+    {{ _('Analisi Uscite') }}
+  </h2>
   <div
     class="card shadow p-4 mb-5"
     style="background-color: #1a1a1a !important; border: 1px solid #333"
@@ -208,13 +213,15 @@ block content %}
       <canvas id="chartAnalytics"></canvas>
       {% else %}
       <p class="text-center" style="color: #888; padding: 50px">
-        📭 Nessuna spesa registrata.
+        📭 {{ _('Nessuna spesa registrata.') }}
       </p>
       {% endif %}
     </div>
   </div>
 
-  <h2 class="text-center mb-4" style="color: #2ecc71">Analisi Entrate</h2>
+  <h2 class="text-center mb-4" style="color: #2ecc71">
+    {{ _('Analisi Entrate') }}
+  </h2>
   <div
     class="card shadow p-4 mb-5"
     style="background-color: #1a1a1a !important; border: 1px solid #333"
@@ -224,7 +231,7 @@ block content %}
       <canvas id="chartEntrate"></canvas>
       {% else %}
       <p class="text-center" style="color: #888; padding: 50px">
-        📭 Nessuna entrata registrata.
+        📭 {{ _('Nessuna entrata registrata.') }}
       </p>
       {% endif %}
     </div>
@@ -234,48 +241,56 @@ block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+      // --- GRAFICO SPESE ---
       {% if labels_spese %}
-      new Chart(document.getElementById('chartAnalytics').getContext('2d'), {
-          type: 'bar',
-          data: {
-              labels: {{ labels_spese | tojson }},
-              datasets: [{
-                  label: 'Totale Speso',
-                  data: {{ valori_spese | tojson }},
-                  backgroundColor: '#f39c12',
-                  borderRadius: 5
-              }]
-          },
-          options: {
-              indexAxis: 'y',
-              responsive: true,
-              plugins: { legend: { display: false } },
-              scales: {
-                  x: { ticks: { color: '#888' }, grid: { color: '#333' } },
-                  y: { ticks: { color: '#eee' }, grid: { display: false } }
+      const canvasSpese = document.getElementById('chartAnalytics');
+      if (canvasSpese) { // Entra solo se il canvas esiste davvero!
+          new Chart(canvasSpese.getContext('2d'), {
+              type: 'bar',
+              data: {
+                  labels: {{ labels_spese | tojson }},
+                  datasets: [{
+                      label: 'Totale Speso',
+                      data: {{ valori_spese | tojson }},
+                      backgroundColor: '#f39c12',
+                      borderRadius: 5
+                  }]
+              },
+              options: {
+                  indexAxis: 'y',
+                  responsive: true,
+                  plugins: { legend: { display: false } },
+                  scales: {
+                      x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                      y: { ticks: { color: '#eee' }, grid: { display: false } }
+                  }
               }
-          }
-      });
+          });
+      }
       {% endif %}
 
+      // --- GRAFICO ENTRATE ---
       {% if labels_entrate %}
-      new Chart(document.getElementById('chartEntrate').getContext('2d'), {
-          type: 'doughnut',
-          data: {
-              labels: {{ labels_entrate | tojson }},
-              datasets: [{
-                  data: {{ valori_entrate | tojson }},
-                  backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
-                  borderColor: '#1a1a1a',
-                  borderWidth: 2
-              }]
-          },
-          options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } }
-          }
-      });
+      const canvasEntrate = document.getElementById('chartEntrate');
+      if (canvasEntrate) { // Sicurezza anche qui
+          new Chart(canvasEntrate.getContext('2d'), {
+              type: 'doughnut',
+              data: {
+                  labels: {{ labels_entrate | tojson }},
+                  datasets: [{
+                      data: {{ valori_entrate | tojson }},
+                      backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
+                      borderColor: '#1a1a1a',
+                      borderWidth: 2
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } }
+              }
+          });
+      }
       {% endif %}
   });
 </script>
@@ -292,7 +307,7 @@ block content %}
         type="text"
         name="nome_asset"
         class="form-control bg-dark text-white"
-        placeholder="Nome (es. Buono Postale)"
+        placeholder="{{ _('Nome (es. Buono Postale)') }}"
         required
       />
     </div>
@@ -302,7 +317,7 @@ block content %}
         step="0.01"
         name="capitale_investito"
         class="form-control bg-dark text-white"
-        placeholder="Capitale Investito €"
+        placeholder="{{ _('Capitale Investito €') }}"
         required
       />
     </div>
@@ -312,19 +327,21 @@ block content %}
         step="0.01"
         name="valore_attuale"
         class="form-control bg-dark text-white"
-        placeholder="Valore Iniziale €"
+        placeholder="{{ _('Valore Iniziale €') }}"
         required
       />
     </div>
     <div class="col-md-2">
-      <button type="submit" class="btn btn-primary w-100">Salva</button>
+      <button type="submit" class="btn btn-primary w-100">
+        {{ _('Salva') }}
+      </button>
     </div>
   </form>
 </div>
 {% endif %}
 
 <h2 class="text-center mb-4" style="color: #3498db">
-  Performance Investimenti
+  {{ _('Performance Investimenti') }}
 </h2>
 <div
   class="card shadow p-4 mb-5"
@@ -334,12 +351,12 @@ block content %}
     <table class="table table-dark table-hover">
       <thead>
         <tr>
-          <th>Asset</th>
-          <th>Costo Storico (Carico)</th>
-          <th>Valore Attuale</th>
-          <th>Rendimento</th>
+          <th>{{ _('Asset') }}</th>
+          <th>{{ _('Costo Storico (Carico)') }}</th>
+          <th>{{ _('Valore Attuale') }}</th>
+          <th>{{ _('Rendimento') }}</th>
           {% if tipo == 'EURO' %}
-          <th>Registra Valore Mese</th>
+          <th>{{ _('Registra Valore Mese') }}</th>
           {% endif %}
         </tr>
       </thead>
@@ -399,13 +416,13 @@ block content %}
                 step="0.01"
                 name="nuovo_valore"
                 class="form-control form-control-sm bg-dark text-white me-2"
-                placeholder="Nuovo importo €"
+                placeholder="{{ _('Nuovo importo €') }}"
                 required
               />
               <button
                 type="submit"
                 class="btn btn-sm btn-outline-info"
-                title="Salva rilevazione mese"
+                title="{{ _('Salva rilevazione mese') }}"
               >
                 💾
               </button>
@@ -449,8 +466,8 @@ block content %}
         style="color: {% if tipo == 'EURO' %}#3498db{% else %}#f39c12{% endif %}"
         class="mb-4"
       >
-        📈 {% if tipo == 'EURO' %}Andamento Patrimoniale Euro{% else %}Saldo
-        Storico Patrimoniale (Controvalore €){% endif %}
+        📈 {% if tipo == 'EURO' %}{{ _('Andamento Patrimoniale Euro') }}{% else
+        %}{{ _('Saldo Storico Patrimoniale (Controvalore €)') }}{% endif %}
       </h4>
       <div style="position: relative; height: 280px; width: 100%">
         <canvas id="chartStoricoPatrimonio"></canvas>
@@ -468,7 +485,7 @@ block content %}
         min-height: 380px;
       "
     >
-      <h4 class="text-danger mb-4">⏳ Storico Rilevazioni Mese</h4>
+      <h4 class="text-danger mb-4">⏳ {{ _('Storico Rilevazioni Mese') }}</h4>
       <div class="table-responsive" style="max-height: 280px; overflow-y: auto">
         <table
           class="table table-dark table-sm table-hover mb-0"
@@ -476,10 +493,10 @@ block content %}
         >
           <thead>
             <tr>
-              <th style="width: 25%">Data</th>
-              <th style="width: 45%">Asset</th>
-              <th style="width: 20%">Valore</th>
-              <th style="width: 10%">Azione</th>
+              <th style="width: 25%">{{ _('Data') }}</th>
+              <th style="width: 45%">{{ _('Asset') }}</th>
+              <th style="width: 20%">{{ _('Valore') }}</th>
+              <th style="width: 10%">{{ _('Azione') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -508,7 +525,7 @@ block content %}
                   method="POST"
                   onsubmit="
                     return confirm(
-                      'Sicuro di voler eliminare questa rilevazione?',
+                      '{{ _('Sicuro di voler eliminare questa rilevazione?') }}',
                     );
                   "
                   class="m-0"
@@ -516,7 +533,7 @@ block content %}
                   <button
                     type="submit"
                     class="btn btn-sm p-0 border-0 bg-transparent"
-                    title="Elimina errore"
+                    title="{{ _('Elimina errore') }}"
                   >
                     ❌
                   </button>
@@ -526,7 +543,7 @@ block content %}
             {% endfor %} {% else %}
             <tr>
               <td colspan="4" class="text-muted text-center small py-3">
-                Nessuna rilevazione salvata finora.
+                {{ _('Nessuna rilevazione salvata finora.') }}
               </td>
             </tr>
             {% endif %}

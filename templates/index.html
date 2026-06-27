@@ -1,8 +1,8 @@
-{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block
-content %}
-<h1 class="main-title">Dashboard</h1>
+{% extends "base.html" %} {% block title %}{{ _('Dashboard') }}{% endblock %} {%
+block content %}
+<h1 class="main-title">{{ _('Dashboard') }}</h1>
 <p class="description">
-  Qui puoi monitorare le tue entrate e uscite finanziarie.
+  {{ _('Qui puoi monitorare le tue entrate e uscite finanziarie.') }}
 </p>
 <div
   class="card shadow-sm mb-4"
@@ -15,12 +15,12 @@ content %}
 >
   <div class="card-body">
     <h5 class="text-uppercase text-muted small fw-bold mb-3">
-      Riepilogo Patrimonio Totale (Fiat + Crypto)
+      {{ _('Riepilogo Patrimonio Totale (Fiat + ₿itcoin)') }}
     </h5>
 
     <div class="row align-items-center text-center text-md-start">
       <div class="col-md-4 border-end border-dark">
-        <span class="text-muted">Liquidità Spendibile:</span>
+        <span class="text-muted">{{ _('Liquidità Spendibile:') }}</span>
         <h3 class="fw-bold text-white mb-1">
           {{ "%.2f"|format(liquidita_totale) }} €
         </h3>
@@ -30,18 +30,18 @@ content %}
       </div>
 
       <div class="col-md-4 border-end border-dark">
-        <span class="text-muted">Risparmi & Futuro:</span>
+        <span class="text-muted">{{ _('Risparmi & Futuro:') }}</span>
         <h3 class="fw-bold text-info mb-1">
           {{ "%.2f"|format(patrimonio_investito) }} €
         </h3>
         <small class="text-muted">
-          📈 Titoli: {{ "%.2f"|format(s_inv) }}€ | 👴 Pensione: {{
-          "%.2f"|format(s_pen) }}€
+          📈 {{ _('Titoli:') }} {{ "%.2f"|format(s_inv) }}€ | 👴 {{
+          _('Pensione:') }} {{ "%.2f"|format(s_pen) }}€
         </small>
       </div>
 
       <div class="col-md-4">
-        <span class="text-muted">Net Worth Totale (EUR):</span>
+        <span class="text-muted">{{ _('Net Worth Totale (EUR):') }}</span>
         <h2 class="fw-bold text-success">
           {{ "%.2f"|format(net_worth_totale) }} €
         </h2>
@@ -53,23 +53,23 @@ content %}
   <div class="balance-card onchain-card">
     <a href="{{ url_for('transazioni_onchain') }}">
       <button type="button" class="tracker-button onchain-button">
-        📄 TRACKER ₿itcoin on-chain🔗
+        📄 {{ _('TRACKER ₿itcoin on-chain🔗') }}
       </button>
     </a>
     <a
       href="{{ url_for('analytics', tipo='ONCHAIN') }}"
       style="color: #f39c12; text-decoration: none"
-      >📊 Analisi ₿</a
+      >📊 {{ _('Analisi') }} ₿</a
     >
     <p
       style="font-size: 0.9rem; margin-top: 10px; color: {% if rendimento_onchain >= 0 %}#2ecc71{% else %}#e74c3c{% endif %}"
     >
-      📈 Rendimento: {{ "%+.2f"|format(rendimento_onchain) }}€ ({{
+      📈 {{ _('Rendimento') }} {{ "%+.2f"|format(rendimento_onchain) }}€ ({{
       "%+.1f"|format(percentuale_onchain) }}%)
     </p>
     <hr class="separator" />
     <p class="saldo-principale">
-      💰 Saldo {{ "%.8f"|format(saldo_totale_btc) }} BTC
+      💰 {{ _('Saldo:') }} {{ "%.8f"|format(saldo_totale_btc) }} BTC
     </p>
     <p class="saldo-secondario">{{ "%.2f"|format(saldo_eur_onchain) }} €</p>
   </div>
@@ -77,24 +77,24 @@ content %}
   <div class="balance-card lightning-card">
     <a href="{{ url_for('transazioni_lightning') }}">
       <button type="button" class="tracker-button lightning-button">
-        📄 TRACKER Lightning Network⚡️
+        📄 {{ _('TRACKER Lightning Network⚡️') }}
       </button>
     </a>
     <a
       href="{{ url_for('analytics', tipo='LIGHTNING') }}"
       style="color: #f39c12; text-decoration: none"
-      >📊 Analisi ⚡</a
+      >📊 {{ _('Analisi') }}⚡</a
     >
     <p
       style="font-size: 0.9rem; margin-top: 10px; color: {% if rendimento_lightning >= 0 %}#2ecc71{% else %}#e74c3c{% endif %}"
     >
-      📈 Rendimento: {{ "%+.2f"|format(rendimento_lightning) }}€ ({{
+      📈 {{ _('Rendimento') }} {{ "%+.2f"|format(rendimento_lightning) }}€ ({{
       "%+.1f"|format(percentuale_lightning) }}%)
     </p>
     <hr class="separator" />
     <p class="saldo-principale">
-      💰 Saldo {{ "{:,}".format(saldo_totale_satoshi|int).replace(",",".") }}
-      SATS
+      💰 {{ _('Saldo:') }} {{
+      "{:,}".format(saldo_totale_satoshi|int).replace(",",".") }} SATS
     </p>
     <p class="saldo-secondario">{{ "%.2f"|format(saldo_eur_lightning) }} €</p>
   </div>
@@ -102,17 +102,25 @@ content %}
   <div class="balance-card tracker-euro-card">
     <a href="{{ url_for('transazioni') }}">
       <button type="button" class="tracker-button tracker-euro-button">
-        📄 TRACKER €
+        📄 {{ _('TRACKER €') }}
       </button>
     </a>
-    <p class="saldo-detail">🏦 Banca: {{ "%.2f"|format(banca) }} €</p>
-    <p class="saldo-detail">💼 Contanti: {{ "%.2f"|format(contanti) }} €</p>
-    <p class="saldo-detail">📈 Investimenti: {{ "%.2f"|format(s_inv) }} €</p>
-    <p class="saldo-detail">👴 Pensione: {{ "%.2f"|format(s_pen) }} €</p>
+    <p class="saldo-detail">
+      🏦 {{ _('Banca:') }} {{ "%.2f"|format(banca) }} €
+    </p>
+    <p class="saldo-detail">
+      💼 {{ _('Contanti:') }} {{ "%.2f"|format(contanti) }} €
+    </p>
+    <p class="saldo-detail">
+      📈 {{ _('Investimenti:') }} {{ "%.2f"|format(s_inv) }} €
+    </p>
+    <p class="saldo-detail">
+      👴 {{ _('Pensione:') }} {{ "%.2f"|format(s_pen) }} €
+    </p>
     <a
       href="{{ url_for('analytics', tipo='EURO') }}"
       style="color: #f39c12; text-decoration: none"
-      >📊 Analisi €</a
+      >📊 {{ _('Analisi') }} €</a
     >
     <hr class="separator" />
     <p class="saldo-principale">
@@ -125,21 +133,25 @@ content %}
         class="btn btn-sm btn-outline-warning"
         style="text-decoration: none; font-size: 0.8rem"
       >
-        📥 Importa CSV Banca
+        📥 {{ _('Importa CSV Banca') }}
       </a>
     </div>
   </div>
 </div>
 <div class="dropdown">
-  <button class="dropbtn">➕ Inserisci nuova transazione</button>
+  <button class="dropbtn">➕ {{ _('Inserisci nuova transazione') }}</button>
   <div class="dropdown-content">
-    <a href="/nuova_transazione_onchain">Nuova transazione On-chain (₿)</a>
+    <a href="/nuova_transazione_onchain"
+      >{{ _('Nuova transazione On-chain (₿)') }}</a
+    >
 
-    <a href="/nuova_transazione_lightning">Nuova transazione Lightning (⚡️)</a>
-    <a href="/nuova_transazione">Nuova transazione Euro (€)</a>
+    <a href="/nuova_transazione_lightning"
+      >{{ _('Nuova transazione Lightning (⚡️)') }}</a
+    >
+    <a href="/nuova_transazione">{{ _('Nuova transazione Euro (€)') }}</a>
     <hr style="margin: 5px 0; border-color: #444" />
     <a href="{{ url_for('importa_csv') }}" style="color: #ffc107"
-      >📥 Importa file CSV (Banca)</a
+      >📥 {{ _('Importa file CSV (Banca)') }}</a
     >
   </div>
 </div>
@@ -150,7 +162,9 @@ content %}
     <div class="col-md-8 mx-auto">
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h5 class="card-title text-center">Ripartizione del tuo Capitale</h5>
+          <h5 class="card-title text-center">
+            {{ _('Ripartizione del tuo Capitale') }}
+          </h5>
           <canvas id="chartPatrimonio"></canvas>
         </div>
       </div>
@@ -161,12 +175,12 @@ content %}
 <div class="card-body">
   <canvas id="chartPatrimonio"></canvas>
   <p class="text-muted text-center mt-3" style="font-size: 0.8rem">
-    <i class="fas fa-info-circle"></i> I controvalori in BTC/SATS sono calcolati
-    in base al prezzo attuale di mercato.
+    <i class="fas fa-info-circle"></i> {{ _('I controvalori in BTC/SATS sono
+    calcolati') }} {{ _('in base al prezzo attuale di mercato.') }}
   </p>
 </div>
 <hr class="main-separator" />
-<h2>💝 Supporta il progetto</h2>
+<h2>💝 {{ _('Supporta il progetto') }}</h2>
 
 <div class="donation-row">
   <!-- Lightning Network -->

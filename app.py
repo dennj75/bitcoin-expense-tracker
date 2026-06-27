@@ -13,6 +13,7 @@ from datetime import datetime, date
 import secrets
 
 # Flask & Estensioni
+from flask_babel import Babel
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
 from flask_login import LoginManager, login_required, UserMixin, current_user, login_remembered
 from flask_wtf.csrf import CSRFProtect
@@ -24,7 +25,7 @@ from coincurve._libsecp256k1 import lib, ffi
 from btclib.ecc import ssa
 from hashlib import sha256
 from dotenv import load_dotenv
-from bech32 import bech32_decode, convertbits, bech32_encode
+from bech32 import convertbits, bech32_encode, bech32_decode
 
 # Logica di Progetto (i tuoi moduli)
 
@@ -37,7 +38,7 @@ from db.db_utils import (
     leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain,
     elimina_transazione_da_db_onchain, modifica_transazione_db_onchain, get_transazioni_con_saldo_onchain,
     ripristina_database_completo, get_transazioni_con_saldo_onchain,
-    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping
+    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping, pulisci_mese
 )
 from utils.crypto import ottieni_valore_btc_eur, euro_to_btc, _carica_storico_btc_eur, aggiorna_prezzo_bitcoin
 from utils.export import (
@@ -107,14 +108,30 @@ CATEGORIE = {
 
 
 app = Flask(__name__)
-
 VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di versione!
+
+# Questa funzione magica controlla la lingua preferita del browser dell'utente
+
+
+def get_locale():
+    # Controlla la lingua del browser: se l'utente preferisce 'en' usa inglese, altrimenti 'it'
+    # return 'en'
+    return request.accept_languages.best_match(['it', 'en', 'zh'])
+
+
+babel = Babel(app, locale_selector=get_locale)
 
 
 @app.context_processor
 def inject_version():
     """Rende la versione dell'app disponibile in ogni template HTML"""
     return dict(versione_beesy=VERSIONE_APP)
+
+
+@app.context_processor
+def inject_env():
+    # Questo rende 'beesy_env' disponibile in TUTTI i template HTML del progetto!
+    return dict(beesy_env=os.environ.get('BEESY_ENV', 'production'))
 
 
 @app.after_request
@@ -1155,18 +1172,36 @@ def scarica_csv_per_mese_onchain():
 @app.route('/analytics/<tipo>')
 @login_required
 def analytics(tipo):
-    # Usiamo la connessione universale intelligente
+    from flask_babel import gettext as _
     from db.db_utils import get_db_connection
 
+    # 1. Recuperiamo i dati corretti inviati dal metodo GET dell'HTML
     mese_selezionato = request.args.get('mese')
     anno_selezionato = request.args.get('anno')
 
+    # 2. DEBUG REALE: Vediamo cosa ha catturato Flask dall'URL
+    print(
+        f"🚨 URL ARGS INTERCETTATI -> Mese Grezzo: {mese_selezionato} | Anno Grezzo: {anno_selezionato}")
+
+    # 3. Logica di esclusione reciproca (se c'è il mese, puliamo l'anno e viceversa)
     if mese_selezionato:
-        anno_selezionato = None
-    if not mese_selezionato:
-        mese_selezionato = None
-    if not anno_selezionato:
-        anno_selezionato = None
+        # Se l'utente ha usato l'input month, puliamo eventuali stringhe vuote
+        mese_selezionato = mese_selezionato.strip()
+        if not mese_selezionato:  # Se era solo uno spazio vuoto
+            mese_selezionato = None
+        else:
+            anno_selezionato = None
+
+    if anno_selezionato:
+        anno_selezionato = anno_selezionato.strip()
+        if not anno_selezionato:
+            anno_selezionato = None
+        else:
+            mese_selezionato = None
+
+    # 4. SECONDO DEBUG: Vediamo cosa stiamo per passare alle funzioni SQL
+    print(
+        f"🔮 VARIABILI PULITE PRONTE PER IL DB -> Mese: {mese_selezionato} | Anno: {anno_selezionato}")
 
     # 1. Recupero dati grafici e bilancio standard
     labels_spese, valori_spese = get_spese_per_categoria_filtrate(
@@ -1185,6 +1220,7 @@ def analytics(tipo):
     date_btc = []
     saldi_btc = []
     saldi_eur_btc = []
+    tx_storiche = []
 
     # --- INIZIO LOGICA RENDIMENTO E GRAFICI UNIFICATA (BTC & SATS) ---
     rendimento = 0
@@ -1192,6 +1228,8 @@ def analytics(tipo):
     valore_attuale_eur = 0
     saldo_asset = 0
     costo_storico_eur = 0
+
+    tipo = tipo.upper().strip()
 
     if tipo in ['ONCHAIN', 'LIGHTNING']:
         conn = get_db_connection()  # <-- Connessione corretta e sicura!
@@ -1212,7 +1250,8 @@ def analytics(tipo):
 
         if tipo == 'ONCHAIN':
             from db.db_utils import get_transazioni_con_saldo_onchain
-            _, saldo_asset = get_transazioni_con_saldo_onchain(current_user.id)
+            scarto_onchain, saldo_asset = get_transazioni_con_saldo_onchain(
+                current_user.id)
 
             cursor.execute(
                 "SELECT SUM(controvalore_eur) FROM transazioni_onchain WHERE user_id = ?", (current_user.id,))
@@ -1222,17 +1261,21 @@ def analytics(tipo):
 
             # Query Storica Grafico On-chain (Sottraiamo le fee se registrate come costo positivo)
             cursor.execute('''
-                SELECT SUBSTR(data, 1, 10) as giorno, 
-                       SUM(importo_btc - IFNULL(fee, 0)) as flusso
-                FROM transazioni_onchain 
-                WHERE user_id = ? 
+                SELECT SUBSTR(h.data_rilevazione, 1, 10) as giorno, SUM(h.valore_rilevato) as totale
+                FROM assets_history h
+                WHERE h.id IN (
+                    SELECT MAX(id)
+                    FROM assets_history
+                    WHERE SUBSTR(data_rilevazione, 1, 10) = SUBSTR(h.data_rilevazione, 1, 10)
+                GROUP BY asset_id
+                )
                 GROUP BY giorno ORDER BY giorno ASC
-            ''', (current_user.id,))
+            ''')
+            dati_grafico_fiat = cursor.fetchall()
             tx_storiche = cursor.fetchall()
-
         elif tipo == 'LIGHTNING':
             from db.db_utils import get_transazioni_con_saldo_lightning
-            _, saldo_asset, _ = get_transazioni_con_saldo_lightning(
+            scarto_ln1, saldo_asset, scarto_ln2 = get_transazioni_con_saldo_lightning(
                 current_user.id)
 
             cursor.execute(
@@ -1243,14 +1286,17 @@ def analytics(tipo):
 
             # Query Storica Grafico Lightning (Convertiamo i satoshi in BTC fluttuanti)
             cursor.execute('''
-                SELECT SUBSTR(data, 1, 10) as giorno, 
+                SELECT SUBSTR(data, 1, 10) as giorno,
                        SUM(satoshi * 0.00000001) as flusso
-                FROM transazioni_lightning 
-                WHERE user_id = ? 
+                FROM transazioni_lightning
+                WHERE user_id = ?
                 GROUP BY giorno ORDER BY giorno ASC
             ''', (current_user.id,))
             tx_storiche = cursor.fetchall()
-
+        else:
+            # Se arriva un tipo sconosciuto, evita il crash!
+            flash("Tipo di analisi non valido", "error")
+            return redirect(url_for('index'))
         # Calcoliamo il saldo progressivo temporale per il grafico Bitcoin
         saldo_temporale_btc = 0.0
         for tx in tx_storiche:
@@ -1287,6 +1333,12 @@ def analytics(tipo):
             "SELECT * FROM assets_watch WHERE user_id = ?", (current_user.id,))
         investimenti_fiat = cursor.fetchall()
 
+        # Calcoliamo dinamicamente il totale cumulativo per la tabella performance Euro
+        costo_storico_eur = sum(
+            float(asset['capitale_investito']) for asset in investimenti_fiat)
+        valore_attuale_eur = sum(
+            float(asset['valore_attuale']) for asset in investimenti_fiat)
+
         try:
             cursor.execute('''
                 SELECT h.*, w.nome_asset
@@ -1299,24 +1351,53 @@ def analytics(tipo):
         except Exception as e:
             print(f"Nota nel recupero cronologia: {e}")
 
-        cursor.execute('''
-            SELECT SUBSTR(data_rilevazione, 1, 10) as giorno, SUM(valore_rilevato) as totale
-            FROM assets_history
-            JOIN assets_watch w ON assets_history.asset_id = w.id
-            WHERE w.user_id = ?
+        # --- FILTRO TEMPORALE DINAMICO PER IL GRAFICO ---
+        filtro_tempo_grafico = ""
+        # Passiamo i parametri due volte: la prima per la sottoquery, la seconda per la query principale
+        parametri_grafico = [current_user.id]
+
+        if mese_selezionato:  # E.g., "2026-04"
+            filtro_tempo_grafico = "AND data_rilevazione LIKE ?"
+            parametri_grafico.append(f"{mese_selezionato}%")
+        elif anno_selezionato:  # E.g., "2026"
+            filtro_tempo_grafico = "AND data_rilevazione LIKE ?"
+            parametri_grafico.append(f"{anno_selezionato}%")
+
+        # Duplichiamo i parametri perché la query ora li usa sia dentro che fuori
+        tutti_i_parametri = [current_user.id] + [p for p in parametri_grafico[1:]] + parametri_grafico
+
+        # Query corazzata: filtra il tempo sia dentro il calcolo del MAX(id) sia fuori
+        cursor.execute(f'''
+            SELECT SUBSTR(h.data_rilevazione, 1, 10) as giorno, SUM(h.valore_rilevato) as totale
+            FROM assets_history h
+            JOIN assets_watch w ON h.asset_id = w.id
+            WHERE w.user_id = ? {filtro_tempo_grafico} AND h.id IN (
+                SELECT MAX(inner_h.id)
+                FROM assets_history inner_h
+                JOIN assets_watch inner_w ON inner_h.asset_id = inner_w.id
+                WHERE inner_w.user_id = ? {filtro_tempo_grafico}
+                AND SUBSTR(inner_h.data_rilevazione, 1, 10) = SUBSTR(h.data_rilevazione, 1, 10)
+                GROUP BY inner_h.asset_id
+            )
             GROUP BY giorno ORDER BY giorno ASC
-        ''', (current_user.id,))
+        ''', tuple(tutti_i_parametri))
+
         dati_grafico_fiat = cursor.fetchall()
 
         date_fiat = [str(row['giorno']) for row in dati_grafico_fiat]
         valori_fiat = [float(row['totale']) for row in dati_grafico_fiat]
 
+        # Ricalcoliamo rendimento e percentuale aggregata per l'Euro prima di chiudere
+        rendimento = valore_attuale_eur - costo_storico_eur
+        if costo_storico_eur > 0:
+            percentuale = (rendimento / costo_storico_eur) * 100
+
         conn.close()
 
     titoli = {
-        'EURO': 'Statistiche Euro (€)',
-        'LIGHTNING': 'Statistiche Lightning (⚡)',
-        'ONCHAIN': 'Statistiche On-chain (₿)'
+        'EURO': _('Statistiche Euro (€)'),
+        'LIGHTNING': _('Statistiche Lightning (⚡)'),
+        'ONCHAIN': _('Statistiche On-chain (₿)')
     }
 
     return render_template('analytics.html',
@@ -1325,7 +1406,7 @@ def analytics(tipo):
                            labels_entrate=labels_entrate,
                            valori_entrate=valori_entrate,
                            tipo=tipo,
-                           titolo_pagina=titoli.get(tipo, "Statistiche"),
+                           titolo_pagina=titoli.get(tipo, _("Statistiche")),
                            mese_selezionato=mese_selezionato,
                            anno_selezionato=anno_selezionato,
                            tot_entrate=tot_entrate,
@@ -1377,32 +1458,25 @@ def update_asset_value():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 1. Aggiorniamo il valore attuale nella tabella principale degli asset
+        # 1. Aggiorniamo il valore attuale nella tabella principale per l'asset specifico
         cursor.execute('''
             UPDATE assets_watch
             SET valore_attuale = ?, data_aggiornamento = CURRENT_TIMESTAMP
             WHERE id = ? AND user_id = ?
         ''', (float(nuovo_valore), int(asset_id), current_user.id))
 
-        # 2. Per fare un grafico perfetto, prendiamo TUTTI gli asset dell'utente con i loro valori attuali aggiornati
-        cursor.execute("SELECT id, valore_attuale FROM assets_watch WHERE user_id = ?", (current_user.id,))
-        tutti_gli_asset = cursor.fetchall()
-
-        # 3. Inseriamo nello storico il valore aggiornato di ogni singolo asset con lo stesso identico timestamp!
-        # In questo modo, ogni volta che fai un cambio, creiamo una "foto di gruppo" perfetta del tuo patrimonio.
-        import datetime
-        ora_attuale = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        for row in tutti_gli_asset:
-            cursor.execute('''
-                INSERT INTO assets_history (asset_id, valore_rilevato, data_rilevazione)
-                VALUES (?, ?, ?)
-            ''', (row['id'], float(row['valore_attuale']), ora_attuale))
+        # 2. Inseriamo UN SOLO record nello storico per QUESTO specifico asset
+        # Usiamo CURRENT_TIMESTAMP di SQLite così la data della riga sarà il momento esatto del click
+        cursor.execute('''
+            INSERT INTO assets_history (asset_id, valore_rilevato, data_rilevazione)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+        ''', (int(asset_id), float(nuovo_valore)))
 
         conn.commit()
         conn.close()
 
     return redirect(url_for('analytics', tipo='EURO'))
+
 
 @app.route('/modifica_asset/<int:asset_id>', methods=['POST'])
 @login_required
@@ -1529,30 +1603,52 @@ def importa_csv():
 @app.route('/conferma_importazione', methods=['POST'])
 @login_required
 def conferma_importazione():
+    # Definiamo conn all'inizio così che sia accessibile anche nel blocco 'finally'
+    conn = None
     try:
+        from db.db_utils import get_db_connection
         form_data = request.form
         indici = [k.split('_')[1]
                   for k in form_data.keys() if k.startswith('data_')]
 
         count = 0
+        skip_count = 0
+
+        # Apriamo la connessione principale
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
         for i in indici:
             data = form_data.get(f'data_{i}')
             desc = form_data.get(f'desc_{i}')
             importo = float(form_data.get(f'importo_{i}'))
             categoria = form_data.get(f'cat_{i}')
             sottocategoria = form_data.get(f'sub_{i}')
-
-            # Recuperiamo il valore BTC calcolato nell'anteprima
             controvalore_btc = float(form_data.get(f'btc_{i}'))
 
-            # Calcoliamo il prezzo spot (valore di 1 BTC quel giorno)
+            # --- SCOUDO ANTI-DUPLICATO ---
+            cursor.execute('''
+                SELECT id FROM transazioni
+                WHERE user_id = ? AND data = ? AND descrizione = ? AND importo = ?
+            ''', (current_user.id, data, desc, importo))
+
+            esiste_gia = cursor.fetchone()
+
+            if esiste_gia:
+                skip_count += 1
+                print(
+                    f"⚠️ Doppione rilevato e saltato: [{data}] {desc[:30]}... ({importo}€)")
+                continue
+
             valore_spot = abs(
                 importo / controvalore_btc) if controvalore_btc != 0 else 0
 
-            # 🔥 IL MOMENTO MAGICO: Chiamiamo il "Vigile Urbano"
-            # Questa funzione da sola farà:
-            # - Il salvataggio normale
-            # - OPPURE lo sdoppiamento se vede "Prelievo Contante"
+            # Per evitare conflitti di lock, committiamo e chiudiamo momentaneamente la connessione di controllo
+            # prima di cedere il controllo alla funzione interna di registrazione
+            cursor.close()
+            conn.commit()
+            conn.close()
+
             registra_transazione_conto(
                 user_id=current_user.id,
                 data=data,
@@ -1560,31 +1656,49 @@ def conferma_importazione():
                 categoria=categoria,
                 sottocategoria=sottocategoria,
                 importo=importo,
-                conto="BANCA",  # Origine sempre banca per il CSV
+                conto="BANCA",
                 controvalore_btc=controvalore_btc,
                 valore_btc_eur=valore_spot
             )
 
-            # 3. APPRENDIMENTO (Questo lo teniamo qui perché riguarda l'importazione)
+            # Riapriamo subito la connessione per la prossima riga del ciclo o per i mapping
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            # 3. APPRENDIMENTO (Mapping categorie)
             if 'ricorda_mapping' in form_data:
                 parola_chiave = desc.split()[0].upper()
                 if len(parola_chiave) > 3:
-                    # Usiamo una connessione rapida per il mapping
-                    with sqlite3.connect('database.db') as conn:
-                        conn.execute('''
-                            INSERT OR REPLACE INTO mapping_categorie (parola_chiave, categoria, sottocategoria)
-                            VALUES (?, ?, ?)
-                        ''', (parola_chiave, categoria, sottocategoria))
+                    conn.execute('''
+                        INSERT OR REPLACE INTO mapping_categorie (parola_chiave, categoria, sottocategoria)
+                        VALUES (?, ?, ?)
+                    ''', (parola_chiave, categoria, sottocategoria))
 
             count += 1
 
-        flash(
-            f"✅ Ottimo Den! Abbiamo importato {count} movimenti con successo.", "success")
+        # Commit finale se tutto il ciclo si è concluso felicemente
+        conn.commit()
+
+        if skip_count > 0:
+            flash(
+                f"✅ Ottimo Den! Abbiamo importato {count} nuovi movimenti. Rilevati e bloccati {skip_count} duplicati.", "success")
+        else:
+            flash(
+                f"✅ Ottimo Den! Abbiamo importato {count} movimenti con successo.", "success")
+
         return redirect(url_for('home'))
 
     except Exception as e:
         flash(f"❌ Errore durante il salvataggio: {e}", "danger")
         return redirect(url_for('importa_csv'))
+
+    finally:
+        # Il blocco finally si esegue SEMPRE, garantendo che Beesy non lasci mai file aperti nel limbo
+        if conn:
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 
 # storage temporaneo in memoria

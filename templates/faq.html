@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <div class="container mt-5">
-  <h1 class="mb-4">🤔 Domande Frequenti & Guida Tecnica</h1>
+  <h1 class="mb-4">🤔 {{ _('Domande Frequenti & Guida Tecnica') }}</h1>
 
   <div class="accordion" id="faqAccordion">
     <div class="accordion-item shadow-sm mb-3">
@@ -11,7 +11,7 @@
           data-bs-toggle="collapse"
           data-bs-target="#collapseOne"
         >
-          🛡️ Perché il backup è un file .json.enc?
+          🛡️ {{ _('Perché il backup è un file .json.enc?') }}
         </button>
       </h2>
       <div
@@ -20,10 +20,10 @@
         data-bs-parent="#faqAccordion"
       >
         <div class="accordion-body">
-          I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua
-          password, il file è inutilizzabile. Questo garantisce che se perdi la
-          chiavetta USB o il file finisce in mani sbagliate, nessuno potrà
-          vedere le tue transazioni.
+          {{ _('I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua') }}
+          {{ _('password, il file è inutilizzabile. Questo garantisce che se perdi la') }}
+          {{ _('chiavetta USB o il file finisce in mani sbagliate, nessuno potrà') }}
+          {{ _('vedere le tue transazioni.') }}
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
           data-bs-toggle="collapse"
           data-bs-target="#collapseTwo"
         >
-          💻 Come faccio un backup manuale del database "al volo"?
+          💻 {{ _('Come faccio un backup manuale del database "al volo"?') }}
         </button>
       </h2>
       <div
@@ -46,8 +46,8 @@
       >
         <div class="accordion-body">
           <p>
-            Prima di fare test pericolosi, puoi copiare il file del database sul
-            Desktop tramite il terminale di VS Code:
+            {{ _('Prima di fare test pericolosi, puoi copiare il file del database sul') }}
+            {{ _('Desktop tramite il terminale di VS Code:') }}
           </p>
           <div class="bg-dark text-white p-3 rounded">
             <code
@@ -56,9 +56,9 @@
             >
           </div>
           <p class="mt-2 small text-muted">
-            Questo comando crea una copia datata sul tuo Desktop. Per
-            ripristinarla, basta chiudere Beesy e rimettere il file nella
-            cartella del progetto.
+            {{ _('Questo comando crea una copia datata sul tuo Desktop. Per') }}
+            {{ _('ripristinarla, basta chiudere Beesy e rimettere il file nella') }}
+            {{ _('cartella del progetto.') }}
           </p>
         </div>
       </div>
@@ -72,7 +72,7 @@
           data-bs-toggle="collapse"
           data-bs-target="#collapseThree"
         >
-          🚀 Come verifico se il mio backup funziona davvero? (Test del
+          🚀 {{ _('Come verifico se il mio backup funziona davvero? (Test del') }}
           Paracadute)
         </button>
       </h2>
@@ -83,14 +83,14 @@
       >
         <div class="accordion-body">
           <ol>
-            <li>Scarica il backup da <strong>/backup-protetto</strong>.</li>
-            <li>Aggiungi una transazione finta (es: "Test" 1€).</li>
+            <li>{{ _('Scarica il backup da <strong>/backup-protetto</strong>.') }}</li>
+            <li>{{ _('Aggiungi una transazione finta (es: "Test" 1€).') }}</li>
             <li>
-              Vai su <strong>/ripristino-protetto</strong> e carica il file.
+              {{ _('Vai su <strong>/ripristino-protetto</strong> e carica il file.') }}
             </li>
             <li>
-              Se la transazione "Test" scompare e tornano i vecchi dati, il
-              sistema è perfetto!
+              {{ _('Se la transazione "Test" scompare e tornano i vecchi dati, il') }}
+              {{ _('sistema è perfetto!') }}
             </li>
           </ol>
         </div>

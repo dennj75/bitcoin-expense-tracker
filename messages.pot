@@ -1,0 +1,659 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-06-20 21:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:1354
+msgid "Statistiche Euro (€)"
+msgstr ""
+
+#: app.py:1355
+msgid "Statistiche Lightning (⚡)"
+msgstr ""
+
+#: app.py:1356
+msgid "Statistiche On-chain (₿)"
+msgstr ""
+
+#: app.py:1365 templates/analytics.html:1
+msgid "Statistiche"
+msgstr ""
+
+#: templates/analytics.html:9
+msgid "Entrate"
+msgstr ""
+
+#: templates/analytics.html:21
+msgid "Uscite"
+msgstr ""
+
+#: templates/analytics.html:33
+msgid "Delta (Bilancio)"
+msgstr ""
+
+#: templates/analytics.html:52
+msgid "📈 Savings Rate (Efficienza del Risparmio)"
+msgstr ""
+
+#: templates/analytics.html:69
+msgid "Livello Leggenda!"
+msgstr ""
+
+#: templates/analytics.html:70
+msgid "Ottimo lavoro!"
+msgstr ""
+
+#: templates/analytics.html:71
+msgid "Buono, ma ottimizzabile."
+msgstr ""
+
+#: templates/analytics.html:72
+msgid "Deficit mensile."
+msgstr ""
+
+#: templates/analytics.html:92
+msgid "VISTA MENSILE"
+msgstr ""
+
+#: templates/analytics.html:95
+msgid "mese_selezionato"
+msgstr ""
+
+#: templates/analytics.html:108
+msgid "VISTA ANNUALE"
+msgstr ""
+
+#: templates/analytics.html:111
+msgid "anno_selezionato"
+msgstr ""
+
+#: templates/analytics.html:124
+msgid "Totale Storico"
+msgstr ""
+
+#: templates/analytics.html:140
+msgid "Mese specifico"
+msgstr ""
+
+#: templates/analytics.html:153
+msgid "oppure"
+msgstr ""
+
+#: templates/analytics.html:157
+msgid "Solo Anno"
+msgstr ""
+
+#: templates/analytics.html:179
+msgid "Filtra"
+msgstr ""
+
+#: templates/analytics.html:189
+msgid "Reset"
+msgstr ""
+
+#: templates/analytics.html:196
+msgid "Esporta Report"
+msgstr ""
+
+#: templates/analytics.html:203
+msgid "Analisi Uscite"
+msgstr ""
+
+#: templates/analytics.html:214
+msgid "Nessuna spesa registrata."
+msgstr ""
+
+#: templates/analytics.html:221
+msgid "Analisi Entrate"
+msgstr ""
+
+#: templates/analytics.html:232
+msgid "Nessuna entrata registrata."
+msgstr ""
+
+#: templates/analytics.html:300
+msgid "Nome (es. Buono Postale)"
+msgstr ""
+
+#: templates/analytics.html:310
+msgid "Capitale Investito €"
+msgstr ""
+
+#: templates/analytics.html:320
+msgid "Valore Iniziale €"
+msgstr ""
+
+#: templates/analytics.html:326
+msgid "Salva"
+msgstr ""
+
+#: templates/analytics.html:334
+msgid "Performance Investimenti"
+msgstr ""
+
+#: templates/analytics.html:344 templates/analytics.html:487
+msgid "Asset"
+msgstr ""
+
+#: templates/analytics.html:345
+msgid "Costo Storico (Carico)"
+msgstr ""
+
+#: templates/analytics.html:346
+msgid "Valore Attuale"
+msgstr ""
+
+#: templates/analytics.html:347 templates/index.html:67 templates/index.html:91
+msgid "Rendimento"
+msgstr ""
+
+#: templates/analytics.html:349
+msgid "Registra Valore Mese"
+msgstr ""
+
+#: templates/analytics.html:409
+msgid "Nuovo importo €"
+msgstr ""
+
+#: templates/analytics.html:415
+msgid "Salva rilevazione mese"
+msgstr ""
+
+#: templates/analytics.html:459
+msgid "Andamento Patrimoniale Euro"
+msgstr ""
+
+#: templates/analytics.html:460
+msgid "Saldo Storico Patrimoniale (Controvalore €)"
+msgstr ""
+
+#: templates/analytics.html:478
+msgid "Storico Rilevazioni Mese"
+msgstr ""
+
+#: templates/analytics.html:486 templates/importa_anteprima.html:11
+msgid "Data"
+msgstr ""
+
+#: templates/analytics.html:488
+msgid "Valore"
+msgstr ""
+
+#: templates/analytics.html:489
+msgid "Azione"
+msgstr ""
+
+#: templates/analytics.html:518
+msgid "Sicuro di voler eliminare questa rilevazione?"
+msgstr ""
+
+#: templates/analytics.html:526
+msgid "Elimina errore"
+msgstr ""
+
+#: templates/analytics.html:536
+msgid "Nessuna rilevazione salvata finora."
+msgstr ""
+
+#: templates/backup_confirm.html:1
+msgid "Backup Protetto - ₿eesy"
+msgstr ""
+
+#: templates/backup_confirm.html:4
+msgid "Backup dei Dati"
+msgstr ""
+
+#: templates/backup_confirm.html:5
+msgid "Proteggi i tuoi dati prima di scaricarli."
+msgstr ""
+
+#: templates/backup_confirm.html:10
+msgid ""
+"Sei loggato con <strong>Nostr</strong>.\n"
+"      Per"
+msgstr ""
+
+#: templates/backup_confirm.html:11
+msgid ""
+"criptare il backup, utilizzeremo una firma digitale della\n"
+"      tua chiave."
+msgstr ""
+
+#: templates/backup_confirm.html:19
+msgid "Firma e Scarica Backup"
+msgstr ""
+
+#: templates/backup_confirm.html:26
+msgid "Inserisci la tua Password di Beesy:"
+msgstr ""
+
+#: templates/backup_confirm.html:30
+msgid ""
+"La password serve per sbloccare la tua Master Key e criptare il\n"
+"        file."
+msgstr ""
+
+#: templates/backup_confirm.html:35
+msgid "Cripta e Scarica"
+msgstr ""
+
+#: templates/backup_confirm.html:42
+msgid "Guida alla Sovranità dei Dati"
+msgstr ""
+
+#: templates/backup_confirm.html:47
+msgid "Crittografia \"Zero-Knowledge\""
+msgstr ""
+
+#: templates/backup_confirm.html:49
+msgid ""
+"Beesy utilizza un sistema dove nemmeno il server conosce la tua\n"
+"        Master"
+msgstr ""
+
+#: templates/backup_confirm.html:50
+msgid ""
+"Key in chiaro. Viene decriptata solo \"al volo\" nella\n"
+"        memoria RAM quando"
+msgstr ""
+
+#: templates/backup_confirm.html:51
+msgid ""
+"inserisci la password. Se il server\n"
+"        venisse compromesso, i tuoi backup"
+msgstr ""
+
+#: templates/backup_confirm.html:52
+msgid ""
+"resterebbero comunque\n"
+"        illeggibili."
+msgstr ""
+
+#: templates/backup_confirm.html:59
+msgid ""
+"Il file scaricato contiene tutte le tue transazioni (Euro,\n"
+"        Lightning,"
+msgstr ""
+
+#: templates/backup_confirm.html:60
+msgid ""
+"On-chain). Conservalo in un posto sicuro (come un\n"
+"        password manager o una"
+msgstr ""
+
+#: templates/backup_confirm.html:61
+msgid "chiavetta USB criptata)."
+msgstr ""
+
+#: templates/backup_confirm.html:67
+msgid "Consiglio Pro:"
+msgstr ""
+
+#: templates/backup_confirm.html:67
+msgid ""
+"Verifica il tuo backup\n"
+"    almeno una volta"
+msgstr ""
+
+#: templates/backup_confirm.html:68
+msgid ""
+"ogni tre mesi facendo un test di ripristino\n"
+"    (dopo aver salvato il database"
+msgstr ""
+
+#: templates/backup_confirm.html:69
+msgid "attuale!)."
+msgstr ""
+
+#: templates/base.html:64
+msgid "DEV MODE"
+msgstr ""
+
+#: templates/base.html:81
+msgid "Backup Totale (JSON)"
+msgstr ""
+
+#: templates/base.html:84
+msgid "Ripristino Dati"
+msgstr ""
+
+#: templates/base.html:86
+msgid "Impostazioni"
+msgstr ""
+
+#: templates/base.html:88
+msgid "Logout"
+msgstr ""
+
+#: templates/base.html:93
+msgid "Sei DAVVERO sicuro?"
+msgstr ""
+
+#: templates/base.html:95
+msgid "Elimina account"
+msgstr ""
+
+#: templates/base.html:120
+msgid "FT 💶 Euro"
+msgstr ""
+
+#: templates/base.html:125
+msgid "Stat €"
+msgstr ""
+
+#: templates/base.html:131
+msgid "FT ⚡ LN"
+msgstr ""
+
+#: templates/base.html:136
+msgid "Stat ⚡"
+msgstr ""
+
+#: templates/base.html:145
+msgid "Stat ₿"
+msgstr ""
+
+#: templates/base.html:228
+msgid "F.A.Q."
+msgstr ""
+
+#: templates/faq.html:3
+msgid "Domande Frequenti & Guida Tecnica"
+msgstr ""
+
+#: templates/faq.html:14
+msgid "Perché il backup è un file .json.enc?"
+msgstr ""
+
+#: templates/faq.html:23
+msgid "I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua"
+msgstr ""
+
+#: templates/faq.html:24
+msgid "password, il file è inutilizzabile. Questo garantisce che se perdi la"
+msgstr ""
+
+#: templates/faq.html:25
+msgid "chiavetta USB o il file finisce in mani sbagliate, nessuno potrà"
+msgstr ""
+
+#: templates/faq.html:26
+msgid "vedere le tue transazioni."
+msgstr ""
+
+#: templates/faq.html:39
+msgid "Come faccio un backup manuale del database \"al volo\"?"
+msgstr ""
+
+#: templates/faq.html:49
+msgid "Prima di fare test pericolosi, puoi copiare il file del database sul"
+msgstr ""
+
+#: templates/faq.html:50
+msgid "Desktop tramite il terminale di VS Code:"
+msgstr ""
+
+#: templates/faq.html:59
+msgid "Questo comando crea una copia datata sul tuo Desktop. Per"
+msgstr ""
+
+#: templates/faq.html:60
+msgid "ripristinarla, basta chiudere Beesy e rimettere il file nella"
+msgstr ""
+
+#: templates/faq.html:61
+msgid "cartella del progetto."
+msgstr ""
+
+#: templates/faq.html:75
+msgid "Come verifico se il mio backup funziona davvero? (Test del"
+msgstr ""
+
+#: templates/faq.html:86
+msgid "Scarica il backup da <strong>/backup-protetto</strong>."
+msgstr ""
+
+#: templates/faq.html:87
+msgid "Aggiungi una transazione finta (es: \"Test\" 1€)."
+msgstr ""
+
+#: templates/faq.html:89
+msgid "Vai su <strong>/ripristino-protetto</strong> e carica il file."
+msgstr ""
+
+#: templates/faq.html:92
+msgid "Se la transazione \"Test\" scompare e tornano i vecchi dati, il"
+msgstr ""
+
+#: templates/faq.html:93
+msgid "sistema è perfetto!"
+msgstr ""
+
+#: templates/force_password_reset.html:5
+msgid "Aggiornamento Sicurezza - ₿eesy"
+msgstr ""
+
+#: templates/force_password_reset.html:24
+msgid "Aggiornamento di Sicurezza Obbligatorio"
+msgstr ""
+
+#: templates/force_password_reset.html:36
+msgid "Ciao <strong>{{ username }}</strong>, abbiamo rafforzato i requisiti di"
+msgstr ""
+
+#: templates/force_password_reset.html:37
+msgid "sicurezza. Per continuare, devi impostare subito una nuova password:"
+msgstr ""
+
+#: templates/force_password_reset.html:41
+msgid "Requisiti Minimi:"
+msgstr ""
+
+#: templates/force_password_reset.html:43
+msgid "Almeno 12 caratteri (spazi ammessi, ad esempio per una frase)"
+msgstr ""
+
+#: templates/force_password_reset.html:44
+msgid "Almeno una lettera maiuscola"
+msgstr ""
+
+#: templates/force_password_reset.html:45
+msgid "Almeno un numero"
+msgstr ""
+
+#: templates/force_password_reset.html:46
+msgid "Almeno un carattere speciale (!, @, #, $, ecc.)"
+msgstr ""
+
+#: templates/force_password_reset.html:52
+msgid "Nuova Password:"
+msgstr ""
+
+#: templates/force_password_reset.html:56
+msgid "Conferma Nuova Password:"
+msgstr ""
+
+#: templates/force_password_reset.html:59
+msgid "Aggiorna Password e Continua"
+msgstr ""
+
+#: templates/force_password_reset.html:62
+msgid "Torna al Login"
+msgstr ""
+
+#: templates/importa_anteprima.html:1
+msgid "Importa Anteprima - ₿eesy"
+msgstr ""
+
+#: templates/importa_anteprima.html:4
+msgid "Anteprima Importazione"
+msgstr ""
+
+#: templates/importa_anteprima.html:12
+msgid "Descrizione"
+msgstr ""
+
+#: templates/importa_anteprima.html:13
+msgid "Importo (€)"
+msgstr ""
+
+#: templates/importa_anteprima.html:14
+msgid "Controvalore BTC"
+msgstr ""
+
+#: templates/importa_anteprima.html:15
+msgid "Categoria"
+msgstr ""
+
+#: templates/importa_anteprima.html:16
+msgid "Sottocategoria"
+msgstr ""
+
+#: templates/importa_anteprima.html:58
+msgid "Ricorda queste associazioni per i prossimi caricamenti"
+msgstr ""
+
+#: templates/importa_anteprima.html:62
+msgid "Conferma e Salva tutto nel Database"
+msgstr ""
+
+#: templates/importa_csv.html:1
+msgid "Importa csv - ₿eesy"
+msgstr ""
+
+#: templates/importa_csv.html:5
+msgid "Importa Estratto Conto"
+msgstr ""
+
+#: templates/importa_csv.html:6
+msgid "Seleziona il tuo file .csv esportato dalla banca."
+msgstr ""
+
+#: templates/importa_csv.html:24
+msgid "Analizza Movimenti"
+msgstr ""
+
+#: templates/importa_csv.html:29
+msgid "Il file verrà cancellato dal server immediatamente dopo l'analisi."
+msgstr ""
+
+#: templates/index.html:1 templates/index.html:3
+msgid "Dashboard"
+msgstr ""
+
+#: templates/index.html:5
+msgid "Qui puoi monitorare le tue entrate e uscite finanziarie."
+msgstr ""
+
+#: templates/index.html:18
+msgid "Riepilogo Patrimonio Totale (Fiat + ₿itcoin)"
+msgstr ""
+
+#: templates/index.html:23
+msgid "Liquidità Spendibile:"
+msgstr ""
+
+#: templates/index.html:33
+msgid "Risparmi & Futuro:"
+msgstr ""
+
+#: templates/index.html:38
+msgid "Titoli:"
+msgstr ""
+
+#: templates/index.html:39 templates/index.html:118
+msgid "Pensione:"
+msgstr ""
+
+#: templates/index.html:44
+msgid "Net Worth Totale (EUR):"
+msgstr ""
+
+#: templates/index.html:56
+msgid "TRACKER ₿itcoin on-chain🔗"
+msgstr ""
+
+#: templates/index.html:62 templates/index.html:86 templates/index.html:123
+msgid "Analisi"
+msgstr ""
+
+#: templates/index.html:72 templates/index.html:96
+msgid "Saldo:"
+msgstr ""
+
+#: templates/index.html:80
+msgid "TRACKER Lightning Network⚡️"
+msgstr ""
+
+#: templates/index.html:105
+msgid "TRACKER €"
+msgstr ""
+
+#: templates/index.html:109
+msgid "Banca:"
+msgstr ""
+
+#: templates/index.html:112
+msgid "Contanti:"
+msgstr ""
+
+#: templates/index.html:115
+msgid "Investimenti:"
+msgstr ""
+
+#: templates/index.html:136
+msgid "Importa CSV Banca"
+msgstr ""
+
+#: templates/index.html:142
+msgid "Inserisci nuova transazione"
+msgstr ""
+
+#: templates/index.html:145
+msgid "Nuova transazione On-chain (₿)"
+msgstr ""
+
+#: templates/index.html:149
+msgid "Nuova transazione Lightning (⚡️)"
+msgstr ""
+
+#: templates/index.html:151
+msgid "Nuova transazione Euro (€)"
+msgstr ""
+
+#: templates/index.html:154
+msgid "Importa file CSV (Banca)"
+msgstr ""
+
+#: templates/index.html:166
+msgid "Ripartizione del tuo Capitale"
+msgstr ""
+
+#: templates/index.html:178
+msgid ""
+"I controvalori in BTC/SATS sono\n"
+"    calcolati"
+msgstr ""
+
+#: templates/index.html:179
+msgid "in base al prezzo attuale di mercato."
+msgstr ""
+
+#: templates/index.html:183
+msgid "Supporta il progetto"
+msgstr ""
+

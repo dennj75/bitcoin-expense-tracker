@@ -160,5 +160,14 @@ If you want to follow the development or get in touch in a decentralized way:
 - **Senza Password:** Prova il login Nostr tramite estensioni browser o Amber su Android.
 - **Ripristino Mobile:** Funzionante al 100% per account tradizionali.
 
-```
+
 | <strong style="color: #f39c12">₿eesy</strong> | Building in public 🚀 | Stay humble, stack sats ⚡
+
+## 🛠️ Useful Commands for Development
+
+### Updating dependencies (must be done if you install new packages)
+
+```bash
+pip freeze > requirements.txt
+
+```

@@ -1,0 +1,669 @@
+# Chinese translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-06-20 21:10+0200\n"
+"PO-Revision-Date: 2026-06-13 18:40+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:1354
+msgid "Statistiche Euro (€)"
+msgstr "统计数据"
+
+#: app.py:1355
+msgid "Statistiche Lightning (⚡)"
+msgstr "新的闪电网络交易（⚡️）"
+
+#: app.py:1356
+msgid "Statistiche On-chain (₿)"
+msgstr "新的链上交易（₿）"
+
+#: app.py:1365 templates/analytics.html:1
+msgid "Statistiche"
+msgstr "统计数据"
+
+#: templates/analytics.html:9
+msgid "Entrate"
+msgstr "收入"
+
+#: templates/analytics.html:21
+msgid "Uscite"
+msgstr "出口"
+
+#: templates/analytics.html:33
+msgid "Delta (Bilancio)"
+msgstr "达美航空（预算）"
+
+#: templates/analytics.html:52
+msgid "📈 Savings Rate (Efficienza del Risparmio)"
+msgstr "📈 储蓄率（储蓄效率）"
+
+#: templates/analytics.html:69
+msgid "Livello Leggenda!"
+msgstr "传奇级别！"
+
+#: templates/analytics.html:70
+msgid "Ottimo lavoro!"
+msgstr "干得好！"
+
+#: templates/analytics.html:71
+msgid "Buono, ma ottimizzabile."
+msgstr "不错，但还可以优化。"
+
+#: templates/analytics.html:72
+msgid "Deficit mensile."
+msgstr "月度亏损。"
+
+#: templates/analytics.html:92
+msgid "VISTA MENSILE"
+msgstr "月度概览"
+
+#: templates/analytics.html:95
+msgid "mese_selezionato"
+msgstr "选定月份"
+
+#: templates/analytics.html:108
+msgid "VISTA ANNUALE"
+msgstr "年度回顾"
+
+#: templates/analytics.html:111
+msgid "anno_selezionato"
+msgstr "选定年份"
+
+#: templates/analytics.html:124
+msgid "Totale Storico"
+msgstr "历史总计"
+
+#: templates/analytics.html:140
+msgid "Mese specifico"
+msgstr "具体月份"
+
+#: templates/analytics.html:153
+msgid "oppure"
+msgstr "或者"
+
+#: templates/analytics.html:157
+msgid "Solo Anno"
+msgstr "仅一年"
+
+#: templates/analytics.html:179
+msgid "Filtra"
+msgstr "筛选"
+
+#: templates/analytics.html:189
+msgid "Reset"
+msgstr "重置"
+
+#: templates/analytics.html:196
+msgid "Esporta Report"
+msgstr "出口报告"
+
+#: templates/analytics.html:203
+msgid "Analisi Uscite"
+msgstr "输出分析"
+
+#: templates/analytics.html:214
+msgid "Nessuna spesa registrata."
+msgstr "未记录任何费用。"
+
+#: templates/analytics.html:221
+msgid "Analisi Entrate"
+msgstr "收入分析"
+
+#: templates/analytics.html:232
+msgid "Nessuna entrata registrata."
+msgstr "未记录任何条目。"
+
+#: templates/analytics.html:300
+msgid "Nome (es. Buono Postale)"
+msgstr "名称（例如：邮政汇票）"
+
+#: templates/analytics.html:310
+msgid "Capitale Investito €"
+msgstr "投资资本 €"
+
+#: templates/analytics.html:320
+msgid "Valore Iniziale €"
+msgstr "初始价值（欧元）"
+
+#: templates/analytics.html:326
+msgid "Salva"
+msgstr "节省"
+
+#: templates/analytics.html:334
+msgid "Performance Investimenti"
+msgstr "投资业绩"
+
+#: templates/analytics.html:344 templates/analytics.html:487
+msgid "Asset"
+msgstr "资产"
+
+#: templates/analytics.html:345
+msgid "Costo Storico (Carico)"
+msgstr "历史成本（负载）"
+
+#: templates/analytics.html:346
+msgid "Valore Attuale"
+msgstr "当前值"
+
+#: templates/analytics.html:347 templates/index.html:67 templates/index.html:91
+msgid "Rendimento"
+msgstr "表现"
+
+#: templates/analytics.html:349
+msgid "Registra Valore Mese"
+msgstr "创纪录的月度价值"
+
+#: templates/analytics.html:409
+msgid "Nuovo importo €"
+msgstr "新金额 €"
+
+#: templates/analytics.html:415
+msgid "Salva rilevazione mese"
+msgstr "节省月份检测"
+
+#: templates/analytics.html:459
+msgid "Andamento Patrimoniale Euro"
+msgstr "欧元资产表现"
+
+#: templates/analytics.html:460
+msgid "Saldo Storico Patrimoniale (Controvalore €)"
+msgstr "历史资产余额（金额 €）"
+
+#: templates/analytics.html:478
+msgid "Storico Rilevazioni Mese"
+msgstr "历史调查月"
+
+#: templates/analytics.html:486 templates/importa_anteprima.html:11
+msgid "Data"
+msgstr "日期"
+
+#: templates/analytics.html:488
+msgid "Valore"
+msgstr "价值"
+
+#: templates/analytics.html:489
+msgid "Azione"
+msgstr "行动"
+
+#: templates/analytics.html:518
+msgid "Sicuro di voler eliminare questa rilevazione?"
+msgstr "您确定要删除此检测结果吗？"
+
+#: templates/analytics.html:526
+msgid "Elimina errore"
+msgstr "删除错误"
+
+#: templates/analytics.html:536
+msgid "Nessuna rilevazione salvata finora."
+msgstr "目前尚未保存任何检测结果。"
+
+#: templates/backup_confirm.html:1
+msgid "Backup Protetto - ₿eesy"
+msgstr "受保护的备份 - ₿eesy"
+
+#: templates/backup_confirm.html:4
+msgid "Backup dei Dati"
+msgstr "数据备份"
+
+#: templates/backup_confirm.html:5
+msgid "Proteggi i tuoi dati prima di scaricarli."
+msgstr "下载前请保护好您的数据。"
+
+#: templates/backup_confirm.html:10
+msgid ""
+"Sei loggato con <strong>Nostr</strong>.\n"
+"      Per"
+msgstr "您已登录 我们的 为了"
+
+#: templates/backup_confirm.html:11
+msgid ""
+"criptare il backup, utilizzeremo una firma digitale della\n"
+"      tua chiave."
+msgstr "为了加密您的备份，我们将对您的密钥进行数字签名。"
+
+#: templates/backup_confirm.html:19
+msgid "Firma e Scarica Backup"
+msgstr "签名并下载备份"
+
+#: templates/backup_confirm.html:26
+msgid "Inserisci la tua Password di Beesy:"
+msgstr "请输入您的 Beesy 密码："
+
+#: templates/backup_confirm.html:30
+msgid ""
+"La password serve per sbloccare la tua Master Key e criptare il\n"
+"        file."
+msgstr "密码用于解锁您的主密钥并加密文件。"
+
+#: templates/backup_confirm.html:35
+msgid "Cripta e Scarica"
+msgstr "加密和下载"
+
+#: templates/backup_confirm.html:42
+msgid "Guida alla Sovranità dei Dati"
+msgstr "数据主权指南"
+
+#: templates/backup_confirm.html:47
+msgid "Crittografia \"Zero-Knowledge\""
+msgstr "零知识加密"
+
+#: templates/backup_confirm.html:49
+msgid ""
+"Beesy utilizza un sistema dove nemmeno il server conosce la tua\n"
+"        Master"
+msgstr "Beesy 使用了一种连服务器都不知道你的主控的系统。"
+
+#: templates/backup_confirm.html:50
+msgid ""
+"Key in chiaro. Viene decriptata solo \"al volo\" nella\n"
+"        memoria RAM quando"
+msgstr "清除密钥。它仅在 RAM 中“即时”解密时才会被清除。"
+
+#: templates/backup_confirm.html:51
+msgid ""
+"inserisci la password. Se il server\n"
+"        venisse compromesso, i tuoi backup"
+msgstr "请输入您的密码。如果服务器遭到入侵，您的备份将会丢失。"
+
+#: templates/backup_confirm.html:52
+msgid ""
+"resterebbero comunque\n"
+"        illeggibili."
+msgstr "它们仍然会变得难以辨认。"
+
+#: templates/backup_confirm.html:59
+msgid ""
+"Il file scaricato contiene tutte le tue transazioni (Euro,\n"
+"        Lightning,"
+msgstr "下载的文件包含您所有的交易记录（欧元）、闪电网络交易记录。"
+
+#: templates/backup_confirm.html:60
+msgid ""
+"On-chain). Conservalo in un posto sicuro (come un\n"
+"        password manager o una"
+msgstr "链上存储）。将其存储在安全的地方（例如密码管理器或"
+
+#: templates/backup_confirm.html:61
+msgid "chiavetta USB criptata)."
+msgstr "加密U盘）。"
+
+#: templates/backup_confirm.html:67
+msgid "Consiglio Pro:"
+msgstr "专业提示："
+
+#: templates/backup_confirm.html:67
+msgid ""
+"Verifica il tuo backup\n"
+"    almeno una volta"
+msgstr "至少检查一次备份"
+
+#: templates/backup_confirm.html:68
+msgid ""
+"ogni tre mesi facendo un test di ripristino\n"
+"    (dopo aver salvato il database"
+msgstr "每三个月进行一次恢复测试（在保存数据库之后）。"
+
+#: templates/backup_confirm.html:69
+msgid "attuale!)."
+msgstr "当前的！）。"
+
+#: templates/base.html:64
+msgid "DEV MODE"
+msgstr "开发者模式"
+
+#: templates/base.html:81
+msgid "Backup Totale (JSON)"
+msgstr "完整备份（JSON）"
+
+#: templates/base.html:84
+msgid "Ripristino Dati"
+msgstr "数据恢复"
+
+#: templates/base.html:86
+msgid "Impostazioni"
+msgstr "设置"
+
+#: templates/base.html:88
+msgid "Logout"
+msgstr "注销"
+
+#: templates/base.html:93
+msgid "Sei DAVVERO sicuro?"
+msgstr "你真的确定吗？"
+
+#: templates/base.html:95
+msgid "Elimina account"
+msgstr "删除帐户"
+
+#: templates/base.html:120
+msgid "FT 💶 Euro"
+msgstr "FT 💶 欧元"
+
+#: templates/base.html:125
+msgid "Stat €"
+msgstr "统计欧元"
+
+#: templates/base.html:131
+msgid "FT ⚡ LN"
+msgstr "FT ⚡ LN"
+
+#: templates/base.html:136
+msgid "Stat ⚡"
+msgstr "统计数据⚡"
+
+#: templates/base.html:145
+msgid "Stat ₿"
+msgstr "统计₿"
+
+#: templates/base.html:228
+msgid "F.A.Q."
+msgstr "常问问题"
+
+#: templates/faq.html:3
+msgid "Domande Frequenti & Guida Tecnica"
+msgstr "常见问题解答和技术指南"
+
+#: templates/faq.html:14
+msgid "Perché il backup è un file .json.enc?"
+msgstr "为什么备份文件是 .json.enc 文件？"
+
+#: templates/faq.html:23
+msgid "I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua"
+msgstr "您的数据已使用 AES-256 加密。没有您的数据，您的数据将不会被加密。"
+
+#: templates/faq.html:24
+msgid "password, il file è inutilizzabile. Questo garantisce che se perdi la"
+msgstr "如果密码丢失，文件将无法使用。这确保即使您丢失了密码，文件也无法使用。"
+
+#: templates/faq.html:25
+msgid "chiavetta USB o il file finisce in mani sbagliate, nessuno potrà"
+msgstr "如果U盘里的文件落入不法分子手中，那就没人能……"
+
+#: templates/faq.html:26
+msgid "vedere le tue transazioni."
+msgstr "查看您的交易记录。"
+
+#: templates/faq.html:39
+msgid "Come faccio un backup manuale del database \"al volo\"?"
+msgstr "如何“实时”手动备份我的数据库？"
+
+#: templates/faq.html:49
+msgid "Prima di fare test pericolosi, puoi copiare il file del database sul"
+msgstr "在进行危险测试之前，您可以将数据库文件复制到"
+
+#: templates/faq.html:50
+msgid "Desktop tramite il terminale di VS Code:"
+msgstr "通过 VS Code 终端在桌面上进行操作："
+
+#: templates/faq.html:59
+msgid "Questo comando crea una copia datata sul tuo Desktop. Per"
+msgstr "此命令会在您的桌面上创建一个带有日期的副本。"
+
+#: templates/faq.html:60
+msgid "ripristinarla, basta chiudere Beesy e rimettere il file nella"
+msgstr "要恢复它，只需关闭 Beesy 并将文件放回原处即可。"
+
+#: templates/faq.html:61
+msgid "cartella del progetto."
+msgstr "项目文件夹。"
+
+#: templates/faq.html:75
+msgid "Come verifico se il mio backup funziona davvero? (Test del"
+msgstr "如何检查我的备份是否正常工作？（备份测试）"
+
+#: templates/faq.html:86
+msgid "Scarica il backup da <strong>/backup-protetto</strong>."
+msgstr "从<strong>/protected-backup</strong>下载备份。"
+
+#: templates/faq.html:87
+msgid "Aggiungi una transazione finta (es: \"Test\" 1€)."
+msgstr "添加一笔虚假交易（例如“测试” 1 欧元）。"
+
+#: templates/faq.html:89
+msgid "Vai su <strong>/ripristino-protetto</strong> e carica il file."
+msgstr "前往<strong>/secure-recovery</strong>并上传文件。"
+
+#: templates/faq.html:92
+msgid "Se la transazione \"Test\" scompare e tornano i vecchi dati, il"
+msgstr "如果事务“Test”消失且旧数据恢复，则"
+
+#: templates/faq.html:93
+msgid "sistema è perfetto!"
+msgstr "系统完美！"
+
+#: templates/force_password_reset.html:5
+msgid "Aggiornamento Sicurezza - ₿eesy"
+msgstr ""
+
+#: templates/force_password_reset.html:24
+msgid "Aggiornamento di Sicurezza Obbligatorio"
+msgstr "安全更新 - ₿eesy"
+
+#: templates/force_password_reset.html:36
+msgid "Ciao <strong>{{ username }}</strong>, abbiamo rafforzato i requisiti di"
+msgstr "您好 <strong>{{ username }}</strong>，我们已加强了对以下方面的要求："
+
+#: templates/force_password_reset.html:37
+msgid "sicurezza. Per continuare, devi impostare subito una nuova password:"
+msgstr "安全提示。要继续操作，您必须立即设置新密码："
+
+#: templates/force_password_reset.html:41
+msgid "Requisiti Minimi:"
+msgstr "最低要求："
+
+#: templates/force_password_reset.html:43
+msgid "Almeno 12 caratteri (spazi ammessi, ad esempio per una frase)"
+msgstr "至少 12 个字符（允许空格，例如，用于句子）"
+
+#: templates/force_password_reset.html:44
+msgid "Almeno una lettera maiuscola"
+msgstr "至少有一个大写字母"
+
+#: templates/force_password_reset.html:45
+msgid "Almeno un numero"
+msgstr "至少一个数字"
+
+#: templates/force_password_reset.html:46
+msgid "Almeno un carattere speciale (!, @, #, $, ecc.)"
+msgstr "至少包含一个特殊字符（!、@、#、$ 等）"
+
+#: templates/force_password_reset.html:52
+msgid "Nuova Password:"
+msgstr "新密码："
+
+#: templates/force_password_reset.html:56
+msgid "Conferma Nuova Password:"
+msgstr "确认新密码："
+
+#: templates/force_password_reset.html:59
+msgid "Aggiorna Password e Continua"
+msgstr "更新密码并继续"
+
+#: templates/force_password_reset.html:62
+msgid "Torna al Login"
+msgstr "返回登录"
+
+#: templates/importa_anteprima.html:1
+msgid "Importa Anteprima - ₿eesy"
+msgstr "导入预览 - ₿eesy"
+
+#: templates/importa_anteprima.html:4
+msgid "Anteprima Importazione"
+msgstr "导入预览"
+
+#: templates/importa_anteprima.html:12
+msgid "Descrizione"
+msgstr "描述"
+
+#: templates/importa_anteprima.html:13
+msgid "Importo (€)"
+msgstr "新金额 €"
+
+#: templates/importa_anteprima.html:14
+msgid "Controvalore BTC"
+msgstr "比特币价值"
+
+#: templates/importa_anteprima.html:15
+msgid "Categoria"
+msgstr "类别"
+
+#: templates/importa_anteprima.html:16
+msgid "Sottocategoria"
+msgstr "子类别"
+
+#: templates/importa_anteprima.html:58
+msgid "Ricorda queste associazioni per i prossimi caricamenti"
+msgstr "请记住这些关联，以便将来上传。"
+
+#: templates/importa_anteprima.html:62
+msgid "Conferma e Salva tutto nel Database"
+msgstr "确认并保存数据库中的所有数据"
+
+#: templates/importa_csv.html:1
+msgid "Importa csv - ₿eesy"
+msgstr "导入 CSV - ₿eesy"
+
+#: templates/importa_csv.html:5
+msgid "Importa Estratto Conto"
+msgstr "进口银行对账单"
+
+#: templates/importa_csv.html:6
+msgid "Seleziona il tuo file .csv esportato dalla banca."
+msgstr "选择您从银行导出的 .csv 文件。"
+
+#: templates/importa_csv.html:24
+msgid "Analizza Movimenti"
+msgstr "分析走势"
+
+#: templates/importa_csv.html:29
+msgid "Il file verrà cancellato dal server immediatamente dopo l'analisi."
+msgstr "分析完成后，文件将立即从服务器删除。"
+
+#: templates/index.html:1 templates/index.html:3
+msgid "Dashboard"
+msgstr "仪表板"
+
+#: templates/index.html:5
+msgid "Qui puoi monitorare le tue entrate e uscite finanziarie."
+msgstr "在这里您可以追踪您的财务收入和支出。"
+
+#: templates/index.html:18
+msgid "Riepilogo Patrimonio Totale (Fiat + ₿itcoin)"
+msgstr "总资产汇总（法币 + 比特币）"
+
+#: templates/index.html:23
+msgid "Liquidità Spendibile:"
+msgstr "可用流动资金："
+
+#: templates/index.html:33
+msgid "Risparmi & Futuro:"
+msgstr "储蓄与未来："
+
+#: templates/index.html:38
+msgid "Titoli:"
+msgstr "标题："
+
+#: templates/index.html:39 templates/index.html:118
+msgid "Pensione:"
+msgstr "养老金："
+
+#: templates/index.html:44
+msgid "Net Worth Totale (EUR):"
+msgstr "总净资产（欧元）："
+
+#: templates/index.html:56
+msgid "TRACKER ₿itcoin on-chain🔗"
+msgstr "TRACKER ₿比特币链上🔗"
+
+#: templates/index.html:62 templates/index.html:86 templates/index.html:123
+msgid "Analisi"
+msgstr "输出分析"
+
+#: templates/index.html:72 templates/index.html:96
+msgid "Saldo:"
+msgstr "平衡："
+
+#: templates/index.html:80
+msgid "TRACKER Lightning Network⚡️"
+msgstr "追踪器 闪电网络⚡️"
+
+#: templates/index.html:105
+msgid "TRACKER €"
+msgstr "追踪器 €"
+
+#: templates/index.html:109
+msgid "Banca:"
+msgstr "银行"
+
+#: templates/index.html:112
+msgid "Contanti:"
+msgstr "银行"
+
+#: templates/index.html:115
+msgid "Investimenti:"
+msgstr "投资业绩"
+
+#: templates/index.html:136
+msgid "Importa CSV Banca"
+msgstr "导入 CSV 银行"
+
+#: templates/index.html:142
+msgid "Inserisci nuova transazione"
+msgstr "输入新交易"
+
+#: templates/index.html:145
+msgid "Nuova transazione On-chain (₿)"
+msgstr "新的链上交易（₿）"
+
+#: templates/index.html:149
+msgid "Nuova transazione Lightning (⚡️)"
+msgstr "新的闪电网络交易（⚡️）"
+
+#: templates/index.html:151
+msgid "Nuova transazione Euro (€)"
+msgstr "新的欧元交易（€）"
+
+#: templates/index.html:154
+msgid "Importa file CSV (Banca)"
+msgstr "导入 CSV 文件（银行）"
+
+#: templates/index.html:166
+msgid "Ripartizione del tuo Capitale"
+msgstr "您的资本明细"
+
+#: templates/index.html:178
+msgid ""
+"I controvalori in BTC/SATS sono\n"
+"    calcolati"
+msgstr "BTC/SATS 值是计算得出的"
+
+#: templates/index.html:179
+msgid "in base al prezzo attuale di mercato."
+msgstr "基于当前市场价格。"
+
+#: templates/index.html:183
+msgid "Supporta il progetto"
+msgstr "支持该项目"
+
+#~ msgid "Rendimento:"
+#~ msgstr "表现"
+
+#~ msgid "Analisi ₿"
+#~ msgstr "输出分析"
+
+#~ msgid "Analisi €"
+#~ msgstr "输出分析"
+

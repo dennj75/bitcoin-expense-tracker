@@ -1,67 +1,72 @@
-{% extends "base.html" %} {% block title %}backup_protetto - ₿eesy{% endblock %}
+{% extends "base.html" %} {% block title %}{{ _('Backup Protetto - ₿eesy') }}{% endblock %}
 {% block content %}
 <div class="card shadow p-4">
-  <h3>💾 Backup dei Dati</h3>
-  <p class="text-muted">Proteggi i tuoi dati prima di scaricarli.</p>
+  <h3>💾 {{ _('Backup dei Dati') }}</h3>
+  <p class="text-muted">{{ _('Proteggi i tuoi dati prima di scaricarli.') }}</p>
 
   {% if current_user.auth_type == 'nostr' %}
   <div id="nostr-backup-zone">
     <div class="alert alert-info">
-      <i class="fas fa-key"></i> Sei loggato con <strong>Nostr</strong>. Per
-      criptare il backup, utilizzeremo una firma digitale della tua chiave.
+      <i class="fas fa-key"></i> {{ _('Sei loggato con <strong>Nostr</strong>.
+      Per') }} {{ _('criptare il backup, utilizzeremo una firma digitale della
+      tua chiave.') }}
     </div>
     <button
       type="button"
       class="btn btn-warning btn-lg w-100"
       onclick="avviaBackupNostr()"
     >
-      <i class="fas fa-signature"></i> Firma e Scarica Backup
+      <i class="fas fa-signature"></i> {{ _('Firma e Scarica Backup') }}
     </button>
   </div>
   {% else %}
   <form action="{{ url_for('backup_protetto') }}" method="POST">
     <div class="mb-3">
-      <label class="form-label">Inserisci la tua Password di Beesy:</label>
+      <label class="form-label"
+        >{{ _('Inserisci la tua Password di Beesy:') }}</label
+      >
       <input type="password" name="password" class="form-control" required />
       <div class="form-text">
-        La password serve per sbloccare la tua Master Key e criptare il file.
+        {{ _('La password serve per sbloccare la tua Master Key e criptare il
+        file.') }}
       </div>
     </div>
     <button type="submit" class="btn btn-primary w-100">
-      <i class="fas fa-download"></i> Cripta e Scarica
+      <i class="fas fa-download"></i> {{ _('Cripta e Scarica') }}
     </button>
   </form>
   {% endif %}
 </div>
 <div class="mt-5 border-top pt-4">
   <h4 class="text-secondary">
-    <i class="fas fa-shield-alt"></i> Guida alla Sovranità dei Dati
+    <i class="fas fa-shield-alt"></i> {{ _('Guida alla Sovranità dei Dati') }}
   </h4>
 
   <div class="row mt-3">
     <div class="col-md-6">
-      <h5>🔐 Crittografia "Zero-Knowledge"</h5>
+      <h5>🔐 {{ _('Crittografia "Zero-Knowledge"') }}</h5>
       <p class="small text-muted">
-        Beesy utilizza un sistema dove nemmeno il server conosce la tua Master
-        Key in chiaro. Viene decriptata solo "al volo" nella memoria RAM quando
-        inserisci la password. Se il server venisse compromesso, i tuoi backup
-        resterebbero comunque illeggibili.
+        {{ _('Beesy utilizza un sistema dove nemmeno il server conosce la tua
+        Master') }} {{ _('Key in chiaro. Viene decriptata solo "al volo" nella
+        memoria RAM quando') }} {{ _('inserisci la password. Se il server
+        venisse compromesso, i tuoi backup') }} {{ _('resterebbero comunque
+        illeggibili.') }}
       </p>
     </div>
     <div class="col-md-6">
       <h5>💾 Il file .json.enc</h5>
       <p class="small text-muted">
-        Il file scaricato contiene tutte le tue transazioni (Euro, Lightning,
-        On-chain). Conservalo in un posto sicuro (come un password manager o una
-        chiavetta USB criptata).
+        {{ _('Il file scaricato contiene tutte le tue transazioni (Euro,
+        Lightning,') }} {{ _('On-chain). Conservalo in un posto sicuro (come un
+        password manager o una') }} {{ _('chiavetta USB criptata).') }}
       </p>
     </div>
   </div>
 
   <div class="alert alert-info mt-3">
-    <strong>💡 Consiglio Pro:</strong> Verifica il tuo backup almeno una volta
-    ogni tre mesi facendo un test di ripristino (dopo aver salvato il database
-    attuale!).
+    <strong>💡 {{ _('Consiglio Pro:') }}</strong> {{ _('Verifica il tuo backup
+    almeno una volta') }} {{ _('ogni tre mesi facendo un test di ripristino
+    (dopo aver salvato il database') }} {{ _('attuale!).') }}
   </div>
 </div>
 <script>

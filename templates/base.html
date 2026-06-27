@@ -61,7 +61,7 @@
               letter-spacing: 0.5px;
             "
           >
-            ⚠️ DEV MODE
+            ⚠️ {{ _('DEV MODE') }}
           </span>
           {% endif %}
         </div>
@@ -78,21 +78,21 @@
 
           <div class="user-menu-dropdown" id="user-menu-dropdown">
             <a href="{{ url_for('backup_protetto') }}"
-              >💾 Backup Totale (JSON)</a
+              >💾 {{ _('Backup Totale (JSON)') }}</a
             >
             <a href="{{ url_for('ripristino_protetto') }}"
-              >♻️ Ripristino Dati</a
+              >♻️ {{ _('Ripristino Dati') }}</a
             >
-            <a href="#">⚙️ Impostazioni</a>
+            <a href="#">⚙️ {{ _('Impostazioni') }}</a>
             <div class="dropdown-divider"></div>
-            <a href="{{ url_for('auth.logout') }}">🚪 Logout</a>
+            <a href="{{ url_for('auth.logout') }}">🚪 {{ _('Logout') }}</a>
             <div class="dropdown-divider"></div>
             <a
               href="{{ url_for('auth.elimina_utente', user_id=current_user.id) }}"
               class="danger-btn delete-account-link"
-              onclick="return confirm('Sei DAVVERO sicuro?');"
+              onclick="return confirm('{{ _('Sei DAVVERO sicuro?') }}');"
             >
-              🗑️ Elimina account
+              🗑️ {{ _('Elimina account') }}
             </a>
           </div>
         </div>
@@ -117,23 +117,23 @@
           "
         >
           <a href="{{ url_for('transazioni') }}" class="nav-link-custom"
-            >FT 💶 Euro</a
+            >{{ _('FT 💶 Euro') }}</a
           >
           <a
             href="{{ url_for('analytics', tipo='EURO') }}"
             class="nav-link-custom"
-            >📊 Stat €</a
+            >📊 {{ _('Stat €') }}</a
           >
           <span style="color: #444">|</span>
           <a
             href="{{ url_for('transazioni_lightning') }}"
             class="nav-link-custom"
-            >FT ⚡ LN</a
+            >{{ _('FT ⚡ LN') }}</a
           >
           <a
             href="{{ url_for('analytics', tipo='LIGHTNING') }}"
             class="nav-link-custom"
-            >📊 Stat ⚡</a
+            >📊 {{ _('Stat ⚡') }}</a
           >
           <span style="color: #444">|</span>
           <a href="{{ url_for('transazioni_onchain') }}" class="nav-link-custom"
@@ -142,7 +142,7 @@
           <a
             href="{{ url_for('analytics', tipo='ONCHAIN') }}"
             class="nav-link-custom"
-            >📊 Stat ₿</a
+            >📊 {{ _('Stat ₿') }}</a
           >
         </div>
       </nav>
@@ -225,7 +225,7 @@
         Laboratory Version <p>₿eesy v{{ versione_beesy }} | Made with ⚡</p> <br />
         Built with passion for a decentralized future.
       </p>
-      <a class="nav-link" href="{{ url_for('faq') }}">F.A.Q.</a>
+      <a class="nav-link" href="{{ url_for('faq') }}">{{ _('F.A.Q.') }}</a>
 
     </footer>
     
