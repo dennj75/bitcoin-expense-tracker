@@ -944,8 +944,10 @@ def modifica_transazione_web_lightning(id_transazione):
 
         if valore_btc_eur is not None:
             # Calcola il controvalore in euro in base ai satoshi
-            controvalore_eur = (int(satoshi) / 100_000_000) * valore_btc_eur
-
+            # Sostituiamo l'eventuale virgola italiana col punto e convertiamo in float in sicurezza
+            satoshi_puliti = str(satoshi).replace(',', '.').strip()
+            controvalore_eur = (int(float(satoshi_puliti)) /
+                                100_000_000) * valore_btc_eur
             # Aggiorna i campi corretti nel DB
             modifica_transazione_db_lightning(
                 id_transazione, 'valore_btc_eur', valore_btc_eur, current_user.id)
