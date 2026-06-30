@@ -1,19 +1,20 @@
-{% extends "base.html" %} {% block title %}ripristino_protetto - ₿eesy{%
-endblock %} {% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Ripristino Protetto - ₿eesy')
+}}{% endblock %} {% block content %}
 <div class="container" style="max-width: 600px; margin-top: 30px">
   <div class="card shadow">
     <div class="card-body">
-      <h2 class="text-danger">⚠️ Ripristino Dati</h2>
+      <h2 class="text-danger">⚠️ {{ _('Ripristino Dati') }}</h2>
       <p class="lead">
-        Carica un file di backup <strong>.json.enc</strong> per ripristinare la
-        tua cronologia.
+        {{ _("Carica un file di backup") }} <strong>.json.enc</strong> {{_("per
+        ripristinare la tua cronologia.") }}
       </p>
 
       <div class="alert alert-warning">
-        <strong>ATTENZIONE:</strong> Il ripristino è un'operazione distruttiva.
-        Tutti i dati attualmente presenti su Beesy (transazioni, conti, ecc.)
-        verranno <strong>cancellati e sostituiti</strong> con quelli contenuti
-        nel file.
+        <strong>{{ _("ATTENZIONE:") }}</strong> {{ _("Il ripristino è
+        un'operazione distruttiva.") }} {{ _("Tutti i dati attualmente presenti
+        su Beesy (transazioni, conti, ecc.)") }} {{ _("verranno") }}
+        <strong> {{ _("cancellati e sostituiti") }} </strong> {{ _("con quelli
+        contenuti") }} {{ _("nel file.") }}
       </div>
 
       <form
@@ -23,30 +24,50 @@ endblock %} {% block content %}
         enctype="multipart/form-data"
       >
         <div class="mb-3">
-          <label class="form-label">Seleziona il file .json.enc:</label>
+          <label class="form-label"
+            ><strong>{{ _("Seleziona il file .json.enc:") }}</strong></label
+          >
+
+          <div class="input-group">
+            <label
+              class="input-group-text btn btn-outline-secondary mb-0"
+              for="backup_file"
+            >
+              <i class="fas fa-folder-open me-2"></i> {{ _("Scegli file") }}
+            </label>
+
+            <input
+              type="text"
+              id="file-name-placeholder"
+              class="form-control"
+              placeholder="{{ _('Nessun file selezionato') }}"
+              readonly
+            />
+          </div>
+
           <input
             type="file"
             name="backup_file"
             id="backup_file"
-            class="form-control"
+            style="display: none;"
             required
+            onchange="aggiornaNomeFile(this)"
           />
-        </div>
 
         {% if current_user.auth_type == 'nostr' %}
         <div class="alert alert-info">
-          Sblocca il file usando la tua firma Nostr.
+          {{ _('Sblocca il file usando la tua firma Nostr.') }}
         </div>
         <button
           type="button"
           class="btn btn-warning w-100"
           onclick="avviaRipristinoNostr()"
         >
-          <i class="fas fa-signature"></i> Firma e Ripristina
+          <i class="fas fa-signature"></i> {{ _('Firma e Ripristina') }}
         </button>
         {% else %}
         <div class="mb-3">
-          <label class="form-label">Password di Beesy:</label>
+          <label class="form-label">{{ _('Password di Beesy:') }}</label>
           <input
             type="password"
             name="password"
@@ -54,7 +75,9 @@ endblock %} {% block content %}
             required
           />
         </div>
-        <button type="submit" class="btn btn-primary w-100">Ripristina</button>
+        <button type="submit" class="btn btn-primary w-100">
+          {{ _('Ripristina') }}
+        </button>
         {% endif %}
       </form>
     </div>
@@ -106,6 +129,16 @@ endblock %} {% block content %}
       }
     } catch (e) {
       alert("Errore durante la firma: " + e.message);
+    }
+  }
+  function aggiornaNomeFile(input) {
+    const placeholder = document.getElementById("file-name-placeholder");
+    if (input.files && input.files.length > 0) {
+      // Se l'utente ha scelto il file, mostra il nome reale del file
+      placeholder.value = input.files[0].name;
+    } else {
+      // Se annulla, resetta il testo (il placeholder rimetterà "Nessun file selezionato")
+      placeholder.value = "";
     }
   }
 </script>

@@ -115,8 +115,8 @@ VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di vers
 
 def get_locale():
     # Controlla la lingua del browser: se l'utente preferisce 'en' usa inglese, altrimenti 'it'
-    # return 'en'
-    return request.accept_languages.best_match(['it', 'en', 'zh'])
+    return 'en'
+    # return request.accept_languages.best_match(['it', 'en', 'zh'])
 
 
 babel = Babel(app, locale_selector=get_locale)
@@ -1364,7 +1364,8 @@ def analytics(tipo):
             parametri_grafico.append(f"{anno_selezionato}%")
 
         # Duplichiamo i parametri perché la query ora li usa sia dentro che fuori
-        tutti_i_parametri = [current_user.id] + [p for p in parametri_grafico[1:]] + parametri_grafico
+        tutti_i_parametri = [current_user.id] + \
+            [p for p in parametri_grafico[1:]] + parametri_grafico
 
         # Query corazzata: filtra il tempo sia dentro il calcolo del MAX(id) sia fuori
         cursor.execute(f'''

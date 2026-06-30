@@ -1,31 +1,31 @@
-{% extends "base.html" %} {% block title %}Transazioni ₿itcoin On-chain - ₿eesy{% endblock %} {% block
+{% extends "base.html" %} {% block title %}{{ _('Transazioni ₿itcoin On-chain - ₿eesy') }}{% endblock %} {% block
 content %}
-      <h1>🔗 Transazioni ₿itcoin On-chain 🔗</h1>
+      <h1>🔗 {{ _('Transazioni ₿itcoin On-chain 🔗') }}</h1>
       <!-- 🔹 Saldo SATOSHI -->
     <p class="saldo-totale">
-      💰 Saldo ₿itcoin On-chain🔗: {{ "%.8f"|format(saldo_totale_btc) }} BTC
+      💰 {{ _('Saldo ₿itcoin On-chain🔗') }}: {{ "%.8f"|format(saldo_totale_btc) }} BTC
     </p>
     <!-- 🔹 Controvalore totale in EUR (opzionale) -->
     {% if transazioni_onchain %} {% set totale_eur = transazioni_onchain |
     map(attribute="controvalore_eur") | sum %}
     <p class="saldo-totale">
-      💶 Controvalore Totale: {{ "%.2f"|format(totale_eur) }} €
+      💶 {{ _('Controvalore Totale') }}: {{ "%.2f"|format(totale_eur) }} €
     </p>
     {% endif %}
 
     <div class="csv-buttons">
       <a href="{{ url_for('scarica_csv_onchain') }}">
-        <button type="button" class="csv-button">📥 Esporta CSV</button>
+        <button type="button" class="csv-button">📥 {{ _('Esporta CSV') }}</button>
       </a>
       <a href="{{ url_for('scarica_csv_per_mese_onchain') }}">
         <button type="button" class="csv-button">
-          📥 Esporta CSV per mese
+          📥 {{ _('Esporta CSV per mese') }}
         </button>
       </a>
     </div>
     <p>
       <a href="{{ url_for('nuova_transazione_onchain') }}"
-        >➕ Aggiungi una nuova transazione On-chain</a
+        >➕ {{ _('Aggiungi una nuova transazione On-chain') }}</a
       >
     </p>
     {% with messages = get_flashed_messages(with_categories=true) %} {% if
@@ -39,18 +39,18 @@ content %}
     <div class="table-responsive-custom">
     <table border="1">
     <thead> <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Wallet</th>
-        <th>Descrizione</th>
-        <th>Categoria</th>
-        <th>Sottocategoria</th>
-        <th>TransactionID</th>
-        <th>Importo BTC</th>
-        <th>fee</th>
-        <th>Controvalore €</th>
-        <th>Valore BTC/€</th>
-        <th>Azioni</th>
+        <th>{{ _('ID') }}</th>
+        <th>{{ _('Data') }}</th>
+        <th>{{ _('Wallet') }}</th>
+        <th>{{ _('Descrizione') }}</th>
+        <th>{{ _('Categoria') }}</th>
+        <th>{{ _('Sottocategoria') }}</th>
+        <th>{{ _('TransactionID') }}</th>
+        <th>{{ _('Importo BTC') }}</th>
+        <th>{{ _('fee') }}</th>
+        <th>{{ _('Controvalore €') }}</th>
+        <th>{{ _('Valore BTC/€') }}</th>
+        <th>{{ _('Azioni') }}</th>
       </tr>
       </thead>
       <tbody>{% for t in transazioni_onchain %}
@@ -85,12 +85,12 @@ content %}
               type="submit"
               onclick="return confirm('Sei sicuro di voler eliminare questa transazione On-chain?');"
             >
-              🗑️ Elimina
+              🗑️ {{ _('Elimina') }}
             </button>
           </form>
           <a
             href="{{ url_for('modifica_transazione_web_onchain', id_transazione=t["id"]) }}"
-            >✏️ Modifica</a
+            >✏️ {{ _('Modifica') }} </a
           >
         </td>
       </tr>

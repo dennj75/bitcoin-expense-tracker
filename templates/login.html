@@ -260,30 +260,60 @@
           }
         }
       </script>
-      <footer style="margin-top: 50px; padding: 30px 10px; border-top: 1px solid #333; text-align: center; color: #888;">
-      <p style="font-size: 0.9em; margin-bottom: 15px;">
-          <strong style="color: #f39c12;">₿eesy</strong> is an Open Source project built for the Bitcoin community.
+      <footer
+      style="
+        margin-top: 50px;
+        padding: 30px 10px;
+        border-top: 1px solid #333;
+        text-align: center;
+        color: #888;
+      "
+    >
+      <p style="font-size: 0.9em; margin-bottom: 15px">
+        <strong style="color: #f39c12">₿eesy</strong> is an Open Source project
+        built for the Bitcoin community.
       </p>
 
-      <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 20px;">
-          <a href="https://github.com/dennj75/beesy" target="_blank" style="color: #eee; text-decoration: none; font-size: 0.95em;">
-              <i class="fab fa-github" style="color: #f39c12;"></i> GitHub
-          </a>
-          
-          <a href="https://njump.me/beesy@nostrcheck.me" target="_blank" style="color: #eee; text-decoration: none; font-size: 0.95em;">
-              <i class="fas fa-key" style="color: #f39c12;"></i> Nostr
-          </a>
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          gap: 25px;
+          flex-wrap: wrap;
+          margin-bottom: 20px;
+        "
+      >
+        <a
+          href="https://github.com/dennj75/beesy"
+          target="_blank"
+          style="color: #eee; text-decoration: none; font-size: 0.95em"
+        >
+          <i class="fab fa-github" style="color: #f39c12"></i> GitHub
+        </a>
 
-          <a href="mailto:beesy.project@proton.me" style="color: #eee; text-decoration: none; font-size: 0.95em;">
-              <i class="fas fa-envelope" style="color: #f39c12;"></i> Email
-          </a>
+        <a
+          href="https://njump.me/beesy@nostrcheck.me"
+          target="_blank"
+          style="color: #eee; text-decoration: none; font-size: 0.95em"
+        >
+          <i class="fas fa-key" style="color: #f39c12"></i> Nostr
+        </a>
+
+        <a
+          href="mailto:beesy.project@proton.me"
+          style="color: #eee; text-decoration: none; font-size: 0.95em"
+        >
+          <i class="fas fa-envelope" style="color: #f39c12"></i> Email
+        </a>
       </div>
 
-      <p style="font-size: 0.75em; line-height: 1.5;">
-          Laboratory Version 1.0 <br>
-          Built with passion for a decentralized future.
+      <p style="font-size: 0.75em; line-height: 1.5">
+        Laboratory Version <p>₿eesy v{{ versione_beesy }} | Made with ⚡</p> <br />
+        Built with passion for a decentralized future.
       </p>
-  </footer>
+      <a class="nav-link" href="{{ url_for('faq') }}">{{ _('F.A.Q.') }}</a>
+
+    </footer>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </body>

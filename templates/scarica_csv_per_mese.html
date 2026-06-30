@@ -1,9 +1,9 @@
-{% extends "base.html" %} {% block title %}Scarica CSV per mese € - ₿eesy{%
-endblock %} {% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Scarica CSV per mese € -
+₿eesy') }}{% endblock %} {% block content %}
 
-<h1>📥 Scarica CSV per mese</h1>
+<h1>📥 {{ _('Scarica CSV per mese') }}</h1>
 <form method="post" action="/scarica-csv-mese">
-  <label for="mese">Inserisci mese:</label><br />
+  <label for="mese">{{ _('Inserisci mese:') }}</label><br />
   <input
     type="text"
     id="mese"
@@ -14,9 +14,9 @@ endblock %} {% block content %}
     required
   />
   <br /><br />
-  <button type="submit">📥 Scarica CSV</button>
+  <button type="submit">📥 {{ _('Scarica CSV') }}</button>
 </form>
-<p><a href="/">⬅️ Torna alla home</a></p>
+<p><a href="/">⬅️ {{ _('Torna alla home') }}</a></p>
 
 {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
 %}

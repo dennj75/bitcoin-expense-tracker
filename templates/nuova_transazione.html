@@ -1,9 +1,9 @@
-{% extends "base.html" %} {% block title %}Nuova transazione € - ₿eesy{% endblock %} {% block
+{% extends "base.html" %} {% block title %}{{ _('Nuova transazione € - ₿eesy') }}{% endblock %} {% block
 content %}
 
     <h1>➕ Nuova transazione €</h1>
     <form method="post" action="{{ url_for('nuova_transazione') }}" onsubmit="document.querySelector('select[name=\'conto\']').disabled = false;">
-      <label for="data">📅 Data (YYYY-MM-DD):</label>
+      <label for="data">📅 {{ _('Data (YYYY-MM-DD):') }}</label>
       <input
         type="date"
         id="data"
@@ -12,7 +12,7 @@ content %}
         value="{{ transazione['data'] if transazione else '' }}"
       /><br /><br />
 
-      <label for="descrizione">📝Descrizione:</label>
+      <label for="descrizione">📝{{ _('Descrizione:') }}</label>
       <input
         type="text"
         id="descrizione"
@@ -21,14 +21,14 @@ content %}
         value="{{ transazione.descrizione if transazione else '' }}"
       /><br /><br />
 
-      <label>Categoria:</label>
+      <label>{{ _('Categoria:') }}</label>
 <select
   name="categoria"
   id="categoria"
   onchange="popolaSottocategoria()"
   required
 >
-  <option value="">-- Seleziona Categoria --</option>
+  <option value="">-- {{ _('Seleziona Categoria') }} --</option>
 
   {% for cat in categorie %}
     <option
@@ -40,19 +40,19 @@ content %}
   {% endfor %}
 </select>
         <br /><br />
-      <label>Sottocategoria:</label>
+      <label>{{ _('Sottocategoria:') }}</label>
 <select name="sottocategoria" id="sottocategoria" required>
   {% if transazione %}
     <option value="{{ transazione.sottocategoria }}">
       {{ transazione.sottocategoria }}
     </option>
   {% else %}
-    <option value="">-- Seleziona Sottocategoria --</option>
+    <option value="">-- {{ _('Seleziona Sottocategoria') }} --</option>
   {% endif %}
 </select>
 <br /><br />
 
-      <label for="importo">💸 Importo (€):</label>
+      <label for="importo">💸 {{ _('Importo (€):') }} </label>
       <input
         type="text"
         id="importo"
@@ -62,25 +62,25 @@ content %}
         value="{{ transazione.importo if transazione else '' }}"
       />
       <br /><br />
-      <label for="conto">Conto:</label>
+      <label for="conto"> {{ _('Conto:') }}</label>
       <select name="conto" id="conto" required>
-        <option value="BANCA">🏦 Banca</option>
-        <option value="CONTANTI">💶 Contanti</option>
-        <option value="INVESTIMENTI">📈 Investimenti</option>
-	      <option value="PENSIONE">👴 Pensione</option>
+        <option value="BANCA">🏦 {{ _('Banca') }}</option>
+        <option value="CONTANTI">💶 {{ _('Contanti') }}</option>
+        <option value="INVESTIMENTI">📈 {{ _('Investimenti') }}</option>
+	      <option value="PENSIONE">👴 {{ _('Pensione') }}</option>
       </select>
       <br /><br />
       <div class="mb-3">
-    <label class="form-label" style="color: #888;">Note (opzionale)</label>
+    <label class="form-label" style="color: #888;">{{ _('Note (opzionale)') }}</label>
     <textarea name="note" class="form-control" rows="2" 
               style="background-color: #222; border-color: #444; color: #eee;">{{ transazione.note if transazione.note else '' }}</textarea>
 </div>
       <br /><br />
-      <button type="submit">✅ Aggiungi</button>
+      <button type="submit">✅ {{ _('Aggiungi') }}</button>
     </form>
 
-    <p><a href="{{ url_for('transazioni') }}">⬅️ Torna alle transazioni</a></p>
-    <p><a href="{{ url_for('home') }}">⬅️ Torna alla Home</a></p>
+    <p><a href="{{ url_for('transazioni') }}">⬅️ {{ _('Torna alle transazioni') }}</a></p>
+    <p><a href="{{ url_for('home') }}">⬅️ {{ _('Torna alla Home') }} </a></p>
  
 <script>
   const categorie = {{ categorie_json | safe }};

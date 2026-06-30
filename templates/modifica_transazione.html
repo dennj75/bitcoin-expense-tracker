@@ -1,44 +1,44 @@
-{% extends "base.html" %} {% block title %}Modifica Transazione €- ₿eesy{% endblock %} {% block
+{% extends "base.html" %} {% block title %}{{ _('Modifica Transazione €- ₿eesy') }}{% endblock %} {% block
 content %}
-  <h1>✏️ Modifica Transazione</h1>
+  <h1>✏️ {{ _('Modifica Transazione') }}</h1>
 
   <form method="post" 
       action="{{ url_for('modifica_transazione_eur', id_transazione=transazione['id']) }}" 
       onsubmit="document.querySelector('select[name=\'conto\']').disabled = false;">
-    <label>Data:</label>
+    <label>{{ _('Data:') }}</label>
     <input type="date" name="data" value="{{ transazione['data'] }}" required><br><br>
 
-    <label>Descrizione:</label>
+    <label>{{ _('Descrizione:') }}</label>
     <input type="text" name="descrizione" value="{{ transazione['descrizione'] }}" required><br><br>
 
-    <label>Categoria:</label>
+    <label>{{ _('Categoria:') }}</label>
     <select name="categoria" id="categoria" onchange="popolaSottocategoria()" required>
-      <option value="">-- Seleziona Categoria --</option>
+      <option value="">-- {{ _('Seleziona Categoria') }} --</option>
       {% for cat in categorie %}
         <option value="{{ cat }}" {% if transazione['categoria'] == cat %}selected{% endif %}>{{ cat }}</option>
       {% endfor %}
     </select><br><br>
 
-    <label>Sottocategoria:</label>
+    <label>{{ _('Sottocategoria:') }}</label>
     <select name="sottocategoria" id="sottocategoria" required></select><br><br>
 
-    <label>Importo (€):</label>
+    <label>{{ _('Importo (€):') }}</label>
     <input type="text" name="importo" value="{{ '%.2f'|format(transazione['importo']|float) }}" required><br><br>
 
-    <label>Conto:</label>
+    <label>{{ _('Conto:') }}</label>
     <select name="conto" required>
-      <option value="BANCA" {% if transazione['conto'] == "BANCA" %}selected{% endif %}>🏦 Banca</option>
-      <option value="CONTANTI" {% if transazione['conto'] == "CONTANTI" %}selected{% endif %}>💶 Contanti</option>
-      <option value="INVESTIMENTI" {% if transazione['conto'] == "INVESTIMENTI" %}selected{% endif %}>📈 Investimenti</option>
-      <option value="PENSIONE" {% if transazione['conto'] == "PENSIONE" %}selected{% endif %}>👴 Pensione</option>
+      <option value="BANCA" {% if transazione['conto'] == "BANCA" %}selected{% endif %}>🏦 {{ _('Banca') }}</option>
+      <option value="CONTANTI" {% if transazione['conto'] == "CONTANTI" %}selected{% endif %}>💶 {{ _('Contanti') }}</option>
+      <option value="INVESTIMENTI" {% if transazione['conto'] == "INVESTIMENTI" %}selected{% endif %}>📈 {{ _('Investimenti') }}</option>
+      <option value="PENSIONE" {% if transazione['conto'] == "PENSIONE" %}selected{% endif %}>👴 {{ _('Pensione') }}</option>
 
     </select><br><br>
     <div class="mb-3">
-    <label class="form-label" style="color: #888;">Note (opzionale)</label>
+    <label class="form-label" style="color: #888;">{{ _('Note (opzionale)') }}</label>
     <textarea name="note" class="form-control" rows="2" 
               style="background-color: #222; border-color: #444; color: #eee;">{{ transazione.note if transazione.note else '' }}</textarea>
 </div>
-    <button type="submit">✅ Salva Modifiche</button>
+    <button type="submit">✅ {{ _('Salva Modifiche') }}</button>
   </form>
 
 <script>

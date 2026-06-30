@@ -1,37 +1,37 @@
-{% extends "base.html" %} {% block title %}Modifica Transazione Lightning - ₿eesy{% endblock %} {% block
+{% extends "base.html" %} {% block title %}{{ _('Modifica Transazione Lightning') }} - ₿eesy{% endblock %} {% block
 content %}
 
-  <h1>✏️ Modifica Transazione Lightning ⚡️</h1>
+  <h1>✏️ {{ _('Modifica Transazione Lightning') }} ⚡️</h1>
 
   <form method="post" action="{{ url_for('modifica_transazione_web_lightning', id_transazione=transazione_lightning["id"]) }}">
     
-    <label for="data">📅 Data:</label>
+    <label for="data">📅 {{ _('Data') }}:</label>
     <input type="date" id="data" name="data" value="{{ transazione_lightning['data'] }}" required /><br /><br />
 
-    <label for="wallet">👛 Wallet:</label>
+    <label for="wallet">👛 {{ _('Wallet') }}:</label>
     <input type="text" id="wallet" name="wallet" value="{{ transazione_lightning['wallet'] }}" required /><br /><br />
 
-    <label for="descrizione">📝 Descrizione:</label>
+    <label for="descrizione">📝 {{ _('Descrizione') }}:</label>
     <input type="text" id="descrizione" name="descrizione" value="{{ transazione_lightning['descrizione'] }}" required /><br /><br />
 
-    <label for="categoria">📂 Categoria:</label>
+    <label for="categoria">📂 {{ _('Categoria') }}:</label>
     <select name="categoria" id="categoria" onchange="popolaSottocategoria()" required>
-      <option value="">-- Seleziona Categoria --</option>
+      <option value="">-- {{ _('Seleziona Categoria') }} --</option>
       {% for cat in categorie %}
         <option value="{{ cat }}" {% if transazione_lightning['categoria'] == cat %}selected{% endif %}>{{ cat }}</option>
       {% endfor %}
     </select><br /><br />
 
-    <label for="sottocategoria">🔖 Sottocategoria:</label>
+    <label for="sottocategoria">🔖 {{ _('Sottocategoria') }}:</label>
     <select name="sottocategoria" id="sottocategoria" required></select><br /><br />
 
-    <label for="satoshi">⚡️ Importo (satoshi):</label>
+    <label for="satoshi">⚡️ {{ _('Importo (satoshi)') }}:</label>
     <input type="number" id="satoshi" name="satoshi" min="-1000000" max="1000000" value="{{ transazione_lightning['satoshi'] }}" required /><br /><br />
 
-    <button type="submit">✅ Salva Modifiche</button>
+    <button type="submit">✅ {{ _('Salva Modifiche') }}</button>
   </form>
 
-  <p><a href="/transazioni_lightning">⬅️ Torna alle transazioni Lightning</a></p>
+  <p><a href="/transazioni_lightning">⬅️ {{ _('Torna alle transazioni Lightning') }}</a></p>
  <script>
     const categorie = {{ categorie_json | safe }};
     const categoriaAttuale = "{{ transazione_lightning['categoria'] }}";
