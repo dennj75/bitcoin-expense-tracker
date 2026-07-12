@@ -1187,3 +1187,68 @@ def crea_tabella_mapping():
     conn.commit()
     conn.close()
     print("🧠 Tabella Mapping pronta con i primi esempi!")
+
+
+def registra_transazione_conto(user_id, data, descrizione, categoria, sottocategoria, importo, conto, controvalore_btc=None, valore_btc_eur=None, note=''):
+    """
+    Gestisce automaticamente i trasferimenti BANCA ↔ CONTANTI.
+    Aggiornato con i nuovi nomi delle categorie.
+    """
+    # --- CASO 1: INVESTIMENTI (PAC o Versamenti grossi) ---
+    if sottocategoria == "Acquisto Titoli/Fondi (Giroconto)":
+        # 1. Togliamo i soldi dalla BANCA (Uscita reale)
+        salva_su_db(user_id, data, descrizione, categoria, sottocategoria,
+                    importo, controvalore_btc, valore_btc_eur, conto="BANCA", note=note)
+        # 2. Li aggiungiamo al conto INVESTIMENTI (Aumento del fondo)
+        salva_su_db(user_id, data, f"Caricamento: {descrizione}", categoria, sottocategoria, abs(
+            importo), None, None, conto="INVESTIMENTI", note="Giroconto automatico")
+        return
+
+    # --- CASO 2: PENSIONE COMPLEMENTARE ---
+    if sottocategoria == "Versamento Pensione (Giroconto)":
+        # 1. Uscita dalla BANCA
+        salva_su_db(user_id, data, descrizione, categoria,
+                    sottocategoria, importo, None, None, conto="BANCA", note=note)
+        # 2. Entrata nel conto PENSIONE
+        salva_su_db(user_id, data, f"Versamento: {descrizione}", categoria, sottocategoria, abs(
+            importo), None, None, conto="PENSIONE", note="Giroconto automatico")
+        return
+
+    # 3. PRELIEVO (Soldi che escono dalla BANCA per andare nei CONTANTI)
+    # Usiamo i nuovi nomi: "Patrimonio & Finanze" e "Prelievo Contante"
+    if categoria == "Patrimonio & Finanze" and sottocategoria == "Prelievo Contante" and importo < 0:
+        # Nota: Qui potresti voler concatenare la nota dell'utente a quella automatica
+        nota_giroconto = f"{note} (Giroconto)".strip()
+        # Togli dalla banca (segna la spesa reale)
+        salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
+                    controvalore_btc, valore_btc_eur, conto="BANCA")
+
+        # Aggiungi ai contanti (giroconto interno)
+        salva_su_db(user_id, data,
+                    "Giroconto: Prelievo da banca",
+                    "Patrimonio & Finanze",
+                    "Trasferimento",
+                    abs(importo),
+                    None, None,
+                    conto="CONTANTI")
+        return
+
+    # 2. DEPOSITO (Soldi contanti che versi in BANCA)
+    if categoria == "Patrimonio & Finanze" and sottocategoria == "Prelievo Contante" and importo > 0:
+        # Aggiungi alla banca
+        salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
+                    controvalore_btc, valore_btc_eur, conto="BANCA")
+
+        # Togli dai contanti
+        salva_su_db(user_id, data,
+                    "Giroconto: Versamento in banca",
+                    "Patrimonio & Finanze",
+                    "Trasferimento",
+                    -abs(importo),
+                    None, None,
+                    conto="CONTANTI")
+        return
+
+    # Se non è un prelievo/deposito, salva normalmente sul conto selezionato
+    salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
+                controvalore_btc, valore_btc_eur, conto=conto, note=note)

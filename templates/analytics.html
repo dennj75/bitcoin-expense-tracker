@@ -240,17 +240,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // 1. Generiamo la mappa di traduzione ereditata dal dizionario CATEGORIE di Python
+  const mappaTraduzioniGrafici = {
+    {% if CATEGORIE %}
+      {% for macro, sottocat_list in CATEGORIE.items() %}
+        "{{ macro }}": "{{ traduci(macro) }}",
+        {% for sotto in sottocat_list %}
+          "{{ sotto }}": "{{ traduci(sotto) }}",
+        {% endfor %}
+      {% endfor %}
+    {% endif %}
+  };
+
   document.addEventListener('DOMContentLoaded', function() {
       // --- GRAFICO SPESE ---
       {% if labels_spese %}
       const canvasSpese = document.getElementById('chartAnalytics');
-      if (canvasSpese) { // Entra solo se il canvas esiste davvero!
+      if (canvasSpese) {
+          // Prendiamo le labels originali da Flask e le traduciamo una per una al volo
+          const labelsSpeseOriginali = {{ labels_spese | tojson }};
+          const labelsSpeseTradotte = labelsSpeseOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+
           new Chart(canvasSpese.getContext('2d'), {
               type: 'bar',
               data: {
-                  labels: {{ labels_spese | tojson }},
+                  labels: labelsSpeseTradotte, // Usiamo quelle tradotte!
                   datasets: [{
-                      label: 'Totale Speso',
+                      label: "{{ _('Totale Speso') }}", // Traduciamo anche il testo del tooltip
                       data: {{ valori_spese | tojson }},
                       backgroundColor: '#f39c12',
                       borderRadius: 5
@@ -272,11 +288,15 @@
       // --- GRAFICO ENTRATE ---
       {% if labels_entrate %}
       const canvasEntrate = document.getElementById('chartEntrate');
-      if (canvasEntrate) { // Sicurezza anche qui
+      if (canvasEntrate) {
+          // Stessa cosa: prendiamo le labels delle entrate e le traduciamo
+          const labelsEntrateOriginali = {{ labels_entrate | tojson }};
+          const labelsEntrateTradotte = labelsEntrateOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+
           new Chart(canvasEntrate.getContext('2d'), {
               type: 'doughnut',
               data: {
-                  labels: {{ labels_entrate | tojson }},
+                  labels: labelsEntrateTradotte, // Usiamo quelle tradotte!
                   datasets: [{
                       data: {{ valori_entrate | tojson }},
                       backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
@@ -300,7 +320,7 @@
   class="card shadow p-4 mb-4"
   style="background-color: #1a1a1a; border: 1px solid #3498db"
 >
-  <h4 style="color: #3498db">➕ Aggiungi Nuovo Investimento</h4>
+  <h4 style="color: #3498db">➕ {{ _('Aggiungi Nuovo Investimento') }}</h4>
   <form action="{{ url_for('add_asset') }}" method="POST" class="row g-3">
     <div class="col-md-4">
       <input

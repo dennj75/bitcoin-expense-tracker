@@ -27,6 +27,7 @@ This project is an **EXPERIMENTAL EDUCATIONAL LABORATORY**.
   - **Mobile:** Experimental login via Amber (Nostr Signer) on Android using the intent protocol.
 - ⚡ **Lightning & On-Chain:** Separate management for Satoshi-precision transactions.
 - **🛡️ Military-Grade Backup System:** Encrypted exports using AES-256-GCM. Your data is protected by a Master Key derived from your password.
+- 🌍 **Internationalization (i18n) [NEW - JULY 2026]:** Multi-language localization engine powered by PyBabel. Fully supports English, Italian and Chinese language profiles.
 
 ---
 
@@ -125,7 +126,7 @@ We implemented a robust backup system to ensure you never lose your data:
 - [x] **Advanced Analytics:** Real-time visual dashboards (Chart.js).
 - [x] **Plug & Play DB:** Automatic database and table creation on first run.
 - [ ] **Multi-currency support:** Beyond EUR (USD, CHF, etc.).
-- [ ] **Multi-language Support (i18n):** Translating the interface into English to reach the global Bitcoin community. 🌍
+- [x] **Multi-language Support (i18n):** Translating the interface into English and Chinese to reach the global Bitcoin community. 🌍
 - [ ] **Detailed History:** Transaction drill-down within the Analytics page.
 - [ ] **Docker Support:** One-click deployment for Umbrel/Raspberry Pi.
 
@@ -134,6 +135,7 @@ We implemented a robust backup system to ensure you never lose your data:
 ## 👨‍💻 Behind the Code: A "Vibe Coding" Story
 
 This project is a labor of love by a **self-taught developer**.
+
 - **Learning by doing:** ₿eesy is my first major project shared on GitHub.
 - **Bitcoin in my heart:** I built this because Bitcoin is a fundamental part of my journey.
 - **Vibe Coding:** I believe in building software that feels right, iterating quickly, and learning through the "vibe" of the development process.
@@ -159,7 +161,6 @@ If you want to follow the development or get in touch in a decentralized way:
 - **Backup Cifrato:** Esporta i tuoi dati in formato AES-256 sicuro.
 - **Senza Password:** Prova il login Nostr tramite estensioni browser o Amber su Android.
 - **Ripristino Mobile:** Funzionante al 100% per account tradizionali.
-
 
 | <strong style="color: #f39c12">₿eesy</strong> | Building in public 🚀 | Stay humble, stack sats ⚡
 

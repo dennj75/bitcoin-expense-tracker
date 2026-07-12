@@ -57,8 +57,8 @@
       <td>{{ t["descrizione"] }}</td>
 
       <!-- Categoria e Sottocategoria -->
-      <td>{{ t["categoria"] }}</td>
-      <td>{{ t["sottocategoria"] }}</td>
+      <td>{{ traduci(t["categoria"]) }}</td>
+      <td>{{ traduci(t["sottocategoria"]) }}</td>
 
       <td class="{% if t["satoshi"]|float >= 0 %}importo-positivo{% else %}importo-negativo{% endif %}">
         {{ "{:,}".format(t["satoshi"]).replace(",", ".") }}

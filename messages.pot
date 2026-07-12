@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-30 15:43+0200\n"
+"POT-Creation-Date: 2026-07-12 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,24 +17,336 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app.py:1397
+#: app.py:129 templates/analytics.html:9
+msgid "Entrate"
+msgstr ""
+
+#: app.py:130
+msgid "Abitazione"
+msgstr ""
+
+#: app.py:131
+msgid "Alimentari"
+msgstr ""
+
+#: app.py:132
+msgid "Trasporti"
+msgstr ""
+
+#: app.py:133
+msgid "Spese Personali"
+msgstr ""
+
+#: app.py:134
+msgid "Tempo Libero"
+msgstr ""
+
+#: app.py:135
+msgid "Patrimonio & Finanze"
+msgstr ""
+
+#: app.py:136
+msgid "Tasse & Stato"
+msgstr ""
+
+#: app.py:137
+msgid "Lavoro & Studio"
+msgstr ""
+
+#: app.py:138
+msgid "Famiglia"
+msgstr ""
+
+#: app.py:139
+msgid "Salute"
+msgstr ""
+
+#: app.py:140
+msgid "Imprevisti"
+msgstr ""
+
+#: app.py:143
+msgid "Cedole O Dividendi"
+msgstr ""
+
+#: app.py:144
+msgid "plusvalenze investimenti"
+msgstr ""
+
+#: app.py:145
+msgid "Interessi attivi"
+msgstr ""
+
+#: app.py:146
+msgid "Stipendio"
+msgstr ""
+
+#: app.py:147
+msgid "Rimborso capitale investito"
+msgstr ""
+
+#: app.py:148
+msgid "Regalo"
+msgstr ""
+
+#: app.py:149
+msgid "Donazioni"
+msgstr ""
+
+#: app.py:150
+msgid "Claim giochi online"
+msgstr ""
+
+#: app.py:151
+msgid "Affitto/Mutuo"
+msgstr ""
+
+#: app.py:152
+msgid "Bollette: Luce"
+msgstr ""
+
+#: app.py:153
+msgid "Bollette: acqua"
+msgstr ""
+
+#: app.py:154
+msgid "Bollette: Gas"
+msgstr ""
+
+#: app.py:155
+msgid "Bollette: Rifiuti"
+msgstr ""
+
+#: app.py:156
+msgid "Manutenzione"
+msgstr ""
+
+#: app.py:157
+msgid "Spese condominiali"
+msgstr ""
+
+#: app.py:158
+msgid "Assicurazione casa"
+msgstr ""
+
+#: app.py:159
+msgid "IMU"
+msgstr ""
+
+#: app.py:160
+msgid "Supermercato"
+msgstr ""
+
+#: app.py:161
+msgid "Ristorante - Bar"
+msgstr ""
+
+#: app.py:162
+msgid "Spesa online"
+msgstr ""
+
+#: app.py:163 app.py:172 app.py:194 app.py:206 app.py:210
+msgid "Altro"
+msgstr ""
+
+#: app.py:164
+msgid "Carburante"
+msgstr ""
+
+#: app.py:165
+msgid "Mezzi pubblici"
+msgstr ""
+
+#: app.py:166
+msgid "Manutenzione auto / moto"
+msgstr ""
+
+#: app.py:167
+msgid "Assicurazione auto"
+msgstr ""
+
+#: app.py:168
+msgid "Bollo auto"
+msgstr ""
+
+#: app.py:169
+msgid "Taxi / Uber"
+msgstr ""
+
+#: app.py:170
+msgid "Noleggi"
+msgstr ""
+
+#: app.py:171
+msgid "Parcheggi / pedaggi"
+msgstr ""
+
+#: app.py:173
+msgid "Abbigliamento / Scarpe"
+msgstr ""
+
+#: app.py:174
+msgid "Igiene personale"
+msgstr ""
+
+#: app.py:175
+msgid "Parrucchiere / estetista"
+msgstr ""
+
+#: app.py:176
+msgid "Abbonamenti (Netflix, Spotify, ecc)"
+msgstr ""
+
+#: app.py:177
+msgid "Libri / Riviste"
+msgstr ""
+
+#: app.py:178
+msgid "Cinema / Teatro / Eventi"
+msgstr ""
+
+#: app.py:179
+msgid "Sport / Palestra"
+msgstr ""
+
+#: app.py:180
+msgid "Viaggi / Vacanze"
+msgstr ""
+
+#: app.py:181
+msgid "Hobby / Collezioni"
+msgstr ""
+
+#: app.py:182
+msgid "Giochi / App"
+msgstr ""
+
+#: app.py:183
+msgid "Commissioni bancarie"
+msgstr ""
+
+#: app.py:184
+msgid "Interessi passivi"
+msgstr ""
+
+#: app.py:185
+msgid "Minusvalenze investimenti"
+msgstr ""
+
+#: app.py:186
+msgid "Imposte di bollo / IVAFE"
+msgstr ""
+
+#: app.py:187
+msgid "Acquisto Titoli/Fondi (Giroconto)"
+msgstr ""
+
+#: app.py:188
+msgid "Versamento Pensione (Giroconto)"
+msgstr ""
+
+#: app.py:189
+msgid "Investimento Crypto"
+msgstr ""
+
+#: app.py:190
+msgid "Prelievo Contante"
+msgstr ""
+
+#: app.py:191
+msgid "IRPEF (Saldo/Acconto)"
+msgstr ""
+
+#: app.py:192
+msgid "Capital Gain (Tassazione)"
+msgstr ""
+
+#: app.py:193
+msgid "Multe"
+msgstr ""
+
+#: app.py:195
+msgid "Ufficio / Coworking"
+msgstr ""
+
+#: app.py:196
+msgid "Formazione / Corsi"
+msgstr ""
+
+#: app.py:197
+msgid "Materiali didattici"
+msgstr ""
+
+#: app.py:198
+msgid "Trasporti lavoro"
+msgstr ""
+
+#: app.py:199
+msgid "Pasti lavoro"
+msgstr ""
+
+#: app.py:200
+msgid "Spese scolastiche"
+msgstr ""
+
+#: app.py:201
+msgid "Abbigliamento bambino"
+msgstr ""
+
+#: app.py:202
+msgid "Salute bambino"
+msgstr ""
+
+#: app.py:203
+msgid "Giocattoli"
+msgstr ""
+
+#: app.py:204
+msgid "Baby sitter / Asilo"
+msgstr ""
+
+#: app.py:205
+msgid "Regali fatti"
+msgstr ""
+
+#: app.py:207
+msgid "Farmacia"
+msgstr ""
+
+#: app.py:208
+msgid "Visita medica"
+msgstr ""
+
+#: app.py:209
+msgid "Assicurazione Sanitaria"
+msgstr ""
+
+#: app.py:211
+msgid "Riparazioni urgenti"
+msgstr ""
+
+#: app.py:212
+msgid "Emergenze"
+msgstr ""
+
+#: app.py:213
+msgid "Sostituzione tech"
+msgstr ""
+
+#: app.py:1438
 msgid "Statistiche Euro (€)"
 msgstr ""
 
-#: app.py:1398
+#: app.py:1439
 msgid "Statistiche Lightning (⚡)"
 msgstr ""
 
-#: app.py:1399
+#: app.py:1440
 msgid "Statistiche On-chain (₿)"
 msgstr ""
 
-#: app.py:1408 templates/analytics.html:1
+#: app.py:1449 templates/analytics.html:1
 msgid "Statistiche"
-msgstr ""
-
-#: templates/analytics.html:9
-msgid "Entrate"
 msgstr ""
 
 #: templates/analytics.html:21
@@ -125,91 +437,99 @@ msgstr ""
 msgid "Nessuna entrata registrata."
 msgstr ""
 
-#: templates/analytics.html:310
-msgid "Nome (es. Buono Postale)"
+#: templates/analytics.html:269
+msgid "Totale Speso"
 msgstr ""
 
-#: templates/analytics.html:320
-msgid "Capitale Investito €"
+#: templates/analytics.html:323
+msgid "Aggiungi Nuovo Investimento"
 msgstr ""
 
 #: templates/analytics.html:330
+msgid "Nome (es. Buono Postale)"
+msgstr ""
+
+#: templates/analytics.html:340
+msgid "Capitale Investito €"
+msgstr ""
+
+#: templates/analytics.html:350
 msgid "Valore Iniziale €"
 msgstr ""
 
-#: templates/analytics.html:336
+#: templates/analytics.html:356
 msgid "Salva"
 msgstr ""
 
-#: templates/analytics.html:344
+#: templates/analytics.html:364
 msgid "Performance Investimenti"
 msgstr ""
 
-#: templates/analytics.html:354 templates/analytics.html:497
+#: templates/analytics.html:374 templates/analytics.html:517
 msgid "Asset"
 msgstr ""
 
-#: templates/analytics.html:355
+#: templates/analytics.html:375
 msgid "Costo Storico (Carico)"
 msgstr ""
 
-#: templates/analytics.html:356
+#: templates/analytics.html:376
 msgid "Valore Attuale"
 msgstr ""
 
-#: templates/analytics.html:357 templates/index.html:67 templates/index.html:91
+#: templates/analytics.html:377 templates/index.html:67 templates/index.html:91
 msgid "Rendimento"
 msgstr ""
 
-#: templates/analytics.html:359
+#: templates/analytics.html:379
 msgid "Registra Valore Mese"
 msgstr ""
 
-#: templates/analytics.html:419
+#: templates/analytics.html:439
 msgid "Nuovo importo €"
 msgstr ""
 
-#: templates/analytics.html:425
+#: templates/analytics.html:445
 msgid "Salva rilevazione mese"
 msgstr ""
 
-#: templates/analytics.html:469
+#: templates/analytics.html:489
 msgid "Andamento Patrimoniale Euro"
 msgstr ""
 
-#: templates/analytics.html:470
+#: templates/analytics.html:490
 msgid "Saldo Storico Patrimoniale (Controvalore €)"
 msgstr ""
 
-#: templates/analytics.html:488
+#: templates/analytics.html:508
 msgid "Storico Rilevazioni Mese"
 msgstr ""
 
-#: templates/analytics.html:496 templates/importa_anteprima.html:11
+#: templates/analytics.html:516 templates/importa_anteprima.html:11
 #: templates/modifica_transazione_lightning.html:8
-#: templates/modifica_transazione_onchain.html:8 templates/transazioni.html:53
+#: templates/modifica_transazione_onchain.html:8 templates/transazioni.html:54
 #: templates/transazioni_lightning.html:42
 #: templates/transazioni_onchain.html:43
 msgid "Data"
 msgstr ""
 
-#: templates/analytics.html:498
+#: templates/analytics.html:518
 msgid "Valore"
 msgstr ""
 
-#: templates/analytics.html:499
+#: templates/analytics.html:519
 msgid "Azione"
 msgstr ""
 
-#: templates/analytics.html:528
+#: templates/analytics.html:548
 msgid "Sicuro di voler eliminare questa rilevazione?"
 msgstr ""
 
-#: templates/analytics.html:536
+#: templates/analytics.html:556
 msgid "Elimina errore"
 msgstr ""
 
-#: templates/analytics.html:546
+#: templates/analytics.html:566
 msgid "Nessuna rilevazione salvata finora."
 msgstr ""
 
@@ -509,23 +829,23 @@ msgstr ""
 
 #: templates/importa_anteprima.html:12
 #: templates/modifica_transazione_lightning.html:14
-#: templates/modifica_transazione_onchain.html:14 templates/transazioni.html:54
+#: templates/modifica_transazione_onchain.html:14 templates/transazioni.html:55
 #: templates/transazioni_lightning.html:44
 #: templates/transazioni_onchain.html:45
 msgid "Descrizione"
 msgstr ""
 
-#: templates/importa_anteprima.html:13 templates/transazioni.html:57
+#: templates/importa_anteprima.html:13 templates/transazioni.html:58
 msgid "Importo (€)"
 msgstr ""
 
-#: templates/importa_anteprima.html:14 templates/transazioni.html:58
+#: templates/importa_anteprima.html:14 templates/transazioni.html:59
 msgid "Controvalore BTC"
 msgstr ""
 
 #: templates/importa_anteprima.html:15
 #: templates/modifica_transazione_lightning.html:17
-#: templates/modifica_transazione_onchain.html:17 templates/transazioni.html:55
+#: templates/modifica_transazione_onchain.html:17 templates/transazioni.html:56
 #: templates/transazioni_lightning.html:45
 #: templates/transazioni_onchain.html:46
 msgid "Categoria"
@@ -533,7 +853,7 @@ msgstr ""
 
 #: templates/importa_anteprima.html:16
 #: templates/modifica_transazione_lightning.html:25
-#: templates/modifica_transazione_onchain.html:25 templates/transazioni.html:56
+#: templates/modifica_transazione_onchain.html:25 templates/transazioni.html:57
 #: templates/transazioni_lightning.html:46
 #: templates/transazioni_onchain.html:47
 msgid "Sottocategoria"
@@ -631,6 +951,10 @@ msgstr ""
 msgid "Investimenti:"
 msgstr ""
 
+#: templates/index.html:127
+msgid "Saldo"
+msgstr ""
+
 #: templates/index.html:136
 msgid "Importa CSV Banca"
 msgstr ""
@@ -682,19 +1006,19 @@ msgid "Modifica Transazione"
 msgstr ""
 
 #: templates/modifica_transazione.html:8
-#: templates/nuova_transazione_lightning.html:7
+#: templates/nuova_transazione_lightning.html:8
 #: templates/nuova_transazione_onchain.html:8
 msgid "Data:"
 msgstr ""
 
 #: templates/modifica_transazione.html:11 templates/nuova_transazione.html:15
-#: templates/nuova_transazione_lightning.html:13
+#: templates/nuova_transazione_lightning.html:14
 #: templates/nuova_transazione_onchain.html:14
 msgid "Descrizione:"
 msgstr ""
 
 #: templates/modifica_transazione.html:14 templates/nuova_transazione.html:24
-#: templates/nuova_transazione_lightning.html:16
+#: templates/nuova_transazione_lightning.html:17
 #: templates/nuova_transazione_onchain.html:17
 msgid "Categoria:"
 msgstr ""
@@ -703,45 +1027,46 @@ msgstr ""
 #: templates/modifica_transazione_lightning.html:19
 #: templates/modifica_transazione_onchain.html:19
 #: templates/nuova_transazione.html:31
-#: templates/nuova_transazione_lightning.html:23
+#: templates/nuova_transazione_lightning.html:24
 #: templates/nuova_transazione_onchain.html:19
 msgid "Seleziona Categoria"
 msgstr ""
 
-#: templates/modifica_transazione.html:22 templates/nuova_transazione.html:43
-#: templates/nuova_transazione_lightning.html:29
-#: templates/nuova_transazione_onchain.html:25
+#: templates/modifica_transazione.html:22 templates/nuova_transazione.html:53
+#: templates/nuova_transazione_lightning.html:39
+#: templates/nuova_transazione_onchain.html:34
 msgid "Sottocategoria:"
 msgstr ""
 
-#: templates/modifica_transazione.html:25 templates/nuova_transazione.html:55
+#: templates/modifica_transazione.html:25 templates/nuova_transazione.html:65
 msgid "Importo (€):"
 msgstr ""
 
-#: templates/modifica_transazione.html:28 templates/nuova_transazione.html:65
+#: templates/modifica_transazione.html:28 templates/nuova_transazione.html:75
 msgid "Conto:"
 msgstr ""
 
-#: templates/modifica_transazione.html:30 templates/nuova_transazione.html:67
+#: templates/modifica_transazione.html:30 templates/nuova_transazione.html:77
+#: templates/transazioni.html:93
 msgid "Banca"
 msgstr ""
 
-#: templates/modifica_transazione.html:31 templates/nuova_transazione.html:68
-#: templates/transazioni.html:14
+#: templates/modifica_transazione.html:31 templates/nuova_transazione.html:78
+#: templates/transazioni.html:15 templates/transazioni.html:95
 msgid "Contanti"
 msgstr ""
 
-#: templates/modifica_transazione.html:32 templates/nuova_transazione.html:69
-#: templates/transazioni.html:17
+#: templates/modifica_transazione.html:32 templates/nuova_transazione.html:79
+#: templates/transazioni.html:18 templates/transazioni.html:97
 msgid "Investimenti"
 msgstr ""
 
-#: templates/modifica_transazione.html:33 templates/nuova_transazione.html:70
-#: templates/transazioni.html:20
+#: templates/modifica_transazione.html:33 templates/nuova_transazione.html:80
+#: templates/transazioni.html:21 templates/transazioni.html:99
 msgid "Pensione"
 msgstr ""
 
-#: templates/modifica_transazione.html:37 templates/nuova_transazione.html:74
+#: templates/modifica_transazione.html:37 templates/nuova_transazione.html:84
 msgid "Note (opzionale)"
 msgstr ""
 
@@ -796,52 +1121,64 @@ msgstr ""
 msgid "Nuova transazione € - ₿eesy"
 msgstr ""
 
+#: templates/nuova_transazione.html:4
+msgid "Nuova transazione €"
+msgstr ""
+
 #: templates/nuova_transazione.html:6
 msgid "Data (YYYY-MM-DD):"
 msgstr ""
 
-#: templates/nuova_transazione.html:50
+#: templates/nuova_transazione.html:60
 msgid "Seleziona Sottocategoria"
 msgstr ""
 
-#: templates/nuova_transazione.html:79
-#: templates/nuova_transazione_lightning.html:43
-#: templates/nuova_transazione_onchain.html:42
+#: templates/nuova_transazione.html:89
+#: templates/nuova_transazione_lightning.html:53
+#: templates/nuova_transazione_onchain.html:51
 msgid "Aggiungi"
 msgstr ""
 
-#: templates/nuova_transazione.html:82
+#: templates/nuova_transazione.html:92
 msgid "Torna alle transazioni"
 msgstr ""
 
-#: templates/nuova_transazione.html:83
-#: templates/nuova_transazione_lightning.html:51
-#: templates/nuova_transazione_onchain.html:46
+#: templates/nuova_transazione.html:93
+#: templates/nuova_transazione_lightning.html:61
+#: templates/nuova_transazione_onchain.html:55
 msgid "Torna alla Home"
 msgstr ""
 
-#: templates/nuova_transazione_lightning.html:1
-msgid "Nuova transazione Lightning⚡️ - ₿eesy"
+#: templates/nuova_transazione.html:115
+#: templates/nuova_transazione_lightning.html:81
+#: templates/nuova_transazione_onchain.html:78
+msgid "Nessuna sottocategoria"
 msgstr ""
 
-#: templates/nuova_transazione_lightning.html:3
-msgid "Bitcoin Lightning⚡️"
+#: templates/nuova_transazione_lightning.html:1
+msgid ""
+"Nuova transazione Lightning⚡️ -\n"
+"₿eesy"
 msgstr ""
 
 #: templates/nuova_transazione_lightning.html:4
+msgid "Bitcoin Lightning⚡️"
+msgstr ""
+
+#: templates/nuova_transazione_lightning.html:5
 msgid "Nuova transazione Lightning ⚡️"
 msgstr ""
 
-#: templates/nuova_transazione_lightning.html:10
+#: templates/nuova_transazione_lightning.html:11
 #: templates/nuova_transazione_onchain.html:11
 msgid "Wallet:"
 msgstr ""
 
-#: templates/nuova_transazione_lightning.html:33
+#: templates/nuova_transazione_lightning.html:43
 msgid "Importo (satoshi):"
 msgstr ""
 
-#: templates/nuova_transazione_lightning.html:48
+#: templates/nuova_transazione_lightning.html:58
 msgid "Torna alle transazioni Lightning ⚡️"
 msgstr ""
 
@@ -857,19 +1194,19 @@ msgstr ""
 msgid "Nuova transazione ₿itcoin on-chain🔗"
 msgstr ""
 
-#: templates/nuova_transazione_onchain.html:27
+#: templates/nuova_transazione_onchain.html:36
 msgid "Transaction ID:"
 msgstr ""
 
-#: templates/nuova_transazione_onchain.html:36
+#: templates/nuova_transazione_onchain.html:45
 msgid "Importo (₿itcoin):"
 msgstr ""
 
-#: templates/nuova_transazione_onchain.html:39
+#: templates/nuova_transazione_onchain.html:48
 msgid "Importo fee (₿itcoin):"
 msgstr ""
 
-#: templates/nuova_transazione_onchain.html:45
+#: templates/nuova_transazione_onchain.html:54
 msgid "Torna alle transazioni On-chain 🔗"
 msgstr ""
 
@@ -1018,59 +1355,61 @@ msgid "Scarica CSV per mese On-chain🔗"
 msgstr ""
 
 #: templates/transazioni.html:1
-msgid "Transazioni € - ₿eesy"
+msgid ""
+"Transazioni €\n"
+" - ₿eesy"
 msgstr ""
 
-#: templates/transazioni.html:3
+#: templates/transazioni.html:4
 msgid "Transazioni €"
 msgstr ""
 
-#: templates/transazioni.html:23
+#: templates/transazioni.html:24
 msgid "Saldo Totale"
 msgstr ""
 
-#: templates/transazioni.html:29 templates/transazioni_lightning.html:16
+#: templates/transazioni.html:30 templates/transazioni_lightning.html:16
 #: templates/transazioni_onchain.html:18
 msgid "Esporta CSV"
 msgstr ""
 
-#: templates/transazioni.html:32 templates/transazioni_lightning.html:19
+#: templates/transazioni.html:33 templates/transazioni_lightning.html:19
 #: templates/transazioni_onchain.html:22
 msgid "Esporta CSV per mese"
 msgstr ""
 
-#: templates/transazioni.html:36
+#: templates/transazioni.html:37
 msgid "Aggiungi una nuova transazione"
 msgstr ""
 
-#: templates/transazioni.html:52 templates/transazioni_lightning.html:41
+#: templates/transazioni.html:53 templates/transazioni_lightning.html:41
 #: templates/transazioni_onchain.html:42
 msgid "ID"
 msgstr ""
 
-#: templates/transazioni.html:59
+#: templates/transazioni.html:60
 msgid "Valore BTC"
 msgstr ""
 
-#: templates/transazioni.html:60
+#: templates/transazioni.html:61
 msgid "Conto"
 msgstr ""
 
-#: templates/transazioni.html:61
+#: templates/transazioni.html:62
 msgid "Note"
 msgstr ""
 
-#: templates/transazioni.html:62 templates/transazioni_lightning.html:50
+#: templates/transazioni.html:63 templates/transazioni_lightning.html:50
 #: templates/transazioni_onchain.html:53
 msgid "Azioni"
 msgstr ""
 
-#: templates/transazioni.html:118 templates/transazioni_lightning.html:72
+#: templates/transazioni.html:119 templates/transazioni_lightning.html:72
 #: templates/transazioni_onchain.html:88
 msgid "Elimina"
 msgstr ""
 
-#: templates/transazioni.html:123 templates/transazioni_lightning.html:74
+#: templates/transazioni.html:124 templates/transazioni_lightning.html:74
 #: templates/transazioni_onchain.html:93
 msgid "Modifica"
 msgstr ""

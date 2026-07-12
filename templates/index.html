@@ -124,7 +124,7 @@ block content %}
     >
     <hr class="separator" />
     <p class="saldo-principale">
-      💰 Saldo {{ "%.2f"|format(saldo_totale_eur) }} €
+      💰 {{ _('Saldo') }} {{ "%.2f"|format(saldo_totale_eur) }} €
     </p>
     <p class="saldo-secondario">{{ "%.8f"|format(saldo_btc_da_eur) }} BTC</p>
     <div style="margin-top: 10px">

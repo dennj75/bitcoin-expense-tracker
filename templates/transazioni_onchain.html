@@ -59,8 +59,8 @@ content %}
         <td>{{ t["data"] }}</td>
         <td>{{ t["wallet"] }}</td>
         <td>{{ t["descrizione"] }}</td>
-        <td>{{ t["categoria"] }}</td>
-        <td>{{ t["sottocategoria"] }}</td>
+        <td>{{ traduci(t["categoria"]) }}</td>
+        <td>{{ traduci(t["sottocategoria"]) }}</td>
         <td>{{ t["transactionID"] }}</td>
         <td
           class="{% if t["importo_btc"] >= 0 %}importo-positivo{% else %}importo-negativo{% endif %}"

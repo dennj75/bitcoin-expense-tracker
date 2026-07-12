@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}{{ _('Nuova transazione Lightning⚡️ - ₿eesy') }}{% endblock %} {% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Nuova transazione Lightning⚡️ -
+₿eesy') }}{% endblock %} {% block content %}
 
 <h1>{{ _('Bitcoin Lightning⚡️') }}</h1>
 <h1>➕ {{ _('Nuova transazione Lightning ⚡️') }}</h1>
@@ -22,10 +23,19 @@
   >
     <option value="">-- {{ _('Seleziona Categoria') }} --</option>
     {% for cat in categorie %}
-    <option value="{{ cat }}">{{ cat }}</option>
+    <option value="{{ cat }}">{{ traduci(cat) }}</option>
     {% endfor %}</select
   ><br /><br />
-
+  <script>
+    // Generiamo la mappa ciclando sul dizionario originale Python CATEGORIE
+    const mappaTraduzioniSottocategorie = {
+      {% for macro, sottocat_list in CATEGORIE.items() %}
+        {% for sotto in sottocat_list %}
+          "{{ sotto }}": "{{ traduci(sotto) }}",
+        {% endfor %}
+      {% endfor %}
+    };
+  </script>
   <label for="sottocategoria">🔖 {{ _('Sottocategoria:') }}</label>
   <select name="sottocategoria" id="sottocategoria" required></select
   ><br /><br />
@@ -50,31 +60,36 @@
 </p>
 <p><a href="{{ url_for('home') }}">⬅️ {{ _('Torna alla Home') }}</a></p>
 <script>
-  const categorie = {{ categorie_json | safe }};
-  const sottocategoriaAttuale = "";
+    const categorie = {{ categorie_json | safe }};
+    const sottocategoriaAttuale = "";
 
-  function popolaSottocategoria() {
-    const categoriaSelezionata = document.getElementById("categoria").value;
-    const sottoSel = document.getElementById("sottocategoria");
-    sottoSel.innerHTML = "";
+    function popolaSottocategoria() {
+      const categoriaSelezionata = document.getElementById("categoria").value;
+      const sottoSel = document.getElementById("sottocategoria");
+      sottoSel.innerHTML = "";
 
-    if (categorie[categoriaSelezionata]) {
-      categorie[categoriaSelezionata].forEach(sotto => {
+      if (categorie[categoriaSelezionata]) {
+        categorie[categoriaSelezionata].forEach(sotto => {
+          const opt = document.createElement("option");
+          opt.value = sotto;
+          opt.text = mappaTraduzioniSottocategorie[sotto] || sotto;
+          sottoSel.appendChild(opt);
+        });
+      } else {
         const opt = document.createElement("option");
-        opt.value = sotto;
-        opt.text = sotto;
+        opt.value = "";
+        opt.text = "-- {{ _('Nessuna sottocategoria') }} --";
         sottoSel.appendChild(opt);
-      });
-    } else {
-      const opt = document.createElement("option");
-      opt.value = "";
-      opt.text = "-- Nessuna sottocategoria --";
-      sottoSel.appendChild(opt);
+      }
     }
-  }
+  // Gestione degli eventi con chiusure corrette
+    document.addEventListener("DOMContentLoaded", () => {
+      popolaSottocategoria();
 
-  document.addEventListener("DOMContentLoaded", () => {
-    popolaSottocategoria();
-  });
+      const catElem = document.getElementById("categoria");
+      if (catElem) {
+        catElem.addEventListener("change", popolaSottocategoria);
+      }
+    });
 </script>
 {% endblock %}

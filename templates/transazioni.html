@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block title %}📋 {{ _('Transazioni € - ₿eesy') }}{% endblock
+{% extends "base.html" %} {% block title %}📋 {{ _('Transazioni €
+ - ₿eesy') }}{% endblock
 %} {% block content %}
 <h1>📋 {{ _('Transazioni €') }}</h1>
 
@@ -68,8 +69,8 @@
           <td>{{ t.id }}</td>
           <td>{{ t.data }}</td>
           <td>{{ t.descrizione }}</td>
-          <td>{{ t.categoria }}</td>
-          <td>{{ t.sottocategoria }}</td>
+          <td>{{ traduci(t.categoria) }}</td>
+          <td>{{ traduci(t.sottocategoria) }}</td>
 
           <td
             class="{% if t.importo >= 0 %}importo-positivo{% else %}importo-negativo{% endif %}"
@@ -89,13 +90,13 @@
          
           <td>
     {% if t.conto.lower() == "banca" %} 
-        🏦 Banca 
+        🏦 {{ _('Banca') }}
     {% elif t.conto.lower() == "contanti" %} 
-        💶 Contanti 
+        💶 {{ _('Contanti') }}
     {% elif t.conto.lower() == "investimenti" %} 
-        📈 Investimenti 
+        📈 {{ _('Investimenti') }}
     {% elif t.conto.lower() == "pensione" %} 
-        👴 Pensione 
+        👴 {{ _('Pensione') }}
     {% else %} 
         {{ t.conto }} 
     {% endif %}

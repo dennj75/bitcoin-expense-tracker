@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}{{ _('Nuova transazione € - ₿eesy') }}{% endblock %} {% block
 content %}
 
-    <h1>➕ Nuova transazione €</h1>
+    <h1>➕ {{ _('Nuova transazione €') }}</h1>
     <form method="post" action="{{ url_for('nuova_transazione') }}" onsubmit="document.querySelector('select[name=\'conto\']').disabled = false;">
       <label for="data">📅 {{ _('Data (YYYY-MM-DD):') }}</label>
       <input
@@ -35,16 +35,26 @@ content %}
       value="{{ cat }}"
       {{ 'selected' if transazione and transazione.categoria == cat else '' }}
     >
-      {{ cat }}
+      {{ traduci(cat) }}
     </option>
   {% endfor %}
+<script>
+  // Generiamo la mappa ciclando sul dizionario originale Python CATEGORIE
+  const mappaTraduzioniSottocategorie = {
+    {% for macro, sottocat_list in CATEGORIE.items() %}
+      {% for sotto in sottocat_list %}
+        "{{ sotto }}": "{{ traduci(sotto) }}",
+      {% endfor %}
+    {% endfor %}
+  };
+</script>
 </select>
         <br /><br />
       <label>{{ _('Sottocategoria:') }}</label>
 <select name="sottocategoria" id="sottocategoria" required>
   {% if transazione %}
     <option value="{{ transazione.sottocategoria }}">
-      {{ transazione.sottocategoria }}
+      {{ traduci(transazione.sottocategoria) }}
     </option>
   {% else %}
     <option value="">-- {{ _('Seleziona Sottocategoria') }} --</option>
@@ -95,27 +105,26 @@ content %}
       categorie[categoriaSelezionata].forEach(sotto => {
         const opt = document.createElement("option");
         opt.value = sotto;
-        opt.text = sotto;
+        opt.text = mappaTraduzioniSottocategorie[sotto] || sotto;
         if (sotto === sottocategoriaAttuale) opt.selected = true;
         sottoSel.appendChild(opt);
       });
     } else {
       const opt = document.createElement("option");
       opt.value = "";
-      opt.text = "-- Nessuna sottocategoria --";
+      opt.text = "-- {{ _('Nessuna sottocategoria') }} --"; 
       sottoSel.appendChild(opt);
     }
     applicaBlindatura();
   }
 
   document.addEventListener("DOMContentLoaded", () => popolaSottocategoria());
-  // Funzione per blindare conti e segni
+  // Funzione per blindare conti e segni - Aggiornata
 function applicaBlindatura() {
     const sottocategoria = document.getElementById("sottocategoria").value;
     const contoSelect = document.querySelector("select[name='conto']");
-    const importoInput = document.querySelector("input[name='importo']");
 
-    // Reset degli stati: sblocchiamo tutto prima di applicare i nuovi vincoli
+    // Reset: sblocchiamo la tendina ad ogni cambio così è sempre cliccabile di base
     contoSelect.disabled = false;
     
     if (sottocategoria === "Versamento Pensione (Giroconto)") {
@@ -125,8 +134,9 @@ function applicaBlindatura() {
         contoSelect.value = "INVESTIMENTI";
         contoSelect.disabled = true;
     } else if (sottocategoria === "Prelievo Contante") {
-        contoSelect.value = "CONTANTI";
-        contoSelect.disabled = true;
+        // Rimuoviamo il blocco! Lasciamo che l'utente scelga se BANCA o CONTANTI
+        // Puoi impostare un valore di default se vuoi, ma SENZA disabilitarlo:
+        // contoSelect.value = "BANCA"; 
     }
 }
 

@@ -38,7 +38,7 @@ from db.db_utils import (
     leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain,
     elimina_transazione_da_db_onchain, modifica_transazione_db_onchain, get_transazioni_con_saldo_onchain,
     ripristina_database_completo, get_transazioni_con_saldo_onchain,
-    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping, pulisci_mese
+    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping, pulisci_mese, registra_transazione_conto
 )
 from utils.crypto import ottieni_valore_btc_eur, euro_to_btc, _carica_storico_btc_eur, aggiorna_prezzo_bitcoin
 from utils.export import (
@@ -58,7 +58,7 @@ load_dotenv()
 
 CATEGORIE = {
     'Entrate': [
-        'Cedole O Dividendi', 'Stipendio', 'Rimborso', 'Regalo', 'Donazioni',
+        'Cedole O Dividendi', 'Interessi attivi', 'Stipendio',  'Rimborso capitale investito', 'Regalo', 'Donazioni',
         'Claim giochi online', 'Plusvalenze Investimenti', 'Altro'
     ],
     'Abitazione': [
@@ -83,7 +83,7 @@ CATEGORIE = {
         'Hobby / Collezioni', 'Giochi / App'
     ],
     'Patrimonio & Finanze': [
-        'Commissioni bancarie', 'Interessi passivi', 'Imposte di bollo / IVAFE',
+        'Commissioni bancarie', 'Interessi passivi', 'Minusvalenze investimenti', 'Imposte di bollo / IVAFE',
         'Acquisto Titoli/Fondi (Giroconto)', 'Versamento Pensione (Giroconto)',
         'Investimento Crypto', 'Prelievo Contante'
     ],
@@ -115,11 +115,113 @@ VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di vers
 
 def get_locale():
     # Controlla la lingua del browser: se l'utente preferisce 'en' usa inglese, altrimenti 'it'
-    return 'en'
-    # return request.accept_languages.best_match(['it', 'en', 'zh'])
+    # return 'en'
+    return request.accept_languages.best_match(['it', 'en', 'zh'])
 
 
 babel = Babel(app, locale_selector=get_locale)
+
+
+def traduci_voce(testo):
+    from flask_babel import gettext as _
+    mappa_traduzioni = {
+        # --- Macro Categorie ---
+        'Entrate': _('Entrate'),
+        'Abitazione': _('Abitazione'),
+        'Alimentari': _('Alimentari'),
+        'Trasporti': _('Trasporti'),
+        'Spese Personali': _('Spese Personali'),
+        'Tempo Libero': _('Tempo Libero'),
+        'Patrimonio & Finanze': _('Patrimonio & Finanze'),
+        'Tasse & Stato': _('Tasse & Stato'),
+        'Lavoro & Studio': _('Lavoro & Studio'),
+        'Famiglia': _('Famiglia'),
+        'Salute': _('Salute'),
+        'Imprevisti': _('Imprevisti'),
+
+        # --- Sottocategorie ---
+        'Cedole O Dividendi': _('Cedole O Dividendi'),
+        'plusvalenze investimenti': _('plusvalenze investimenti'),
+        'Interessi attivi': _('Interessi attivi'),
+        'Stipendio': _('Stipendio'),
+        'Rimborso capitale investito': _('Rimborso capitale investito'),
+        'Regalo': _('Regalo'),
+        'Donazioni': _('Donazioni'),
+        'Claim giochi online': _('Claim giochi online'),
+        'Affitto/Mutuo': _('Affitto/Mutuo'),
+        'Bollette: Luce': _('Bollette: Luce'),
+        'Bollette: acqua': _('Bollette: acqua'),
+        'Bollette: Gas': _('Bollette: Gas'),
+        'Bollette: Rifiuti': _('Bollette: Rifiuti'),
+        'Manutenzione': _('Manutenzione'),
+        'Spese condominiali': _('Spese condominiali'),
+        'Assicurazione casa': _('Assicurazione casa'),
+        'IMU': _('IMU'),
+        'Supermercato': _('Supermercato'),
+        'Ristorante - Bar': _('Ristorante - Bar'),
+        'Spesa online': _('Spesa online'),
+        'Altro': _('Altro'),
+        'Carburante': _('Carburante'),
+        'Mezzi pubblici': _('Mezzi pubblici'),
+        'Manutenzione auto / moto': _('Manutenzione auto / moto'),
+        'Assicurazione auto': _('Assicurazione auto'),
+        'Bollo auto': _('Bollo auto'),
+        'Taxi / Uber': _('Taxi / Uber'),
+        'Noleggi': _('Noleggi'),
+        'Parcheggi / pedaggi': _('Parcheggi / pedaggi'),
+        'Altro': _('Altro'),
+        'Abbigliamento / Scarpe': _('Abbigliamento / Scarpe'),
+        'Igiene personale': _('Igiene personale'),
+        'Parrucchiere / estetista': _('Parrucchiere / estetista'),
+        'Abbonamenti (Netflix, Spotify, ecc)': _('Abbonamenti (Netflix, Spotify, ecc)'),
+        'Libri / Riviste': _('Libri / Riviste'),
+        'Cinema / Teatro / Eventi': _('Cinema / Teatro / Eventi'),
+        'Sport / Palestra': _('Sport / Palestra'),
+        'Viaggi / Vacanze': _('Viaggi / Vacanze'),
+        'Hobby / Collezioni': _('Hobby / Collezioni'),
+        'Giochi / App': _('Giochi / App'),
+        'Commissioni bancarie': _('Commissioni bancarie'),
+        'Interessi passivi': _('Interessi passivi'),
+        'Minusvalenze investimenti': _('Minusvalenze investimenti'),
+        'Imposte di bollo / IVAFE': _('Imposte di bollo / IVAFE'),
+        'Acquisto Titoli/Fondi (Giroconto)': _('Acquisto Titoli/Fondi (Giroconto)'),
+        'Versamento Pensione (Giroconto)': _('Versamento Pensione (Giroconto)'),
+        'Investimento Crypto': _('Investimento Crypto'),
+        'Prelievo Contante': _('Prelievo Contante'),
+        'IRPEF (Saldo/Acconto)': _('IRPEF (Saldo/Acconto)'),
+        'Capital Gain (Tassazione)': _('Capital Gain (Tassazione)'),
+        'Multe': _('Multe'),
+        'Altro': _('Altro'),
+        'Ufficio / Coworking': _('Ufficio / Coworking'),
+        'Formazione / Corsi': _('Formazione / Corsi'),
+        'Materiali didattici': _('Materiali didattici'),
+        'Trasporti lavoro': _('Trasporti lavoro'),
+        'Pasti lavoro': _('Pasti lavoro'),
+        'Spese scolastiche': _('Spese scolastiche'),
+        'Abbigliamento bambino': _('Abbigliamento bambino'),
+        'Salute bambino': _('Salute bambino'),
+        'Giocattoli': _('Giocattoli'),
+        'Baby sitter / Asilo': _('Baby sitter / Asilo'),
+        'Regali fatti': _('Regali fatti'),
+        'Altro': _('Altro'),
+        'Farmacia': _('Farmacia'),
+        'Visita medica': _('Visita medica'),
+        'Assicurazione Sanitaria': _('Assicurazione Sanitaria'),
+        'Altro': _('Altro'),
+        'Riparazioni urgenti': _('Riparazioni urgenti'),
+        'Emergenze': _('Emergenze'),
+        'Sostituzione tech': _('Sostituzione tech')
+    }
+    # Se la voce è nella mappa restituisce la versione tradotta da Babel, altrimenti il testo originale
+    return mappa_traduzioni.get(testo, testo)
+
+# Esportiamo la funzione in Jinja così da poterla usare direttamente nei file HTML
+
+
+@app.context_processor
+def inject_translation_helper():
+    return dict(traduci=traduci_voce,
+                CATEGORIE=CATEGORIE)
 
 
 @app.context_processor
@@ -765,71 +867,6 @@ def scarica_csv_per_mese():
         return send_file(nome_file, as_attachment=True, download_name=f"transazioni_{mese}.csv")
 
     return render_template('scarica_csv_per_mese.html')
-
-
-def registra_transazione_conto(user_id, data, descrizione, categoria, sottocategoria, importo, conto, controvalore_btc=None, valore_btc_eur=None, note=''):
-    """
-    Gestisce automaticamente i trasferimenti BANCA ↔ CONTANTI.
-    Aggiornato con i nuovi nomi delle categorie.
-    """
-    # --- CASO 1: INVESTIMENTI (PAC o Versamenti grossi) ---
-    if sottocategoria == "Acquisto Titoli/Fondi (Giroconto)":
-        # 1. Togliamo i soldi dalla BANCA (Uscita reale)
-        salva_su_db(user_id, data, descrizione, categoria, sottocategoria,
-                    importo, controvalore_btc, valore_btc_eur, conto="BANCA", note=note)
-        # 2. Li aggiungiamo al conto INVESTIMENTI (Aumento del fondo)
-        salva_su_db(user_id, data, f"Caricamento: {descrizione}", categoria, sottocategoria, abs(
-            importo), None, None, conto="INVESTIMENTI", note="Giroconto automatico")
-        return
-
-    # --- CASO 2: PENSIONE COMPLEMENTARE ---
-    if sottocategoria == "Versamento Pensione (Giroconto)":
-        # 1. Uscita dalla BANCA
-        salva_su_db(user_id, data, descrizione, categoria,
-                    sottocategoria, importo, None, None, conto="BANCA", note=note)
-        # 2. Entrata nel conto PENSIONE
-        salva_su_db(user_id, data, f"Versamento: {descrizione}", categoria, sottocategoria, abs(
-            importo), None, None, conto="PENSIONE", note="Giroconto automatico")
-        return
-
-    # 3. PRELIEVO (Soldi che escono dalla BANCA per andare nei CONTANTI)
-    # Usiamo i nuovi nomi: "Patrimonio & Finanze" e "Prelievo Contante"
-    if categoria == "Patrimonio & Finanze" and sottocategoria == "Prelievo Contante" and importo < 0:
-        # Nota: Qui potresti voler concatenare la nota dell'utente a quella automatica
-        nota_giroconto = f"{note} (Giroconto)".strip()
-        # Togli dalla banca (segna la spesa reale)
-        salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
-                    controvalore_btc, valore_btc_eur, conto="BANCA")
-
-        # Aggiungi ai contanti (giroconto interno)
-        salva_su_db(user_id, data,
-                    "Giroconto: Prelievo da banca",
-                    "Patrimonio & Finanze",
-                    "Trasferimento",
-                    abs(importo),
-                    None, None,
-                    conto="CONTANTI")
-        return
-
-    # 2. DEPOSITO (Soldi contanti che versi in BANCA)
-    if categoria == "Patrimonio & Finanze" and sottocategoria == "Prelievo Contante" and importo > 0:
-        # Aggiungi alla banca
-        salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
-                    controvalore_btc, valore_btc_eur, conto="BANCA")
-
-        # Togli dai contanti
-        salva_su_db(user_id, data,
-                    "Giroconto: Versamento in banca",
-                    "Patrimonio & Finanze",
-                    "Trasferimento",
-                    -abs(importo),
-                    None, None,
-                    conto="CONTANTI")
-        return
-
-    # Se non è un prelievo/deposito, salva normalmente sul conto selezionato
-    salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
-                controvalore_btc, valore_btc_eur, conto=conto, note=note)
 
 
 @app.route('/transazioni_lightning')
@@ -1629,11 +1666,20 @@ def conferma_importazione():
             sottocategoria = form_data.get(f'sub_{i}')
             controvalore_btc = float(form_data.get(f'btc_{i}'))
 
-            # --- SCOUDO ANTI-DUPLICATO ---
-            cursor.execute('''
-                SELECT id FROM transazioni
-                WHERE user_id = ? AND data = ? AND descrizione = ? AND importo = ?
-            ''', (current_user.id, data, desc, importo))
+            # --- SCUDO ANTI-DUPLICATO CORAZZATO ---
+            # Sostituisce il vecchio blocco per intercettare i giroconti automatici
+            if sottocategoria == "Prelievo Contante" or sottocategoria == "Trasferimento":
+                cursor.execute('''
+                    SELECT id FROM transazioni
+                    WHERE user_id = ? AND data = ? AND abs(importo) = abs(?) 
+                    AND (descrizione = ? OR descrizione LIKE '%Giroconto%' OR descrizione LIKE '%Prelievo%')
+                ''', (current_user.id, data, importo, desc))
+            else:
+                # Per tutte le altre categorie (inclusi Interessi e Rimborsi) usiamo il controllo standard
+                cursor.execute('''
+                    SELECT id FROM transazioni
+                    WHERE user_id = ? AND data = ? AND descrizione = ? AND importo = ?
+                ''', (current_user.id, data, desc, importo))
 
             esiste_gia = cursor.fetchone()
 
