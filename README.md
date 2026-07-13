@@ -20,6 +20,7 @@ This project is an **EXPERIMENTAL EDUCATIONAL LABORATORY**.
 
 ## 🌟 Key Features
 
+- 🌍 **Internationalization (i18n) [NEW - JULY 2026]:** Multi-language localization engine powered by PyBabel. Fully supports English, Italian and Chinese language profiles.
 - 📊 **Advanced Analytics [NEW - APRIL 2026]:** Integrated professional dashboards powered by Chart.js. Track your income, expenses, and savings efficiency with real-time visual feedback.
 - **📱 Mobile Success & Portability:** Full mobile compatibility tested via ngrok. 100% success rate on mobile database restoration, allowing you to manage your finances on the go without a central server.
 - **🔑 Nostr Native Auth:**
@@ -27,7 +28,6 @@ This project is an **EXPERIMENTAL EDUCATIONAL LABORATORY**.
   - **Mobile:** Experimental login via Amber (Nostr Signer) on Android using the intent protocol.
 - ⚡ **Lightning & On-Chain:** Separate management for Satoshi-precision transactions.
 - **🛡️ Military-Grade Backup System:** Encrypted exports using AES-256-GCM. Your data is protected by a Master Key derived from your password.
-- 🌍 **Internationalization (i18n) [NEW - JULY 2026]:** Multi-language localization engine powered by PyBabel. Fully supports English, Italian and Chinese language profiles.
 
 ---
 

@@ -755,7 +755,13 @@ def delete_user(user_id):
 def ripristina_database_completo(user_id, dati_json):
     """Svuota le tabelle dell'utente e inserisce i dati dal backup gestendo in modo sicuro la pulizia."""
     import sqlite3
-    conn = sqlite3.connect(DB_PATH)
+    from flask import current_app
+
+    # Prende il database corretto dall'app Flask attiva
+    db_attivo = current_app.config.get(
+        'DB_PATH') or current_app.config.get('DATABASE') or "database.db"
+
+    conn = sqlite3.connect(db_attivo)
     cursor = conn.cursor()
 
     try:

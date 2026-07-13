@@ -7,16 +7,26 @@ import sqlite3
 import sys
 from db.db_utils import leggi_transazioni_da_db, leggi_transazioni_filtrate, leggi_transazioni_da_db_lightning, leggi_transazioni_filtrate_lightning, leggi_transazioni_filtrate_onchain, leggi_transazioni_da_db_onchain
 from datetime import datetime
+from flask import current_app
 # Questo serve a Python per trovare 'config.py' anche se siamo dentro 'utils/'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-try:
-    from config import DB_PATH
-except ImportError:
-    # Se proprio non lo trova, puntiamo al file direttamente nella root
-    DB_PATH = os.path.join(BASE_DIR, 'database.db')
+
+def get_active_db_path():
+    """Ritorna il percorso del database attivo in Flask, o quello di fallback se fuori dal contesto."""
+    try:
+        # Se siamo dentro Flask, usiamo la sua configurazione attiva
+        return current_app.config.get('DB_PATH') or current_app.config.get('DATABASE')
+    except RuntimeError:
+        # Se siamo fuori da Flask (es. script standalone), usiamo il config globale
+        try:
+            from config import DB_PATH
+            return DB_PATH
+        except ImportError:
+            return os.path.join(BASE_DIR, 'database.db')
+
 
 BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
 if not os.path.exists(BACKUP_DIR):
@@ -24,7 +34,7 @@ if not os.path.exists(BACKUP_DIR):
 
 
 def leggi_tabella_per_utente(nome_tabella, user_id):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(get_active_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute(
@@ -36,7 +46,7 @@ def leggi_tabella_per_utente(nome_tabella, user_id):
 
 def genera_stringa_backup_json(user_id=None):
     """Estrae tutti i dati dell'utente dal DB e genera la stringa JSON per il backup."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(get_active_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 

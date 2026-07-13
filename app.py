@@ -115,8 +115,8 @@ VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di vers
 
 def get_locale():
     # Controlla la lingua del browser: se l'utente preferisce 'en' usa inglese, altrimenti 'it'
-    # return 'en'
-    return request.accept_languages.best_match(['it', 'en', 'zh'])
+    return 'en'
+    # return request.accept_languages.best_match(['it', 'en', 'zh'])
 
 
 babel = Babel(app, locale_selector=get_locale)
