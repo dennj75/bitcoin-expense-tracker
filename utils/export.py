@@ -15,17 +15,40 @@ if BASE_DIR not in sys.path:
 
 
 def get_active_db_path():
-    """Ritorna il percorso del database attivo in Flask, o quello di fallback se fuori dal contesto."""
+    """Ritorna il percorso del database attivo in Flask, con fallback sicuri."""
+    # 1. Proviamo a prenderlo dal contesto attivo di Flask
     try:
-        # Se siamo dentro Flask, usiamo la sua configurazione attiva
-        return current_app.config.get('DB_PATH') or current_app.config.get('DATABASE')
+        # Controlliamo diverse chiavi che Flask potrebbe usare
+        db_path = (
+            current_app.config.get('DB_PATH') or
+            current_app.config.get('DATABASE') or
+            # Se mai usassi SQLAlchemy in futuro
+            current_app.config.get('SQLALCHEMY_DATABASE_URI')
+        )
+        if db_path:
+            # Se è una stringa di connessione tipo "sqlite:///database.db", puliamola
+            if isinstance(db_path, str) and db_path.startswith("sqlite:///"):
+                db_path = db_path.replace("sqlite:///", "")
+            print(f"DEBUG BACKUP: Trovato DB attivo in Flask -> {db_path}")
+            return db_path
     except RuntimeError:
-        # Se siamo fuori da Flask (es. script standalone), usiamo il config globale
-        try:
-            from config import DB_PATH
+        # Siamo fuori dal contesto di Flask (es. uno script eseguito da terminale)
+        print("DEBUG BACKUP: Fuori dal contesto Flask, uso configurazione di fallback.")
+        pass
+
+    # 2. Se Flask non ci ha dato nulla, proviamo a importarlo dal file config.py globale
+    try:
+        from config import DB_PATH
+        if DB_PATH:
+            print(f"DEBUG BACKUP: Usato DB_PATH da config.py -> {DB_PATH}")
             return DB_PATH
-        except ImportError:
-            return os.path.join(BASE_DIR, 'database.db')
+    except ImportError:
+        pass
+
+    # 3. Ultima spiaggia (Fallback definitivo se tutto il resto fallisce)
+    fallback_path = os.path.join(BASE_DIR, 'database.db')
+    print(f"DEBUG BACKUP: Fallback estremo sul percorso -> {fallback_path}")
+    return fallback_path
 
 
 BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
