@@ -759,7 +759,7 @@ def ripristina_database_completo(user_id, dati_json):
 
     # Prende il database corretto dall'app Flask attiva
     db_attivo = current_app.config.get(
-        'DB_PATH') or current_app.config.get('DATABASE') or "database.db"
+        'DB_PATH') or current_app.config.get('DB_PATH') or "database.db"
 
     conn = sqlite3.connect(db_attivo)
     cursor = conn.cursor()

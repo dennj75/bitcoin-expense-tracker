@@ -108,6 +108,7 @@ CATEGORIE = {
 
 
 app = Flask(__name__)
+app.config['DB_PATH'] = DB_PATH
 VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di versione!
 
 # Questa funzione magica controlla la lingua preferita del browser dell'utente
