@@ -961,12 +961,12 @@ msgid "TRACKER €"
 msgstr "TRACKER €"
 
 #: templates/index.html:109
-msgid "Banca:"
-msgstr "Bank:"
+msgid "Banca"
+msgstr "Bank"
 
 #: templates/index.html:112
-msgid "Contanti:"
-msgstr "Cash:"
+msgid "Contanti"
+msgstr "Cash"
 
 #: templates/index.html:115
 msgid "Investimenti:"

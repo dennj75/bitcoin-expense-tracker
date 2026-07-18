@@ -13,18 +13,36 @@ venv/
 ENV/
 env/
 
-# Database - NON pubblicare i tuoi dati personali!
+# Database e Dati Sensibili - NON pubblicare i tuoi dati personali!
 *.db
 *.sqlite
 *.sqlite3
-pulisci.py
-fix_db.py
-beesy_BACKUP_PRIMA_MIGRAZIONE.db
-beesy_backup_dennj75_20260605_2342.json.enc
+*.json
+*.enc
 database_dev.db
+beesy_BACKUP_PRIMA_MIGRAZIONE.db
+
+# Script di utilità e manutenzione locale
+pulisci.py
+pulisci_db.py
+fix_db.py
+test_import.py
+ngrok_recovery_codes.txt
 
 # Cartella dei backup personali
 backups/
+
+# File temporanei, note e vecchie versioni
+docs/
+document.txt
+TODO.txt
+EE_File_Unico.txt
+Hai costruito un mini-gestionale.txt
+*.html_old_style.txt
+Index_old.html
+login_nostr_old.html.txt
+Import_old.txt
+README_OLD.md
 
 # migration files (se usi un ORM come Django o SQLAlchemy)
 migrations/
@@ -45,32 +63,11 @@ exports/
 .DS_Store
 Thumbs.db
 
-# File temporanei e di documentazione personale
-docs/
-document.txt
-TODO.txt
-EE_File_Unico.txt
-Hai costruito un mini-gestionale.txt
-*.html_old_style.txt
-Index_old.html
-login_nostr_old.html.txt
-Import_old.txt
-README_OLD.md
-
 # Test cache
 .pytest_cache/
 .coverage
 htmlcov/
-test_import.py
 
 # Environment variables
 .env
-
 .dev_mode
-
-# Cache e Database (già inclusi sopra, ma non guasta)
-__pycache__/
-*.db
-
-ngrok_recovery_codes.txt
-pulisci_db.py
