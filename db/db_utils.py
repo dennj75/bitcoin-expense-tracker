@@ -871,9 +871,10 @@ def ripristina_database_completo(user_id, dati_json):
                     ))
 
         # =====================================================================
-        # 6. IMPORT ASSETS HISTORY (Rilevazioni Storiche) - CORRETTO CON ASSET_ID
+        # 6. IMPORT ASSETS HISTORY (Rilevazioni Storiche) - FIX QUERY COLONNA
         # =====================================================================
         assets_hist = dati_json.get('assets_history', [])
+        assets_watch_backup = dati_json.get('assets_watch', [])
         print(
             f"DEBUG RIPRISTINO: Inserimento {len(assets_hist)} rilevazioni storiche")
         colonne_hist = ottieni_colonne("assets_history")
@@ -881,30 +882,37 @@ def ripristina_database_completo(user_id, dati_json):
         if colonne_hist and assets_hist:
             has_user_id = "user_id" in colonne_hist
 
+            # 1. Costruiamo la mappa usando le chiavi flessibili del backup
+            mappa_vecchi_id_nomi = {}
+            for aw in assets_watch_backup:
+                v_id = aw.get('id')
+                v_nome = aw.get('nome_asset') or aw.get(
+                    'asset') or aw.get('nome')
+                if v_id and v_nome:
+                    mappa_vecchi_id_nomi[v_id] = v_nome
+
             for h in assets_hist:
-                # 1. Recuperiamo i dati fondamentali dal backup
                 valore_rilevato = h.get(
                     'valore_rilevato') or h.get('valore', 0)
                 data_rilev = h.get('data_rilevazione') or h.get('data')
 
-                # 2. STRATEGIA DI RECUPERO DEL COLLEGAMENTO:
-                # Se nel backup abbiamo l'asset_id originale, lo usiamo.
-                # Altrimenti, se abbiamo solo il nome, cerchiamo il nuovo ID dal DB.
-                id_asset_corretto = h.get('asset_id')
+                # 2. Recuperiamo il nome dell'asset associato al vecchio ID del backup
+                vecchio_id = h.get('asset_id')
+                nome_da_cercare = mappa_vecchi_id_nomi.get(vecchio_id)
 
-                if not id_asset_corretto:
-                    nome_da_cercare = h.get('nome_asset') or h.get(
-                        'asset') or h.get('nome')
-                    if nome_da_cercare:
-                        cursor.execute("""
-                            SELECT id FROM assets_watch 
-                            WHERE (nome_asset = ? OR asset = ?) AND user_id = ?
-                        """, (nome_da_cercare, nome_da_cercare, user_id))
-                        res = cursor.fetchone()
-                        if res:
-                            id_asset_corretto = res[0]
+                id_asset_corretto = None
 
-                # 3. Se abbiamo trovato l'ID dell'asset, inseriamo lo storico!
+                # 3. Cerchiamo il NUOVO ID usando solo la colonna REALE del database ('nome_asset')
+                if nome_da_cercare:
+                    cursor.execute("""
+                        SELECT id FROM assets_watch 
+                        WHERE nome_asset = ? AND user_id = ?
+                    """, (nome_da_cercare, user_id))
+                    res = cursor.fetchone()
+                    if res:
+                        id_asset_corretto = res[0]
+
+                # 4. Inserimento nel database
                 if id_asset_corretto:
                     if has_user_id:
                         cursor.execute('''
@@ -918,7 +926,7 @@ def ripristina_database_completo(user_id, dati_json):
                         ''', (id_asset_corretto, valore_rilevato, data_rilev))
                 else:
                     print(
-                        f"⚠️ Salto riga storico: Impossibile associare la rilevazione del valore {valore_rilevato}")
+                        f"⚠️ Salto riga storico: Impossibile associare il vecchio ID {vecchio_id} (Nome trovato: '{nome_da_cercare}') al nuovo DB")
 
         # 7. IMPORT MAPPING CATEGORIE
         mapping_cat = dati_json.get('mapping_categorie', [])
@@ -1258,3 +1266,55 @@ def registra_transazione_conto(user_id, data, descrizione, categoria, sottocateg
     # Se non è un prelievo/deposito, salva normalmente sul conto selezionato
     salva_su_db(user_id, data, descrizione, categoria, sottocategoria, importo,
                 controvalore_btc, valore_btc_eur, conto=conto, note=note)
+
+
+def get_transaction_drill_down(categoria, anno=None, mese=None):
+    # Usiamo la funzione universale che hai già in cima al file!
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    filtro_data = ""
+    parametri = [categoria]
+
+    if anno and mese:
+        filtro_data = " AND data LIKE ?"
+        parametri.append(f"{anno}-{mese}%")
+    elif anno:
+        filtro_data = " AND data LIKE ?"
+        parametri.append(f"{anno}%")
+
+    parametri_tupla = tuple(parametri)
+
+    # Prepariamo un dizionario per contenere i risultati divisi per tipo di conto
+    risultati = {
+        'euro': [],
+        'onchain': [],
+        'lightning': []
+    }
+
+    try:
+        # 1. Tabella Euro
+        query_euro = f"SELECT data, descrizione, importo FROM transazioni WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        cursor.execute(query_euro, parametri_tupla)
+        # Trasformiamo le tuple in dizionari per comodità nel template HTML
+        risultati['euro'] = [
+            {'data': t[0], 'descrizione': t[1], 'importo': t[2]} for t in cursor.fetchall()]
+
+        # 2. Tabella Onchain
+        query_onchain = f"SELECT data, descrizione, importo_btc FROM transazioni_onchain WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        cursor.execute(query_onchain, parametri_tupla)
+        risultati['onchain'] = [
+            {'data': t[0], 'descrizione': t[1], 'importo_btc': t[2]} for t in cursor.fetchall()]
+
+        # 3. Tabella Lightning
+        query_lightning = f"SELECT data, descrizione, satoshi FROM transazioni_lightning WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        cursor.execute(query_lightning, parametri_tupla)
+        risultati['lightning'] = [
+            {'data': t[0], 'descrizione': t[1], 'satoshi': t[2]} for t in cursor.fetchall()]
+
+    except sqlite3.OperationalError as e:
+        print(f"❌ Errore durante il drill-down nel DB: {e}")
+    finally:
+        conn.close()
+
+    return risultati

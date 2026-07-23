@@ -1,5 +1,5 @@
-from db.db_utils import get_db_connection
-from flask import request, jsonify, redirect, url_for, flash, render_template
+
+
 import os
 import io
 import json
@@ -13,6 +13,7 @@ from datetime import datetime, date
 import secrets
 
 # Flask & Estensioni
+from flask import request, jsonify, redirect, url_for, flash, render_template
 from flask_babel import Babel
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
 from flask_login import LoginManager, login_required, UserMixin, current_user, login_remembered
@@ -31,14 +32,16 @@ from bech32 import convertbits, bech32_encode, bech32_decode
 
 
 from db.db_utils import (
-    DB_PATH, get_user_by_id, inizializza_db, salva_su_db, leggi_transazioni_da_db,
+    DB_PATH, get_db_connection, get_user_by_id, inizializza_db, salva_su_db, leggi_transazioni_da_db,
     elimina_transazione_da_db, modifica_transazione_db, get_transazioni_con_saldo,
     salva_su_db_lightning, leggi_transazioni_da_db_lightning, modifica_transazione_db_lightning,
     elimina_transazione_da_db_lightning, get_transazioni_con_saldo_lightning,
     leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain,
     elimina_transazione_da_db_onchain, modifica_transazione_db_onchain, get_transazioni_con_saldo_onchain,
     ripristina_database_completo, get_transazioni_con_saldo_onchain,
-    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping, pulisci_mese, registra_transazione_conto
+    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping,
+    pulisci_mese, registra_transazione_conto, get_transaction_drill_down
+
 )
 from utils.crypto import ottieni_valore_btc_eur, euro_to_btc, _carica_storico_btc_eur, aggiorna_prezzo_bitcoin
 from utils.export import (
@@ -1826,6 +1829,24 @@ def inject_dev_mode():
     print(f"🔮 DEBUG BADGE: Il file esiste davvero? -> {is_dev}")
 
     return dict(is_dev_mode=is_dev)
+
+
+@app.route('/api/analytics/drill-down')
+def api_drill_down():
+    # Recuperiamo i parametri passati dall'interfaccia web
+    categoria = request.args.get('categoria')
+    anno = request.args.get('anno')
+    mese = request.args.get('mese')
+
+    # Se non c'è la categoria, restituiamo un errore generico
+    if not categoria:
+        return jsonify({'error': 'Categoria mancante'}), 400
+
+    # Chiamiamo la funzione che abbiamo appena messo in db_utils.py
+    dati = get_transaction_drill_down(categoria, anno, mese)
+
+    # Restituiamo i dati al browser in formato JSON
+    return jsonify(dati)
 
 
 if __name__ == '__main__':

@@ -240,79 +240,102 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // 1. Generiamo la mappa di traduzione ereditata dal dizionario CATEGORIE di Python
-  const mappaTraduzioniGrafici = {
-    {% if CATEGORIE %}
-      {% for macro, sottocat_list in CATEGORIE.items() %}
-        "{{ macro }}": "{{ traduci(macro) }}",
-        {% for sotto in sottocat_list %}
-          "{{ sotto }}": "{{ traduci(sotto) }}",
+    // 1. Generiamo la mappa di traduzione ereditata dal dizionario CATEGORIE di Python
+    const mappaTraduzioniGrafici = {
+      {% if CATEGORIE %}
+        {% for macro, sottocat_list in CATEGORIE.items() %}
+          "{{ macro }}": "{{ traduci(macro) }}",
+          {% for sotto in sottocat_list %}
+            "{{ sotto }}": "{{ traduci(sotto) }}",
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    {% endif %}
-  };
-
-  document.addEventListener('DOMContentLoaded', function() {
-      // --- GRAFICO SPESE ---
-      {% if labels_spese %}
-      const canvasSpese = document.getElementById('chartAnalytics');
-      if (canvasSpese) {
-          // Prendiamo le labels originali da Flask e le traduciamo una per una al volo
-          const labelsSpeseOriginali = {{ labels_spese | tojson }};
-          const labelsSpeseTradotte = labelsSpeseOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
-
-          new Chart(canvasSpese.getContext('2d'), {
-              type: 'bar',
-              data: {
-                  labels: labelsSpeseTradotte, // Usiamo quelle tradotte!
-                  datasets: [{
-                      label: "{{ _('Totale Speso') }}", // Traduciamo anche il testo del tooltip
-                      data: {{ valori_spese | tojson }},
-                      backgroundColor: '#f39c12',
-                      borderRadius: 5
-                  }]
-              },
-              options: {
-                  indexAxis: 'y',
-                  responsive: true,
-                  plugins: { legend: { display: false } },
-                  scales: {
-                      x: { ticks: { color: '#888' }, grid: { color: '#333' } },
-                      y: { ticks: { color: '#eee' }, grid: { display: false } }
-                  }
-              }
-          });
-      }
       {% endif %}
+    };
 
-      // --- GRAFICO ENTRATE ---
-      {% if labels_entrate %}
-      const canvasEntrate = document.getElementById('chartEntrate');
-      if (canvasEntrate) {
-          // Stessa cosa: prendiamo le labels delle entrate e le traduciamo
-          const labelsEntrateOriginali = {{ labels_entrate | tojson }};
-          const labelsEntrateTradotte = labelsEntrateOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GRAFICO SPESE ---
+        {% if labels_spese %}
+        const canvasSpese = document.getElementById('chartAnalytics');
+        if (canvasSpese) {
+            // Prendiamo le labels originali da Flask e le traduciamo una per una al volo
+            const labelsSpeseOriginali = {{ labels_spese | tojson }};
+            const labelsSpeseTradotte = labelsSpeseOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
 
-          new Chart(canvasEntrate.getContext('2d'), {
-              type: 'doughnut',
-              data: {
-                  labels: labelsEntrateTradotte, // Usiamo quelle tradotte!
-                  datasets: [{
-                      data: {{ valori_entrate | tojson }},
-                      backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
-                      borderColor: '#1a1a1a',
-                      borderWidth: 2
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } }
-              }
-          });
-      }
-      {% endif %}
-  });
+            new Chart(canvasSpese.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labelsSpeseTradotte, // Usiamo quelle tradotte!
+                    datasets: [{
+                        label: "{{ _('Totale Speso') }}", // Traduciamo anche il testo del tooltip
+                        data: {{ valori_spese | tojson }},
+                        backgroundColor: '#f39c12',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
+  },
+                    plugins: { legend: { display: false } },
+
+                    // 👇 ECCO LA MODIFICA: INTERCETTIAMO IL CLICK
+                    onClick: (event, elements, chart) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+
+                            // Prendiamo il nome originale salvato nel DB usando l'indice cliccato!
+                            const categoriaDb = labelsSpeseOriginali[index];
+
+                            // Mostriamo a schermo il nome tradotto per cortesia dell'utente
+                            const categoriaVisualizzata = labelsSpeseTradotte[index];
+
+                            console.log(`Cliccato su: ${categoriaVisualizzata} (DB: ${categoriaDb})`);
+
+                            // 🚀 Lanciamo la funzione del pop-up passandole il nome del DB!
+                            apriDrillDown(categoriaDb);
+                        }
+                    },
+                    // 👆 FINE MODIFICA
+
+                    scales: {
+                        x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                        y: { ticks: { color: '#eee' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+        {% endif %}
+
+        // --- GRAFICO ENTRATE ---
+        {% if labels_entrate %}
+        const canvasEntrate = document.getElementById('chartEntrate');
+        if (canvasEntrate) {
+            // Stessa cosa: prendiamo le labels delle entrate e le traduciamo
+            const labelsEntrateOriginali = {{ labels_entrate | tojson }};
+            const labelsEntrateTradotte = labelsEntrateOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+
+            new Chart(canvasEntrate.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labelsEntrateTradotte, // Usiamo quelle tradotte!
+                    datasets: [{
+                        data: {{ valori_entrate | tojson }},
+                        backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
+                        borderColor: '#1a1a1a',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } }
+                }
+            });
+        }
+        {% endif %}
+    });
 </script>
 
 {% if tipo == 'EURO' %}
@@ -574,6 +597,45 @@
   </div>
   {% endif %}
 </div>
+<!-- Modal per il Dettaglio Transazioni (Drill-down) -->
+<div
+  id="drillDownModal"
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="drillDownModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary">
+      <!-- Intestazione -->
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="drillDownModalLabel">
+          🔍 Dettaglio Categoria:
+          <span id="modalCategoriaNome" class="text-warning"></span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Corpo del Pop-up -->
+      <div class="modal-body" style="max-height: 450px; overflow-y: auto">
+        <!-- Qui dentro Javascript inietterà le tabelle -->
+        <div id="modalDettagliContenuto"></div>
+      </div>
+
+      <!-- Piè di pagina -->
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Chiudi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -676,5 +738,80 @@
           }
       }
   });
+  // 1. Definiamo la funzione in modo GLOBALE sulla finestra del browser
+  window.apriDrillDown = function(categoria, anno = '', mese = '') {
+      // Impostiamo il titolo del modal
+      document.getElementById('modalCategoriaNome').innerText = categoria;
+
+      // Puliamo il contenuto precedente e mettiamo una scritta di caricamento
+      const contenitore = document.getElementById('modalDettagliContenuto');
+      contenitore.innerHTML = '<p class="text-center text-muted">Caricamento in corso...</p>';
+
+      // 2. Prepariamo l'URL per l'API
+      let url = `/api/analytics/drill-down?categoria=${encodeURIComponent(categoria)}`;
+      if (anno) url += `&anno=${anno}`;
+      if (mese) url += `&mese=${mese}`;
+
+      // 3. Chiamata Fetch al backend
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              contenitore.innerHTML = ''; // Svuotiamo il caricamento
+
+              let htmlGenerato = '';
+
+              // --- SEZIONE FIAT (EURO) ---
+              if (data.euro && data.euro.length > 0) {
+                  htmlGenerato += '<h6 class="text-info border-bottom border-secondary pb-1 mt-2">💶 Transazioni Fiat (EUR)</h6>';
+                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
+                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Importo</th></tr></thead><tbody>';
+                  data.euro.forEach(t => {
+                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-danger">€ ${t.importo.toFixed(2)}</td></tr>`;
+                  });
+                  htmlGenerato += '</tbody></table>';
+              }
+
+              // --- SEZIONE LIGHTNING (SATS) ---
+              if (data.lightning && data.lightning.length > 0) {
+                  htmlGenerato += '<h6 class="text-warning border-bottom border-secondary pb-1 mt-4">⚡ Transazioni Lightning Network</h6>';
+                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
+                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Satoshi</th></tr></thead><tbody>';
+                  data.lightning.forEach(t => {
+                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-warning">${t.satoshi.toLocaleString()} sats</td></tr>`;
+                  });
+                  htmlGenerato += '</tbody></table>';
+              }
+
+              // --- SEZIONE ONCHAIN (BTC) ---
+              if (data.onchain && data.onchain.length > 0) {
+                  htmlGenerato += '<h6 class="text-warning border-bottom border-secondary pb-1 mt-4">⛓️ Transazioni On-Chain (BTC)</h6>';
+                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
+                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Importo BTC</th></tr></thead><tbody>';
+                  data.onchain.forEach(t => {
+                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-warning">₿ ${t.importo_btc.toFixed(8)}</td></tr>`;
+                  });
+                  htmlGenerato += '</tbody></table>';
+              }
+
+              // Se tutte le liste sono vuote
+              if (htmlGenerato === '') {
+                  htmlGenerato = '<p class="text-center text-muted my-4">Nessuna transazione dettagliata trovata per questa categoria.</p>';
+              }
+
+              // Inseriamo tutto l'HTML generato nel corpo del modal
+              contenitore.innerHTML = htmlGenerato;
+
+              // 4. Mostriamo finalmente il modal a schermo usando Bootstrap
+              const mioModal = new bootstrap.Modal(document.getElementById('drillDownModal'));
+              mioModal.show();
+          })
+          .catch(err => {
+              console.error('Errore nel drill-down:', err);
+              contenitore.innerHTML = '<p class="text-center text-danger">Si è verificato un errore nel caricamento dei dettagli.</p>';
+          });
+  };
 </script>
+
+<!-- Spostiamo lo script di Bootstrap fuori, pulito ed elegante prima della fine del blocco -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
