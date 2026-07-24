@@ -1268,24 +1268,31 @@ def registra_transazione_conto(user_id, data, descrizione, categoria, sottocateg
                 controvalore_btc, valore_btc_eur, conto=conto, note=note)
 
 
-def get_transaction_drill_down(categoria, anno=None, mese=None):
-    # Usiamo la funzione universale che hai già in cima al file!
+def get_transaction_drill_down(user_id, categoria, anno=None, mese=None):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     filtro_data = ""
-    parametri = [categoria]
+    parametri = [user_id, categoria]
 
-    if anno and mese:
+    # 1. Se mese è nel formato YYYY-MM (es. '2026-05')
+    if mese and '-' in str(mese):
         filtro_data = " AND data LIKE ?"
-        parametri.append(f"{anno}-{mese}%")
+        parametri.append(f"{mese}%")
+
+    # 2. Se anno e mese sono separati (es. anno='2026', mese='5' o '05')
+    elif anno and mese:
+        mese_str = f"{int(mese):02d}"
+        filtro_data = " AND data LIKE ?"
+        parametri.append(f"{anno}-{mese_str}%")
+
+    # 3. Se c'è solo l'anno
     elif anno:
         filtro_data = " AND data LIKE ?"
         parametri.append(f"{anno}%")
 
     parametri_tupla = tuple(parametri)
 
-    # Prepariamo un dizionario per contenere i risultati divisi per tipo di conto
     risultati = {
         'euro': [],
         'onchain': [],
@@ -1294,20 +1301,35 @@ def get_transaction_drill_down(categoria, anno=None, mese=None):
 
     try:
         # 1. Tabella Euro
-        query_euro = f"SELECT data, descrizione, importo FROM transazioni WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        query_euro = f"""
+            SELECT data, descrizione, importo 
+            FROM transazioni 
+            WHERE user_id = ? AND categoria = ? AND importo < 0{filtro_data} 
+            ORDER BY data DESC
+        """
         cursor.execute(query_euro, parametri_tupla)
-        # Trasformiamo le tuple in dizionari per comodità nel template HTML
         risultati['euro'] = [
-            {'data': t[0], 'descrizione': t[1], 'importo': t[2]} for t in cursor.fetchall()]
+            {'data': t[0], 'descrizione': t[1], 'importo': t[2]} for t in cursor.fetchall()
+        ]
 
         # 2. Tabella Onchain
-        query_onchain = f"SELECT data, descrizione, importo_btc FROM transazioni_onchain WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        query_onchain = f"""
+            SELECT data, descrizione, importo_btc 
+            FROM transazioni_onchain 
+            WHERE user_id = ? AND categoria = ?{filtro_data} 
+            ORDER BY data DESC
+        """
         cursor.execute(query_onchain, parametri_tupla)
         risultati['onchain'] = [
             {'data': t[0], 'descrizione': t[1], 'importo_btc': t[2]} for t in cursor.fetchall()]
 
         # 3. Tabella Lightning
-        query_lightning = f"SELECT data, descrizione, satoshi FROM transazioni_lightning WHERE categoria = ?{filtro_data} ORDER BY data DESC"
+        query_lightning = f"""
+            SELECT data, descrizione, satoshi 
+            FROM transazioni_lightning 
+            WHERE user_id = ? AND categoria = ?{filtro_data} 
+            ORDER BY data DESC
+        """
         cursor.execute(query_lightning, parametri_tupla)
         risultati['lightning'] = [
             {'data': t[0], 'descrizione': t[1], 'satoshi': t[2]} for t in cursor.fetchall()]

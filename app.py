@@ -14,7 +14,7 @@ import secrets
 
 # Flask & Estensioni
 from flask import request, jsonify, redirect, url_for, flash, render_template
-from flask_babel import Babel
+from flask_babel import Babel, _
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_file
 from flask_login import LoginManager, login_required, UserMixin, current_user, login_remembered
 from flask_wtf.csrf import CSRFProtect
@@ -479,7 +479,11 @@ def home():
 
     # 5. Prepariamo i dati per il grafico e extra_data
     labels_grafico = [
-        'Disponibilità (Banca/Contanti)', 'Investimenti/Pensione', 'Lightning', 'On-chain']
+        _('Disponibilità (Banca/Contanti)'),
+        _('Investimenti/Pensione'),
+        _('Lightning'),
+        _('On-chain')
+    ]
     valori_grafico = [
         round(liquidita_totale, 2),
         round(patrimonio_investito, 2),
@@ -1833,27 +1837,35 @@ def inject_dev_mode():
 
 @app.route('/api/analytics/drill-down')
 def api_drill_down():
-    # Recuperiamo i parametri passati dall'interfaccia web
+    # Recuperiamo l'ID usando Flask-Login o il fallback sulla chiave '_user_id'
+    user_id = None
+    if current_user.is_authenticated:
+        user_id = current_user.id
+    else:
+        user_id = session.get('_user_id') or session.get('user_id')
+
+    if not user_id:
+        return jsonify({'error': 'Utente non autenticato'}), 401
+
     categoria = request.args.get('categoria')
     anno = request.args.get('anno')
     mese = request.args.get('mese')
 
-    # Se non c'è la categoria, restituiamo un errore generico
     if not categoria:
         return jsonify({'error': 'Categoria mancante'}), 400
 
-    # Chiamiamo la funzione che abbiamo appena messo in db_utils.py
-    dati = get_transaction_drill_down(categoria, anno, mese)
-
-    # Restituiamo i dati al browser in formato JSON
+    dati = get_transaction_drill_down(user_id, categoria, anno, mese)
     return jsonify(dati)
 
 
 if __name__ == '__main__':
-    # register auth blueprint lazily to avoid circular import at module load
+    # Registrazione blueprint auth
     try:
         from auth import auth_bp
         app.register_blueprint(auth_bp)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"⚠️ Nota registrazione Auth: {e}")
+
+    # Avvio del server Flask
+    print("🚀 Avvio di Beesy in corso...")
     app.run(host='0.0.0.0', port=5000, debug=True)
