@@ -3,7 +3,7 @@
     <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Login - ₿eesy</title>
+      <title>{{ _('Login - ₿eesy') }}</title>
       <link rel="icon" href="/static/img/favicon.ico" type="image/png" />
       <link
         rel="stylesheet"
@@ -38,44 +38,42 @@
 
       <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <label>Username: <input name="username" /></label>
-        <label>Password: <input name="password" type="password" /></label>
-        <button type="submit" class="btn-base btn-primary">Login</button>
+        <label>{{ _('Username') }}: <input name="username" /></label>
+        <label>{{ _('Password') }}: <input name="password" type="password" /></label>
+        <button type="submit" class="btn-base btn-primary">{{ _('Login') }}</button>
       </form>
-      <p><a href="/register">Non hai un account? Registrati qui! ⬅ </a></p>
+      <p><a href="/register">{{ _('Non hai un account? Registrati qui! ⬅ ') }}</a></p>
       <br />
       <div class="nostr-info">
-        <h2>𓅦 Nostr Login</h2>
-        <p>
-          Nostr è un protocollo decentralizzato per comunicazioni e identità
-          crittografiche. In pratica puoi fare login senza password, usando il tuo
-          wallet compatibile (es. <strong>nos2x</strong>, <strong>Alby</strong>,
-          <strong>Amber</strong>).
-        </p>
-        <p>Vantaggi del login Nostr:</p>
-        <ul>
-          <li>Nessuna password da ricordare</li>
-          <li>Decentralizzato e sicuro</li>
-          <li>Unico account su diversi siti compatibili</li>
-        </ul>
-        <p>
-          Per loggarti basta cliccare il pulsante qui sotto e scegliere il tuo
-          signer.
-        </p>
+  <h2>𓅦 {{ _('Nostr Login') }}</h2>
+  
+  <p>
+    {{ _('Nostr è un protocollo decentralizzato per comunicazioni e identità crittografiche. In pratica puoi fare login senza password, usando il tuo wallet compatibile (es. <strong>nos2x</strong>, <strong>Alby</strong>, <strong>Amber</strong>).') | safe }}
+  </p>
 
-        <button onclick="loginNostr(); return false;" class="btn-base nostr-btn">
-          𓅦 Nostr Login
-        </button>
-      </div>
+  <p>{{ _('Vantaggi del login Nostr:') }}</p>
+  <ul>
+    <li>{{ _('Nessuna password da ricordare') }}</li>
+    <li>{{ _('Decentralizzato e sicuro') }}</li>
+    <li>{{ _('Unico account su diversi siti compatibili') }}</li>
+  </ul>
 
+  <p>
+    {{ _('Per loggarti basta cliccare il pulsante qui sotto e scegliere il tuo signer.') }}
+  </p>
+
+  <button onclick="loginNostr(); return false;" class="btn-base nostr-btn">
+    𓅦 {{ _('Nostr Login') }}
+  </button>
+</div>
       <br />
       <hr class="main-separator" />
-      <h2>💝 Supporta il progetto</h2>
+      <h2>💝 {{ _('Supporta il progetto') }}</h2>
 
       <div class="donation-row">
         <!-- Lightning Network -->
         <div class="donation-card">
-          <div class="donation-title">⚡ Lightning Network</div>
+          <div class="donation-title">⚡{{ _('Lightning Network') }}</div>
           <div class="donation-address">dennj75@blink.sv</div>
           <img
             src="/static/Blink_Lightning.png"
@@ -118,7 +116,7 @@
         <button class="close-selector" onclick="closeExtensionSelector()">
           ×
         </button>
-        <h3>🔑 Scegli il tuo Nostr Signer</h3>
+        <h3>🔑 {{ _('Scegli il tuo Nostr Signer') }}</h3>
         <div id="extensionList"></div>
       </div>
 
@@ -216,14 +214,14 @@
           if (result.ok) {
             window.location.href = "/";
           } else {
-            alert("Errore login mobile: " + result.error);
+            alert("{{ _('Errore login mobile: ') }}" + result.error);
           }
       }
 
         // 5. LOGIN DESKTOP (VECCHIO METODO CHE FUNZIONA GIÀ)
         async function loginDesktop() {
           if (!window.nostr) {
-            alert("Installa Alby o nos2x sul tuo browser desktop!");
+            alert("{{ _('Installa Alby o nos2x sul tuo browser desktop!') }}");
             return;
           }
           try {
@@ -256,7 +254,7 @@
               window.location.href = "/";
             }
           } catch (e) {
-            alert("Errore desktop: " + e.message);
+            alert("{{ _('Errore desktop: ') }}" + e.message);
           }
         }
       </script>

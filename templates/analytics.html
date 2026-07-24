@@ -740,22 +740,36 @@
   });
   // 1. Definiamo la funzione in modo GLOBALE sulla finestra del browser
   window.apriDrillDown = function(categoria, anno = '', mese = '') {
-      // Impostiamo il titolo del modal
-      document.getElementById('modalCategoriaNome').innerText = categoria;
+    // 💡 RECUPERO AUTOMATICO DAI FILTRI SE NON PASSATI
+    // Cerca gli elementi input/select dei filtri presenti nella pagina HTML
+    if (!anno) {
+        const inputAnno = document.getElementById('anno') || document.querySelector('[name="anno"]');
+        if (inputAnno && inputAnno.value) anno = inputAnno.value;
+    }
+    if (!mese) {
+        const inputMese = document.getElementById('mese') || document.querySelector('[name="mese"]');
+        if (inputMese && inputMese.value) mese = inputMese.value;
+    }
 
-      // Puliamo il contenuto precedente e mettiamo una scritta di caricamento
-      const contenitore = document.getElementById('modalDettagliContenuto');
-      contenitore.innerHTML = '<p class="text-center text-muted">Caricamento in corso...</p>';
+    // Impostiamo il titolo del modal
+    document.getElementById('modalCategoriaNome').innerText = categoria;
 
-      // 2. Prepariamo l'URL per l'API
-      let url = `/api/analytics/drill-down?categoria=${encodeURIComponent(categoria)}`;
-      if (anno) url += `&anno=${anno}`;
-      if (mese) url += `&mese=${mese}`;
+    // Puliamo il contenuto precedente e mettiamo una scritta di caricamento
+    const contenitore = document.getElementById('modalDettagliContenuto');
+    contenitore.innerHTML = '<p class="text-center text-muted">Caricamento in corso...</p>';
 
-      // 3. Chiamata Fetch al backend
-      fetch(url)
-          .then(response => response.json())
-          .then(data => {
+    // Prepariamo l'URL per l'API
+    let url = `/api/analytics/drill-down?categoria=${encodeURIComponent(categoria)}`;
+    if (anno) url += `&anno=${encodeURIComponent(anno)}`;
+    if (mese) url += `&mese=${encodeURIComponent(mese)}`;
+
+    // Stampa di controllo nella Console del Browser (Premere F12 per vederla)
+    console.log("🚀 Chiamata Drill-Down inviata a:", url);
+
+    // Fetch al backend... (il resto del tuo codice rimane identico)
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
               contenitore.innerHTML = ''; // Svuotiamo il caricamento
 
               let htmlGenerato = '';
@@ -766,7 +780,7 @@
                   htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
                   htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Importo</th></tr></thead><tbody>';
                   data.euro.forEach(t => {
-                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-danger">€ ${t.importo.toFixed(2)}</td></tr>`;
+                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-danger">€ ${Math.abs(t.importo).toFixed(2)}</td></tr>`;
                   });
                   htmlGenerato += '</tbody></table>';
               }

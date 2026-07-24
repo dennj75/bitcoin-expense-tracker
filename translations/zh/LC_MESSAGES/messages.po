@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-12 15:37+0200\n"
+"POT-Creation-Date: 2026-07-24 16:26+0200\n"
 "PO-Revision-Date: 2026-06-13 18:40+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -18,338 +18,352 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app.py:129 templates/analytics.html:9
+#: app.py:133 templates/analytics.html:9
 msgid "Entrate"
 msgstr "收入"
 
-#: app.py:130
+#: app.py:134
 msgid "Abitazione"
 msgstr "家"
 
-#: app.py:131
+#: app.py:135
 msgid "Alimentari"
 msgstr "杂货店"
 
-#: app.py:132
+#: app.py:136
 msgid "Trasporti"
 msgstr "运输"
 
-#: app.py:133
+#: app.py:137
 msgid "Spese Personali"
 msgstr "个人开支"
 
-#: app.py:134
+#: app.py:138
 msgid "Tempo Libero"
 msgstr "空闲时间"
 
-#: app.py:135
+#: app.py:139
 msgid "Patrimonio & Finanze"
 msgstr "资产与财务"
 
-#: app.py:136
+#: app.py:140
 msgid "Tasse & Stato"
 msgstr "税收和州"
 
-#: app.py:137
+#: app.py:141
 msgid "Lavoro & Studio"
 msgstr "工作与学习"
 
-#: app.py:138
+#: app.py:142
 msgid "Famiglia"
 msgstr "家庭"
 
-#: app.py:139
+#: app.py:143
 msgid "Salute"
 msgstr "健康"
 
-#: app.py:140
+#: app.py:144
 msgid "Imprevisti"
 msgstr "不可预见的事件"
 
-#: app.py:143
+#: app.py:147
 msgid "Cedole O Dividendi"
 msgstr "息票或股息"
 
-#: app.py:144
-#, fuzzy
+#: app.py:148
 msgid "plusvalenze investimenti"
-msgstr "投资业绩"
+msgstr "投资资本收益"
 
-#: app.py:145
-#, fuzzy
+#: app.py:149
 msgid "Interessi attivi"
-msgstr "被动权益"
+msgstr "积极的兴趣"
 
-#: app.py:146
+#: app.py:150
 msgid "Stipendio"
 msgstr "薪水"
 
-#: app.py:147
+#: app.py:151
 msgid "Rimborso capitale investito"
 msgstr "退还投资本金"
 
-#: app.py:148
+#: app.py:152
 msgid "Regalo"
 msgstr "礼物"
 
-#: app.py:149
+#: app.py:153
 msgid "Donazioni"
 msgstr "捐款"
 
-#: app.py:150
+#: app.py:154
 msgid "Claim giochi online"
 msgstr "领取在线游戏"
 
-#: app.py:151
+#: app.py:155
 msgid "Affitto/Mutuo"
 msgstr "租金/抵押贷款"
 
-#: app.py:152
+#: app.py:156
 msgid "Bollette: Luce"
 msgstr "账单：电费"
 
-#: app.py:153
+#: app.py:157
 msgid "Bollette: acqua"
 msgstr "账单：水费"
 
-#: app.py:154
+#: app.py:158
 msgid "Bollette: Gas"
 msgstr "账单：燃气"
 
-#: app.py:155
+#: app.py:159
 msgid "Bollette: Rifiuti"
 msgstr "账单：浪费"
 
-#: app.py:156
+#: app.py:160
 msgid "Manutenzione"
 msgstr "维护"
 
-#: app.py:157
+#: app.py:161
 msgid "Spese condominiali"
 msgstr "公寓费用"
 
-#: app.py:158
+#: app.py:162
 msgid "Assicurazione casa"
 msgstr "房屋保险"
 
-#: app.py:159
+#: app.py:163
 msgid "IMU"
 msgstr "惯性测量单元"
 
-#: app.py:160
+#: app.py:164
 msgid "Supermercato"
 msgstr "超级市场"
 
-#: app.py:161
+#: app.py:165
 msgid "Ristorante - Bar"
 msgstr "餐厅 - 酒吧"
 
-#: app.py:162
+#: app.py:166
 msgid "Spesa online"
 msgstr "网上购物"
 
-#: app.py:163 app.py:172 app.py:194 app.py:206 app.py:210
+#: app.py:167 app.py:176 app.py:198 app.py:210 app.py:214
 msgid "Altro"
 msgstr "其他"
 
-#: app.py:164
+#: app.py:168
 msgid "Carburante"
 msgstr "燃料"
 
-#: app.py:165
+#: app.py:169
 msgid "Mezzi pubblici"
 msgstr "公共交通"
 
-#: app.py:166
+#: app.py:170
 msgid "Manutenzione auto / moto"
 msgstr "汽车/摩托车保养"
 
-#: app.py:167
+#: app.py:171
 msgid "Assicurazione auto"
 msgstr "汽车保险"
 
-#: app.py:168
+#: app.py:172
 msgid "Bollo auto"
 msgstr "汽车税"
 
-#: app.py:169
+#: app.py:173
 msgid "Taxi / Uber"
 msgstr "出租车/优步"
 
-#: app.py:170
+#: app.py:174
 msgid "Noleggi"
 msgstr "出租"
 
-#: app.py:171
+#: app.py:175
 msgid "Parcheggi / pedaggi"
 msgstr "停车/收费"
 
-#: app.py:173
+#: app.py:177
 msgid "Abbigliamento / Scarpe"
 msgstr "服装/鞋类"
 
-#: app.py:174
+#: app.py:178
 msgid "Igiene personale"
 msgstr "个人卫生"
 
-#: app.py:175
+#: app.py:179
 msgid "Parrucchiere / estetista"
 msgstr "美发师/美容师"
 
-#: app.py:176
+#: app.py:180
 msgid "Abbonamenti (Netflix, Spotify, ecc)"
 msgstr "订阅服务（Netflix、Spotify 等）"
 
-#: app.py:177
+#: app.py:181
 msgid "Libri / Riviste"
 msgstr "书籍/杂志"
 
-#: app.py:178
+#: app.py:182
 msgid "Cinema / Teatro / Eventi"
 msgstr "电影院/剧院/活动"
 
-#: app.py:179
+#: app.py:183
 msgid "Sport / Palestra"
 msgstr "运动/健身房"
 
-#: app.py:180
+#: app.py:184
 msgid "Viaggi / Vacanze"
 msgstr "旅游/假期"
 
-#: app.py:181
+#: app.py:185
 msgid "Hobby / Collezioni"
 msgstr "爱好/收藏"
 
-#: app.py:182
+#: app.py:186
 msgid "Giochi / App"
 msgstr "游戏/应用"
 
-#: app.py:183
+#: app.py:187
 msgid "Commissioni bancarie"
 msgstr "银行手续费"
 
-#: app.py:184
+#: app.py:188
 msgid "Interessi passivi"
 msgstr "被动权益"
 
-#: app.py:185
+#: app.py:189
 msgid "Minusvalenze investimenti"
 msgstr "投资的资本损失"
 
-#: app.py:186
+#: app.py:190
 msgid "Imposte di bollo / IVAFE"
 msgstr "印花税 / IVAFE"
 
-#: app.py:187
+#: app.py:191
 msgid "Acquisto Titoli/Fondi (Giroconto)"
 msgstr "购买证券/资金（转让）"
 
-#: app.py:188
+#: app.py:192
 msgid "Versamento Pensione (Giroconto)"
 msgstr "养老金支付（转移）"
 
-#: app.py:189
+#: app.py:193
 msgid "Investimento Crypto"
 msgstr "加密货币投资"
 
-#: app.py:190
+#: app.py:194
 msgid "Prelievo Contante"
 msgstr "现金提取"
 
-#: app.py:191
+#: app.py:195
 msgid "IRPEF (Saldo/Acconto)"
 msgstr "IRPEF（余额/预付款）"
 
-#: app.py:192
+#: app.py:196
 msgid "Capital Gain (Tassazione)"
 msgstr "资本利得税"
 
-#: app.py:193
+#: app.py:197
 msgid "Multe"
 msgstr "罚款"
 
-#: app.py:195
+#: app.py:199
 msgid "Ufficio / Coworking"
 msgstr "办公室/联合办公"
 
-#: app.py:196
+#: app.py:200
 msgid "Formazione / Corsi"
 msgstr "培训/课程"
 
-#: app.py:197
+#: app.py:201
 msgid "Materiali didattici"
 msgstr "教学材料"
 
-#: app.py:198
+#: app.py:202
 msgid "Trasporti lavoro"
 msgstr "工作交通"
 
-#: app.py:199
-#, fuzzy
+#: app.py:203
 msgid "Pasti lavoro"
 msgstr "工作餐"
 
-#: app.py:200
+#: app.py:204
 msgid "Spese scolastiche"
 msgstr "学校费用"
 
-#: app.py:201
+#: app.py:205
 msgid "Abbigliamento bambino"
 msgstr "儿童服装"
 
-#: app.py:202
+#: app.py:206
 msgid "Salute bambino"
 msgstr "儿童健康"
 
-#: app.py:203
+#: app.py:207
 msgid "Giocattoli"
 msgstr "玩具"
 
-#: app.py:204
+#: app.py:208
 msgid "Baby sitter / Asilo"
 msgstr "保姆/托儿所"
 
-#: app.py:205
+#: app.py:209
 msgid "Regali fatti"
 msgstr "赠送的礼物"
 
-#: app.py:207
+#: app.py:211
 msgid "Farmacia"
 msgstr "药店"
 
-#: app.py:208
+#: app.py:212
 msgid "Visita medica"
 msgstr "就诊"
 
-#: app.py:209
+#: app.py:213
 msgid "Assicurazione Sanitaria"
 msgstr "健康保险"
 
-#: app.py:211
+#: app.py:215
 msgid "Riparazioni urgenti"
 msgstr "紧急维修"
 
-#: app.py:212
+#: app.py:216
 msgid "Emergenze"
 msgstr "紧急情况"
 
-#: app.py:213
+#: app.py:217
 msgid "Sostituzione tech"
 msgstr "技术更换"
 
-#: app.py:1438
+#: app.py:482
+msgid "Disponibilità (Banca/Contanti)"
+msgstr "可用性（银行/现金）"
+
+#: app.py:483
+msgid "Investimenti/Pensione"
+msgstr "投资/养老金"
+
+#: app.py:484
+msgid "Lightning"
+msgstr "闪电"
+
+#: app.py:485
+#, fuzzy
+msgid "On-chain"
+msgstr "链上"
+
+#: app.py:1446
 msgid "Statistiche Euro (€)"
 msgstr "欧元统计（€）"
 
-#: app.py:1439
+#: app.py:1447
 msgid "Statistiche Lightning (⚡)"
 msgstr "闪电统计数据（⚡）"
 
-#: app.py:1440
+#: app.py:1448
 msgid "Statistiche On-chain (₿)"
 msgstr "链上统计数据（₿）"
 
-#: app.py:1449 templates/analytics.html:1
+#: app.py:1457 templates/analytics.html:1
 msgid "Statistiche"
 msgstr "统计数据"
 
@@ -445,71 +459,71 @@ msgstr "未记录任何条目。"
 msgid "Totale Speso"
 msgstr "总支出"
 
-#: templates/analytics.html:323
+#: templates/analytics.html:346
 msgid "Aggiungi Nuovo Investimento"
 msgstr "新增投资"
 
-#: templates/analytics.html:330
+#: templates/analytics.html:353
 msgid "Nome (es. Buono Postale)"
 msgstr "名称（例如：邮政汇票）"
 
-#: templates/analytics.html:340
+#: templates/analytics.html:363
 msgid "Capitale Investito €"
 msgstr "投资资本 €"
 
-#: templates/analytics.html:350
+#: templates/analytics.html:373
 msgid "Valore Iniziale €"
 msgstr "初始价值（欧元）"
 
-#: templates/analytics.html:356
+#: templates/analytics.html:379
 msgid "Salva"
 msgstr "节省"
 
-#: templates/analytics.html:364
+#: templates/analytics.html:387
 msgid "Performance Investimenti"
 msgstr "投资业绩"
 
-#: templates/analytics.html:374 templates/analytics.html:517
+#: templates/analytics.html:397 templates/analytics.html:540
 msgid "Asset"
 msgstr "资产"
 
-#: templates/analytics.html:375
+#: templates/analytics.html:398
 msgid "Costo Storico (Carico)"
 msgstr "历史成本（负载）"
 
-#: templates/analytics.html:376
+#: templates/analytics.html:399
 msgid "Valore Attuale"
 msgstr "当前值"
 
-#: templates/analytics.html:377 templates/index.html:67 templates/index.html:91
+#: templates/analytics.html:400 templates/index.html:67 templates/index.html:91
 msgid "Rendimento"
 msgstr "表现"
 
-#: templates/analytics.html:379
+#: templates/analytics.html:402
 msgid "Registra Valore Mese"
 msgstr "创纪录的月度价值"
 
-#: templates/analytics.html:439
+#: templates/analytics.html:462
 msgid "Nuovo importo €"
 msgstr "新金额 €"
 
-#: templates/analytics.html:445
+#: templates/analytics.html:468
 msgid "Salva rilevazione mese"
 msgstr "节省月份检测"
 
-#: templates/analytics.html:489
+#: templates/analytics.html:512
 msgid "Andamento Patrimoniale Euro"
 msgstr "欧元资产表现"
 
-#: templates/analytics.html:490
+#: templates/analytics.html:513
 msgid "Saldo Storico Patrimoniale (Controvalore €)"
 msgstr "历史资产余额（金额 €）"
 
-#: templates/analytics.html:508
+#: templates/analytics.html:531
 msgid "Storico Rilevazioni Mese"
 msgstr "历史调查月"
 
-#: templates/analytics.html:516 templates/importa_anteprima.html:11
+#: templates/analytics.html:539 templates/importa_anteprima.html:11
 #: templates/modifica_transazione_lightning.html:8
 #: templates/modifica_transazione_onchain.html:8 templates/transazioni.html:54
 #: templates/transazioni_lightning.html:42
@@ -517,23 +531,23 @@ msgstr "历史调查月"
 msgid "Data"
 msgstr "日期"
 
-#: templates/analytics.html:518
+#: templates/analytics.html:541
 msgid "Valore"
 msgstr "价值"
 
-#: templates/analytics.html:519
+#: templates/analytics.html:542
 msgid "Azione"
 msgstr "行动"
 
-#: templates/analytics.html:548
+#: templates/analytics.html:571
 msgid "Sicuro di voler eliminare questa rilevazione?"
 msgstr "您确定要删除此检测结果吗？"
 
-#: templates/analytics.html:556
+#: templates/analytics.html:579
 msgid "Elimina errore"
 msgstr "删除错误"
 
-#: templates/analytics.html:566
+#: templates/analytics.html:589
 msgid "Nessuna rilevazione salvata finora."
 msgstr "目前尚未保存任何检测结果。"
 
@@ -695,7 +709,7 @@ msgstr "统计数据⚡"
 msgid "Stat ₿"
 msgstr "统计₿"
 
-#: templates/base.html:228 templates/login.html:314
+#: templates/base.html:228 templates/login.html:312
 msgid "F.A.Q."
 msgstr "常问问题"
 
@@ -925,7 +939,7 @@ msgstr "总净资产（欧元）："
 
 #: templates/index.html:56
 msgid "TRACKER ₿itcoin on-chain🔗"
-msgstr "TRACKER ₿比特币链上🔗"
+msgstr "追踪器 ₿比特币链上🔗"
 
 #: templates/index.html:62 templates/index.html:86 templates/index.html:123
 msgid "Analisi"
@@ -997,13 +1011,87 @@ msgstr "BTC/SATS 值是计算得出的"
 msgid "in base al prezzo attuale di mercato."
 msgstr "基于当前市场价格。"
 
-#: templates/index.html:183
+#: templates/index.html:183 templates/login.html:71
 msgid "Supporta il progetto"
 msgstr "支持该项目"
 
+#: templates/login.html:6
+msgid "Login - ₿eesy"
+msgstr "登录 - ₿eesy"
+
+#: templates/login.html:41
+msgid "Username"
+msgstr "用户名"
+
+#: templates/login.html:42
+msgid "Password"
+msgstr "密码"
+
+#: templates/login.html:43
+msgid "Login"
+msgstr "登录"
+
+#: templates/login.html:45
+msgid "Non hai un account? Registrati qui! ⬅ "
+msgstr "还没有账号？点击这里注册！⬅"
+
+#: templates/login.html:48 templates/login.html:66
+msgid "Nostr Login"
+msgstr "我们的登录"
+
+#: templates/login.html:51
+msgid ""
+"Nostr è un protocollo decentralizzato per comunicazioni e identità "
+"crittografiche. In pratica puoi fare login senza password, usando il tuo "
+"wallet compatibile (es. <strong>nos2x</strong>, <strong>Alby</strong>, "
+"<strong>Amber</strong>)."
+msgstr "Nostr 是一个用于加密通信和身份的去中心化协议。您可以使用兼容的钱包（例如 nos2x、Alby、Amber）无需密码即可登录。"
+
+#: templates/login.html:54
+msgid "Vantaggi del login Nostr:"
+msgstr "使用 Nostr 登录的好处："
+
+#: templates/login.html:56
+msgid "Nessuna password da ricordare"
+msgstr "无需记住密码"
+
+#: templates/login.html:57
+msgid "Decentralizzato e sicuro"
+msgstr "去中心化且安全"
+
+#: templates/login.html:58
+msgid "Unico account su diversi siti compatibili"
+msgstr "一个账户可在多个兼容网站上使用"
+
+#: templates/login.html:62
+msgid ""
+"Per loggarti basta cliccare il pulsante qui sotto e scegliere il tuo "
+"signer."
+msgstr "要登录，只需点击下面的按钮并选择您的签名者。"
+
+#: templates/login.html:76
+msgid "Lightning Network"
+msgstr "闪电网络"
+
+#: templates/login.html:119
+msgid "Scegli il tuo Nostr Signer"
+msgstr "选择你的鼻音符号"
+
+#: templates/login.html:217
+msgid "Errore login mobile: "
+msgstr "手机登录错误："
+
+#: templates/login.html:224
+msgid "Installa Alby o nos2x sul tuo browser desktop!"
+msgstr "在您的桌面浏览器上安装 Alby 或 nos2x！"
+
+#: templates/login.html:257
+msgid "Errore desktop: "
+msgstr "桌面错误："
+
 #: templates/modifica_transazione.html:1
 msgid "Modifica Transazione €- ₿eesy"
-msgstr "新的链上交易（₿）"
+msgstr "编辑交易 €- ₿eesy"
 
 #: templates/modifica_transazione.html:3
 msgid "Modifica Transazione"
@@ -1380,9 +1468,8 @@ msgstr "总余额"
 
 #: templates/transazioni.html:30 templates/transazioni_lightning.html:16
 #: templates/transazioni_onchain.html:18
-#, fuzzy
 msgid "Esporta CSV"
-msgstr "导入 CSV 银行"
+msgstr "导出 CSV 文件"
 
 #: templates/transazioni.html:33 templates/transazioni_lightning.html:19
 #: templates/transazioni_onchain.html:22

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-12 15:37+0200\n"
+"POT-Creation-Date: 2026-07-24 16:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,335 +17,351 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: app.py:129 templates/analytics.html:9
+#: app.py:133 templates/analytics.html:9
 msgid "Entrate"
 msgstr ""
 
-#: app.py:130
+#: app.py:134
 msgid "Abitazione"
 msgstr ""
 
-#: app.py:131
+#: app.py:135
 msgid "Alimentari"
 msgstr ""
 
-#: app.py:132
+#: app.py:136
 msgid "Trasporti"
 msgstr ""
 
-#: app.py:133
+#: app.py:137
 msgid "Spese Personali"
 msgstr ""
 
-#: app.py:134
+#: app.py:138
 msgid "Tempo Libero"
 msgstr ""
 
-#: app.py:135
+#: app.py:139
 msgid "Patrimonio & Finanze"
 msgstr ""
 
-#: app.py:136
+#: app.py:140
 msgid "Tasse & Stato"
 msgstr ""
 
-#: app.py:137
+#: app.py:141
 msgid "Lavoro & Studio"
 msgstr ""
 
-#: app.py:138
+#: app.py:142
 msgid "Famiglia"
 msgstr ""
 
-#: app.py:139
+#: app.py:143
 msgid "Salute"
 msgstr ""
 
-#: app.py:140
+#: app.py:144
 msgid "Imprevisti"
 msgstr ""
 
-#: app.py:143
+#: app.py:147
 msgid "Cedole O Dividendi"
 msgstr ""
 
-#: app.py:144
+#: app.py:148
 msgid "plusvalenze investimenti"
 msgstr ""
 
-#: app.py:145
+#: app.py:149
 msgid "Interessi attivi"
 msgstr ""
 
-#: app.py:146
+#: app.py:150
 msgid "Stipendio"
 msgstr ""
 
-#: app.py:147
+#: app.py:151
 msgid "Rimborso capitale investito"
 msgstr ""
 
-#: app.py:148
+#: app.py:152
 msgid "Regalo"
 msgstr ""
 
-#: app.py:149
+#: app.py:153
 msgid "Donazioni"
 msgstr ""
 
-#: app.py:150
+#: app.py:154
 msgid "Claim giochi online"
 msgstr ""
 
-#: app.py:151
+#: app.py:155
 msgid "Affitto/Mutuo"
 msgstr ""
 
-#: app.py:152
+#: app.py:156
 msgid "Bollette: Luce"
 msgstr ""
 
-#: app.py:153
+#: app.py:157
 msgid "Bollette: acqua"
 msgstr ""
 
-#: app.py:154
+#: app.py:158
 msgid "Bollette: Gas"
 msgstr ""
 
-#: app.py:155
+#: app.py:159
 msgid "Bollette: Rifiuti"
 msgstr ""
 
-#: app.py:156
+#: app.py:160
 msgid "Manutenzione"
 msgstr ""
 
-#: app.py:157
+#: app.py:161
 msgid "Spese condominiali"
 msgstr ""
 
-#: app.py:158
+#: app.py:162
 msgid "Assicurazione casa"
 msgstr ""
 
-#: app.py:159
+#: app.py:163
 msgid "IMU"
 msgstr ""
 
-#: app.py:160
+#: app.py:164
 msgid "Supermercato"
 msgstr ""
 
-#: app.py:161
+#: app.py:165
 msgid "Ristorante - Bar"
 msgstr ""
 
-#: app.py:162
+#: app.py:166
 msgid "Spesa online"
 msgstr ""
 
-#: app.py:163 app.py:172 app.py:194 app.py:206 app.py:210
+#: app.py:167 app.py:176 app.py:198 app.py:210 app.py:214
 msgid "Altro"
 msgstr ""
 
-#: app.py:164
+#: app.py:168
 msgid "Carburante"
 msgstr ""
 
-#: app.py:165
+#: app.py:169
 msgid "Mezzi pubblici"
 msgstr ""
 
-#: app.py:166
+#: app.py:170
 msgid "Manutenzione auto / moto"
 msgstr ""
 
-#: app.py:167
+#: app.py:171
 msgid "Assicurazione auto"
 msgstr ""
 
-#: app.py:168
+#: app.py:172
 msgid "Bollo auto"
 msgstr ""
 
-#: app.py:169
+#: app.py:173
 msgid "Taxi / Uber"
 msgstr ""
 
-#: app.py:170
+#: app.py:174
 msgid "Noleggi"
 msgstr ""
 
-#: app.py:171
+#: app.py:175
 msgid "Parcheggi / pedaggi"
 msgstr ""
 
-#: app.py:173
+#: app.py:177
 msgid "Abbigliamento / Scarpe"
 msgstr ""
 
-#: app.py:174
+#: app.py:178
 msgid "Igiene personale"
 msgstr ""
 
-#: app.py:175
+#: app.py:179
 msgid "Parrucchiere / estetista"
 msgstr ""
 
-#: app.py:176
+#: app.py:180
 msgid "Abbonamenti (Netflix, Spotify, ecc)"
 msgstr ""
 
-#: app.py:177
+#: app.py:181
 msgid "Libri / Riviste"
 msgstr ""
 
-#: app.py:178
+#: app.py:182
 msgid "Cinema / Teatro / Eventi"
 msgstr ""
 
-#: app.py:179
+#: app.py:183
 msgid "Sport / Palestra"
 msgstr ""
 
-#: app.py:180
+#: app.py:184
 msgid "Viaggi / Vacanze"
 msgstr ""
 
-#: app.py:181
+#: app.py:185
 msgid "Hobby / Collezioni"
 msgstr ""
 
-#: app.py:182
+#: app.py:186
 msgid "Giochi / App"
 msgstr ""
 
-#: app.py:183
+#: app.py:187
 msgid "Commissioni bancarie"
 msgstr ""
 
-#: app.py:184
+#: app.py:188
 msgid "Interessi passivi"
 msgstr ""
 
-#: app.py:185
+#: app.py:189
 msgid "Minusvalenze investimenti"
 msgstr ""
 
-#: app.py:186
+#: app.py:190
 msgid "Imposte di bollo / IVAFE"
 msgstr ""
 
-#: app.py:187
+#: app.py:191
 msgid "Acquisto Titoli/Fondi (Giroconto)"
 msgstr ""
 
-#: app.py:188
+#: app.py:192
 msgid "Versamento Pensione (Giroconto)"
 msgstr ""
 
-#: app.py:189
+#: app.py:193
 msgid "Investimento Crypto"
 msgstr ""
 
-#: app.py:190
+#: app.py:194
 msgid "Prelievo Contante"
 msgstr ""
 
-#: app.py:191
+#: app.py:195
 msgid "IRPEF (Saldo/Acconto)"
 msgstr ""
 
-#: app.py:192
+#: app.py:196
 msgid "Capital Gain (Tassazione)"
 msgstr ""
 
-#: app.py:193
+#: app.py:197
 msgid "Multe"
 msgstr ""
 
-#: app.py:195
+#: app.py:199
 msgid "Ufficio / Coworking"
 msgstr ""
 
-#: app.py:196
+#: app.py:200
 msgid "Formazione / Corsi"
 msgstr ""
 
-#: app.py:197
+#: app.py:201
 msgid "Materiali didattici"
 msgstr ""
 
-#: app.py:198
+#: app.py:202
 msgid "Trasporti lavoro"
 msgstr ""
 
-#: app.py:199
+#: app.py:203
 msgid "Pasti lavoro"
 msgstr ""
 
-#: app.py:200
+#: app.py:204
 msgid "Spese scolastiche"
 msgstr ""
 
-#: app.py:201
+#: app.py:205
 msgid "Abbigliamento bambino"
 msgstr ""
 
-#: app.py:202
+#: app.py:206
 msgid "Salute bambino"
 msgstr ""
 
-#: app.py:203
+#: app.py:207
 msgid "Giocattoli"
 msgstr ""
 
-#: app.py:204
+#: app.py:208
 msgid "Baby sitter / Asilo"
 msgstr ""
 
-#: app.py:205
+#: app.py:209
 msgid "Regali fatti"
 msgstr ""
 
-#: app.py:207
+#: app.py:211
 msgid "Farmacia"
 msgstr ""
 
-#: app.py:208
+#: app.py:212
 msgid "Visita medica"
 msgstr ""
 
-#: app.py:209
+#: app.py:213
 msgid "Assicurazione Sanitaria"
 msgstr ""
 
-#: app.py:211
+#: app.py:215
 msgid "Riparazioni urgenti"
 msgstr ""
 
-#: app.py:212
+#: app.py:216
 msgid "Emergenze"
 msgstr ""
 
-#: app.py:213
+#: app.py:217
 msgid "Sostituzione tech"
 msgstr ""
 
-#: app.py:1438
+#: app.py:482
+msgid "Disponibilità (Banca/Contanti)"
+msgstr ""
+
+#: app.py:483
+msgid "Investimenti/Pensione"
+msgstr ""
+
+#: app.py:484
+msgid "Lightning"
+msgstr ""
+
+#: app.py:485
+msgid "On-chain"
+msgstr ""
+
+#: app.py:1446
 msgid "Statistiche Euro (€)"
 msgstr ""
 
-#: app.py:1439
+#: app.py:1447
 msgid "Statistiche Lightning (⚡)"
 msgstr ""
 
-#: app.py:1440
+#: app.py:1448
 msgid "Statistiche On-chain (₿)"
 msgstr ""
 
-#: app.py:1449 templates/analytics.html:1
+#: app.py:1457 templates/analytics.html:1
 msgid "Statistiche"
 msgstr ""
 
@@ -441,71 +457,71 @@ msgstr ""
 msgid "Totale Speso"
 msgstr ""
 
-#: templates/analytics.html:323
+#: templates/analytics.html:346
 msgid "Aggiungi Nuovo Investimento"
 msgstr ""
 
-#: templates/analytics.html:330
+#: templates/analytics.html:353
 msgid "Nome (es. Buono Postale)"
 msgstr ""
 
-#: templates/analytics.html:340
+#: templates/analytics.html:363
 msgid "Capitale Investito €"
 msgstr ""
 
-#: templates/analytics.html:350
+#: templates/analytics.html:373
 msgid "Valore Iniziale €"
 msgstr ""
 
-#: templates/analytics.html:356
+#: templates/analytics.html:379
 msgid "Salva"
 msgstr ""
 
-#: templates/analytics.html:364
+#: templates/analytics.html:387
 msgid "Performance Investimenti"
 msgstr ""
 
-#: templates/analytics.html:374 templates/analytics.html:517
+#: templates/analytics.html:397 templates/analytics.html:540
 msgid "Asset"
 msgstr ""
 
-#: templates/analytics.html:375
+#: templates/analytics.html:398
 msgid "Costo Storico (Carico)"
 msgstr ""
 
-#: templates/analytics.html:376
+#: templates/analytics.html:399
 msgid "Valore Attuale"
 msgstr ""
 
-#: templates/analytics.html:377 templates/index.html:67 templates/index.html:91
+#: templates/analytics.html:400 templates/index.html:67 templates/index.html:91
 msgid "Rendimento"
 msgstr ""
 
-#: templates/analytics.html:379
+#: templates/analytics.html:402
 msgid "Registra Valore Mese"
 msgstr ""
 
-#: templates/analytics.html:439
+#: templates/analytics.html:462
 msgid "Nuovo importo €"
 msgstr ""
 
-#: templates/analytics.html:445
+#: templates/analytics.html:468
 msgid "Salva rilevazione mese"
 msgstr ""
 
-#: templates/analytics.html:489
+#: templates/analytics.html:512
 msgid "Andamento Patrimoniale Euro"
 msgstr ""
 
-#: templates/analytics.html:490
+#: templates/analytics.html:513
 msgid "Saldo Storico Patrimoniale (Controvalore €)"
 msgstr ""
 
-#: templates/analytics.html:508
+#: templates/analytics.html:531
 msgid "Storico Rilevazioni Mese"
 msgstr ""
 
-#: templates/analytics.html:516 templates/importa_anteprima.html:11
+#: templates/analytics.html:539 templates/importa_anteprima.html:11
 #: templates/modifica_transazione_lightning.html:8
 #: templates/modifica_transazione_onchain.html:8 templates/transazioni.html:54
 #: templates/transazioni_lightning.html:42
@@ -513,23 +529,23 @@ msgstr ""
 msgid "Data"
 msgstr ""
 
-#: templates/analytics.html:518
+#: templates/analytics.html:541
 msgid "Valore"
 msgstr ""
 
-#: templates/analytics.html:519
+#: templates/analytics.html:542
 msgid "Azione"
 msgstr ""
 
-#: templates/analytics.html:548
+#: templates/analytics.html:571
 msgid "Sicuro di voler eliminare questa rilevazione?"
 msgstr ""
 
-#: templates/analytics.html:556
+#: templates/analytics.html:579
 msgid "Elimina errore"
 msgstr ""
 
-#: templates/analytics.html:566
+#: templates/analytics.html:589
 msgid "Nessuna rilevazione salvata finora."
 msgstr ""
 
@@ -691,7 +707,7 @@ msgstr ""
 msgid "Stat ₿"
 msgstr ""
 
-#: templates/base.html:228 templates/login.html:314
+#: templates/base.html:228 templates/login.html:312
 msgid "F.A.Q."
 msgstr ""
 
@@ -993,8 +1009,82 @@ msgstr ""
 msgid "in base al prezzo attuale di mercato."
 msgstr ""
 
-#: templates/index.html:183
+#: templates/index.html:183 templates/login.html:71
 msgid "Supporta il progetto"
+msgstr ""
+
+#: templates/login.html:6
+msgid "Login - ₿eesy"
+msgstr ""
+
+#: templates/login.html:41
+msgid "Username"
+msgstr ""
+
+#: templates/login.html:42
+msgid "Password"
+msgstr ""
+
+#: templates/login.html:43
+msgid "Login"
+msgstr ""
+
+#: templates/login.html:45
+msgid "Non hai un account? Registrati qui! ⬅ "
+msgstr ""
+
+#: templates/login.html:48 templates/login.html:66
+msgid "Nostr Login"
+msgstr ""
+
+#: templates/login.html:51
+msgid ""
+"Nostr è un protocollo decentralizzato per comunicazioni e identità "
+"crittografiche. In pratica puoi fare login senza password, usando il tuo "
+"wallet compatibile (es. <strong>nos2x</strong>, <strong>Alby</strong>, "
+"<strong>Amber</strong>)."
+msgstr ""
+
+#: templates/login.html:54
+msgid "Vantaggi del login Nostr:"
+msgstr ""
+
+#: templates/login.html:56
+msgid "Nessuna password da ricordare"
+msgstr ""
+
+#: templates/login.html:57
+msgid "Decentralizzato e sicuro"
+msgstr ""
+
+#: templates/login.html:58
+msgid "Unico account su diversi siti compatibili"
+msgstr ""
+
+#: templates/login.html:62
+msgid ""
+"Per loggarti basta cliccare il pulsante qui sotto e scegliere il tuo "
+"signer."
+msgstr ""
+
+#: templates/login.html:76
+msgid "Lightning Network"
+msgstr ""
+
+#: templates/login.html:119
+msgid "Scegli il tuo Nostr Signer"
+msgstr ""
+
+#: templates/login.html:217
+msgid "Errore login mobile: "
+msgstr ""
+
+#: templates/login.html:224
+msgid "Installa Alby o nos2x sul tuo browser desktop!"
+msgstr ""
+
+#: templates/login.html:257
+msgid "Errore desktop: "
 msgstr ""
 
 #: templates/modifica_transazione.html:1
