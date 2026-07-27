@@ -204,6 +204,42 @@ def inizializza_db():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )        
     ''')
+    # Tabella per il "cervello" delle categorie
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS mapping_categorie (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            parola_chiave TEXT NOT NULL,
+            categoria TEXT,
+            sottocategoria TEXT,
+            user_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )        
+    ''')
+
+    # INSERIAMO GLI ESEMPI DI DEFAULT SOLO SE LA TABELLA È VUOTA
+    cursor.execute("SELECT COUNT(*) FROM mapping_categorie")
+    if cursor.fetchone()[0] == 0:
+        esempi = [
+            ('VODAFONE', 'Spese Personali', 'Abbonamenti (Netflix, Spotify, ecc)'),
+            ('SEVEN PUB', 'Alimentari', 'Ristorante - Bar'),
+            ('STIPENDIO', 'Entrate', 'Stipendio'),
+            ('ENI', 'Trasporti', 'Carburante'),
+            ('ALI', 'Alimentari', 'Supermercato')
+        ]
+        # Inseriamo gli esempi assegnandoli all'utente di default (user_id=1)
+        cursor.executemany('''
+            INSERT INTO mapping_categorie (parola_chiave, categoria, sottocategoria, user_id)
+            VALUES (?, ?, ?, 1)
+        ''', esempi)
+        print("🧠 Tabella Mapping popolata con i primi esempi!")
+
+    # Tabella per i prezzi Bitcoin (usando la TUA struttura corretta)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS prezzi_btc (
+            data TEXT PRIMARY KEY,
+            prezzo_eur REAL NOT NULL
+        )
+    ''')
 
     # ALLA FINE DI TUTTO: Un solo commit e una sola chiusura
     conn.commit()
@@ -1156,51 +1192,6 @@ def get_bilancio_periodo(user_id, tipo_conto, mese=None, anno=None):
     conn.close()
 
     return abs(float(totale_entrate)), abs(float(totale_spese))
-
-
-def crea_tabella_prezzi_btc():
-    import sqlite3
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS prezzi_btc (
-            data TEXT PRIMARY KEY,
-            prezzo_eur REAL NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-    print("✅ Tabella prezzi_btc RE-INIZIALIZZATA con successo.")
-
-
-def crea_tabella_mapping():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS mapping_categorie (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            parola_chiave TEXT NOT NULL UNIQUE,
-            categoria TEXT NOT NULL,
-            sottocategoria TEXT NOT NULL
-        )
-    ''')
-    # Aggiungiamo qualche esempio iniziale per testare
-    esempi = [
-        ('VODAFONE', 'Spese Personali', 'Abbonamenti (Netflix, Spotify, ecc)'),
-        ('SEVEN PUB', 'Alimentari', 'Ristorante - Bar'),
-        ('STIPENDIO', 'Entrate', 'Stipendio'),
-        ('ENI', 'Trasporti', 'Carburante'),
-        ('ALI', 'Alimentari', 'Supermercato')
-    ]
-    cursor.executemany('''
-        INSERT OR IGNORE INTO mapping_categorie (parola_chiave, categoria, sottocategoria)
-        VALUES (?, ?, ?)
-    ''', esempi)
-
-    conn.commit()
-    conn.close()
-    print("🧠 Tabella Mapping pronta con i primi esempi!")
 
 
 def registra_transazione_conto(user_id, data, descrizione, categoria, sottocategoria, importo, conto, controvalore_btc=None, valore_btc_eur=None, note=''):

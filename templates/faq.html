@@ -3,6 +3,7 @@
   <h1 class="mb-4">🤔 {{ _('Domande Frequenti & Guida Tecnica') }}</h1>
 
   <div class="accordion" id="faqAccordion">
+    <!-- 1. PERCHÉ IL BACKUP È .JSON.ENC -->
     <div class="accordion-item shadow-sm mb-3">
       <h2 class="accordion-header" id="headingOne">
         <button
@@ -20,14 +21,17 @@
         data-bs-parent="#faqAccordion"
       >
         <div class="accordion-body">
-          {{ _('I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua') }}
-          {{ _('password, il file è inutilizzabile. Questo garantisce che se perdi la') }}
-          {{ _('chiavetta USB o il file finisce in mani sbagliate, nessuno potrà') }}
-          {{ _('vedere le tue transazioni.') }}
+          {{ _('I tuoi dati sono cifrati in locale utilizzando la tua Master Key
+          personale e la crittografia Fernet (PBKDF2HMAC con SHA-256).') }} {{
+          _('Senza la tua password o la tua firma Nostr, il file risulta del
+          tutto indecifrabile. Questo garantisce che, anche se perdi una
+          chiavetta USB o il file finisce in mani sbagliate, nessuno potrà mai
+          accedere alle tue transazioni.') }}
         </div>
       </div>
     </div>
 
+    <!-- 2. BACKUP DEL DATABASE -->
     <div class="accordion-item shadow-sm mb-3">
       <h2 class="accordion-header" id="headingTwo">
         <button
@@ -46,8 +50,8 @@
       >
         <div class="accordion-body">
           <p>
-            {{ _('Prima di fare test pericolosi, puoi copiare il file del database sul') }}
-            {{ _('Desktop tramite il terminale di VS Code:') }}
+            {{ _('Prima di fare test o modifiche, puoi creare una copia diretta
+            del file del database tramite il terminale di VS Code:') }}
           </p>
           <div class="bg-dark text-white p-3 rounded">
             <code
@@ -56,14 +60,15 @@
             >
           </div>
           <p class="mt-2 small text-muted">
-            {{ _('Questo comando crea una copia datata sul tuo Desktop. Per') }}
-            {{ _('ripristinarla, basta chiudere Beesy e rimettere il file nella') }}
-            {{ _('cartella del progetto.') }}
+            {{ _('Questo comando crea una copia datata sul tuo Desktop. Per
+            ripristinarla, basta chiudere Beesy e rimettere il file nella
+            cartella del progetto.') }}
           </p>
         </div>
       </div>
     </div>
 
+    <!-- 3. TEST DEL PARACADUTE IN-APP -->
     <div class="accordion-item shadow-sm mb-3">
       <h2 class="accordion-header" id="headingThree">
         <button
@@ -72,8 +77,8 @@
           data-bs-toggle="collapse"
           data-bs-target="#collapseThree"
         >
-          🚀 {{ _('Come verifico se il mio backup funziona davvero? (Test del') }}
-          Paracadute)
+          🚀 {{ _('Come verifico se il mio backup funziona davvero? (Test del
+          Paracadute)') }}
         </button>
       </h2>
       <div
@@ -83,16 +88,70 @@
       >
         <div class="accordion-body">
           <ol>
-            <li>{{ _('Scarica il backup da <strong>/backup-protetto</strong>.') }}</li>
-            <li>{{ _('Aggiungi una transazione finta (es: "Test" 1€).') }}</li>
             <li>
-              {{ _('Vai su <strong>/ripristino-protetto</strong> e carica il file.') }}
+              {{ _("Scarica il backup cifrato da") }}
+              <strong>/backup-protetto</strong>.
             </li>
             <li>
-              {{ _('Se la transazione "Test" scompare e tornano i vecchi dati, il') }}
-              {{ _('sistema è perfetto!') }}
+              {{ _("Aggiungi una transazione finta nell'app (es: Test 1 EUR).")
+              }}
+            </li>
+            <li>
+              {{ _("Vai su") }} <strong>/ripristino-protetto</strong> {{ _("e
+              ricarica il file scaricato.") }}
+            </li>
+            <li>
+              {{ _("Se la transazione di prova scompare e vengono ripristinati
+              esattamente i tuoi dati originali, il sistema di ripristino è
+              perfetto!") }}
             </li>
           </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DECRITTAZIONE OFFLINE -->
+    <div class="accordion-item shadow-sm mb-3">
+      <h2 class="accordion-header" id="headingFour">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseFour"
+        >
+          🔑 {{ _("Cosa succede se Beesy va offline? Posso leggere i miei backup
+          senza l'app?") }}
+        </button>
+      </h2>
+      <div
+        id="collapseFour"
+        class="accordion-collapse collapse"
+        data-bs-parent="#faqAccordion"
+      >
+        <div class="accordion-body">
+          <p>
+            <strong
+              >{{ _("Sì, la tua sovranità sui dati è garantita al 100%%.")
+              }}</strong
+            >
+            {{ _("Poiché Beesy utilizza standard crittografici open source, non
+            dipendi dal server dell'applicazione per recuperare i tuoi file.")
+            }}
+          </p>
+          <p>
+            {{ _("Troverai nella radice del progetto uno script isolato
+            chiamato") }} <code>test_backup.py</code>. {{ _("Eseguendolo da
+            terminale, potrai sbloccare la tua Master Key e visualizzare in
+            chiaro il contenuto di qualsiasi file .json.enc direttamente sul tuo
+            computer:") }}
+          </p>
+          <div class="bg-dark text-white p-3 rounded">
+            <code>python test_backup.py</code>
+          </div>
+          <p class="mt-2 small text-muted">
+            {{ _("Inserisci il percorso del file e la tua password/firma per
+            verificare e leggere le tue transazioni in totale indipendenza.") }}
+          </p>
         </div>
       </div>
     </div>

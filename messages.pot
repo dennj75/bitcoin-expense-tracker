@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-24 16:26+0200\n"
+"POT-Creation-Date: 2026-07-26 17:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -349,19 +349,19 @@ msgstr ""
 msgid "On-chain"
 msgstr ""
 
-#: app.py:1446
+#: app.py:1449
 msgid "Statistiche Euro (€)"
 msgstr ""
 
-#: app.py:1447
+#: app.py:1450
 msgid "Statistiche Lightning (⚡)"
 msgstr ""
 
-#: app.py:1448
+#: app.py:1451
 msgid "Statistiche On-chain (₿)"
 msgstr ""
 
-#: app.py:1457 templates/analytics.html:1
+#: app.py:1460 templates/analytics.html:1
 msgid "Statistiche"
 msgstr ""
 
@@ -453,75 +453,72 @@ msgstr ""
 msgid "Nessuna entrata registrata."
 msgstr ""
 
-#: templates/analytics.html:269
-msgid "Totale Speso"
-msgstr ""
-
-#: templates/analytics.html:346
+#: templates/analytics.html:246
 msgid "Aggiungi Nuovo Investimento"
 msgstr ""
 
-#: templates/analytics.html:353
+#: templates/analytics.html:253
 msgid "Nome (es. Buono Postale)"
 msgstr ""
 
-#: templates/analytics.html:363
+#: templates/analytics.html:263
 msgid "Capitale Investito €"
 msgstr ""
 
-#: templates/analytics.html:373
+#: templates/analytics.html:273
 msgid "Valore Iniziale €"
 msgstr ""
 
-#: templates/analytics.html:379
+#: templates/analytics.html:279
 msgid "Salva"
 msgstr ""
 
-#: templates/analytics.html:387
+#: templates/analytics.html:287
 msgid "Performance Investimenti"
 msgstr ""
 
-#: templates/analytics.html:397 templates/analytics.html:540
+#: templates/analytics.html:297 templates/analytics.html:440
 msgid "Asset"
 msgstr ""
 
-#: templates/analytics.html:398
+#: templates/analytics.html:298
 msgid "Costo Storico (Carico)"
 msgstr ""
 
-#: templates/analytics.html:399
+#: templates/analytics.html:299
 msgid "Valore Attuale"
 msgstr ""
 
-#: templates/analytics.html:400 templates/index.html:67 templates/index.html:91
+#: templates/analytics.html:300 templates/index.html:67 templates/index.html:91
 msgid "Rendimento"
 msgstr ""
 
-#: templates/analytics.html:402
+#: templates/analytics.html:302
 msgid "Registra Valore Mese"
 msgstr ""
 
-#: templates/analytics.html:462
+#: templates/analytics.html:362
 msgid "Nuovo importo €"
 msgstr ""
 
-#: templates/analytics.html:468
+#: templates/analytics.html:368
 msgid "Salva rilevazione mese"
 msgstr ""
 
-#: templates/analytics.html:512
+#: templates/analytics.html:412
 msgid "Andamento Patrimoniale Euro"
 msgstr ""
 
-#: templates/analytics.html:513
+#: templates/analytics.html:413
 msgid "Saldo Storico Patrimoniale (Controvalore €)"
 msgstr ""
 
-#: templates/analytics.html:531
+#: templates/analytics.html:431
 msgid "Storico Rilevazioni Mese"
 msgstr ""
 
-#: templates/analytics.html:539 templates/importa_anteprima.html:11
+#: templates/analytics.html:439 templates/analytics.html:516
+#: templates/importa_anteprima.html:11
 #: templates/modifica_transazione_lightning.html:8
 #: templates/modifica_transazione_onchain.html:8 templates/transazioni.html:54
 #: templates/transazioni_lightning.html:42
@@ -529,24 +526,80 @@ msgstr ""
 msgid "Data"
 msgstr ""
 
-#: templates/analytics.html:541
+#: templates/analytics.html:441
 msgid "Valore"
 msgstr ""
 
-#: templates/analytics.html:542
+#: templates/analytics.html:442
 msgid "Azione"
 msgstr ""
 
-#: templates/analytics.html:571
+#: templates/analytics.html:471
 msgid "Sicuro di voler eliminare questa rilevazione?"
 msgstr ""
 
-#: templates/analytics.html:579
+#: templates/analytics.html:479
 msgid "Elimina errore"
 msgstr ""
 
-#: templates/analytics.html:589
+#: templates/analytics.html:489
 msgid "Nessuna rilevazione salvata finora."
+msgstr ""
+
+#: templates/analytics.html:511 templates/analytics.html:531
+msgid "Dettaglio Categoria:"
+msgstr ""
+
+#: templates/analytics.html:512
+msgid "Caricamento in corso..."
+msgstr ""
+
+#: templates/analytics.html:513
+msgid "💶 Transazioni Fiat (EUR)"
+msgstr ""
+
+#: templates/analytics.html:514
+msgid "⚡ Transazioni Lightning Network"
+msgstr ""
+
+#: templates/analytics.html:515
+msgid "🔗 Transazioni Bitcoin On-Chain"
+msgstr ""
+
+#: templates/analytics.html:517 templates/importa_anteprima.html:12
+#: templates/modifica_transazione_lightning.html:14
+#: templates/modifica_transazione_onchain.html:14 templates/transazioni.html:55
+#: templates/transazioni_lightning.html:44
+#: templates/transazioni_onchain.html:45
+msgid "Descrizione"
+msgstr ""
+
+#: templates/analytics.html:518
+msgid "Importo"
+msgstr ""
+
+#: templates/analytics.html:519 templates/transazioni_lightning.html:47
+msgid "Satoshi"
+msgstr ""
+
+#: templates/analytics.html:520
+msgid "BTC"
+msgstr ""
+
+#: templates/analytics.html:521
+msgid "Nessuna transazione trovata per questa categoria nel periodo selezionato."
+msgstr ""
+
+#: templates/analytics.html:522
+msgid "Si è verificato un errore durante il caricamento dei dati."
+msgstr ""
+
+#: templates/analytics.html:539 templates/analytics.html:551
+msgid "Chiudi"
+msgstr ""
+
+#: templates/analytics.html:588
+msgid "Totale Speso"
 msgstr ""
 
 #: templates/backup_confirm.html:1
@@ -715,72 +768,113 @@ msgstr ""
 msgid "Domande Frequenti & Guida Tecnica"
 msgstr ""
 
-#: templates/faq.html:14
+#: templates/faq.html:15
 msgid "Perché il backup è un file .json.enc?"
 msgstr ""
 
-#: templates/faq.html:23
-msgid "I tuoi dati sono criptati con <strong>AES-256</strong>. Senza la tua"
-msgstr ""
-
 #: templates/faq.html:24
-msgid "password, il file è inutilizzabile. Questo garantisce che se perdi la"
-msgstr ""
-
-#: templates/faq.html:25
-msgid "chiavetta USB o il file finisce in mani sbagliate, nessuno potrà"
+msgid ""
+"I tuoi dati sono cifrati in locale utilizzando la tua Master Key\n"
+"          personale e la crittografia Fernet (PBKDF2HMAC con SHA-256)."
 msgstr ""
 
 #: templates/faq.html:26
-msgid "vedere le tue transazioni."
+msgid ""
+"Senza la tua password o la tua firma Nostr, il file risulta del\n"
+"          tutto indecifrabile. Questo garantisce che, anche se perdi una\n"
+"          chiavetta USB o il file finisce in mani sbagliate, nessuno "
+"potrà mai\n"
+"          accedere alle tue transazioni."
 msgstr ""
 
-#: templates/faq.html:39
+#: templates/faq.html:43
 msgid "Come faccio un backup manuale del database \"al volo\"?"
 msgstr ""
 
-#: templates/faq.html:49
-msgid "Prima di fare test pericolosi, puoi copiare il file del database sul"
+#: templates/faq.html:53
+msgid ""
+"Prima di fare test o modifiche, puoi creare una copia diretta\n"
+"            del file del database tramite il terminale di VS Code:"
 msgstr ""
 
-#: templates/faq.html:50
-msgid "Desktop tramite il terminale di VS Code:"
+#: templates/faq.html:63
+msgid ""
+"Questo comando crea una copia datata sul tuo Desktop. Per\n"
+"            ripristinarla, basta chiudere Beesy e rimettere il file nella"
+"\n"
+"            cartella del progetto."
 msgstr ""
 
-#: templates/faq.html:59
-msgid "Questo comando crea una copia datata sul tuo Desktop. Per"
-msgstr ""
-
-#: templates/faq.html:60
-msgid "ripristinarla, basta chiudere Beesy e rimettere il file nella"
-msgstr ""
-
-#: templates/faq.html:61
-msgid "cartella del progetto."
-msgstr ""
-
-#: templates/faq.html:75
-msgid "Come verifico se il mio backup funziona davvero? (Test del"
-msgstr ""
-
-#: templates/faq.html:86
-msgid "Scarica il backup da <strong>/backup-protetto</strong>."
-msgstr ""
-
-#: templates/faq.html:87
-msgid "Aggiungi una transazione finta (es: \"Test\" 1€)."
-msgstr ""
-
-#: templates/faq.html:89
-msgid "Vai su <strong>/ripristino-protetto</strong> e carica il file."
+#: templates/faq.html:80
+msgid ""
+"Come verifico se il mio backup funziona davvero? (Test del\n"
+"          Paracadute)"
 msgstr ""
 
 #: templates/faq.html:92
-msgid "Se la transazione \"Test\" scompare e tornano i vecchi dati, il"
+msgid "Scarica il backup cifrato da"
 msgstr ""
 
-#: templates/faq.html:93
-msgid "sistema è perfetto!"
+#: templates/faq.html:96
+msgid "Aggiungi una transazione finta nell'app (es: Test 1 EUR)."
+msgstr ""
+
+#: templates/faq.html:100
+msgid "Vai su"
+msgstr ""
+
+#: templates/faq.html:100
+msgid ""
+"e\n"
+"              ricarica il file scaricato."
+msgstr ""
+
+#: templates/faq.html:104
+msgid ""
+"Se la transazione di prova scompare e vengono ripristinati\n"
+"              esattamente i tuoi dati originali, il sistema di ripristino"
+" è\n"
+"              perfetto!"
+msgstr ""
+
+#: templates/faq.html:122
+msgid ""
+"Cosa succede se Beesy va offline? Posso leggere i miei backup\n"
+"          senza l'app?"
+msgstr ""
+
+#: templates/faq.html:134
+msgid "Sì, la tua sovranità sui dati è garantita al 100"
+msgstr ""
+
+#: templates/faq.html:137
+msgid ""
+"Poiché Beesy utilizza standard crittografici open source, non\n"
+"            dipendi dal server dell'applicazione per recuperare i tuoi "
+"file."
+msgstr ""
+
+#: templates/faq.html:142
+msgid ""
+"Troverai nella radice del progetto uno script isolato\n"
+"            chiamato"
+msgstr ""
+
+#: templates/faq.html:143
+msgid ""
+"Eseguendolo da\n"
+"            terminale, potrai sbloccare la tua Master Key e visualizzare "
+"in\n"
+"            chiaro il contenuto di qualsiasi file .json.enc direttamente "
+"sul tuo\n"
+"            computer:"
+msgstr ""
+
+#: templates/faq.html:152
+msgid ""
+"Inserisci il percorso del file e la tua password/firma per\n"
+"            verificare e leggere le tue transazioni in totale "
+"indipendenza."
 msgstr ""
 
 #: templates/force_password_reset.html:5
@@ -841,14 +935,6 @@ msgstr ""
 
 #: templates/importa_anteprima.html:4
 msgid "Anteprima Importazione"
-msgstr ""
-
-#: templates/importa_anteprima.html:12
-#: templates/modifica_transazione_lightning.html:14
-#: templates/modifica_transazione_onchain.html:14 templates/transazioni.html:55
-#: templates/transazioni_lightning.html:44
-#: templates/transazioni_onchain.html:45
-msgid "Descrizione"
 msgstr ""
 
 #: templates/importa_anteprima.html:13 templates/transazioni.html:58
@@ -1523,10 +1609,6 @@ msgstr ""
 
 #: templates/transazioni_lightning.html:24
 msgid "Aggiungi una nuova transazione Lightning"
-msgstr ""
-
-#: templates/transazioni_lightning.html:47
-msgid "Satoshi"
 msgstr ""
 
 #: templates/transazioni_lightning.html:48

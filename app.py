@@ -1,5 +1,29 @@
 
 
+from werkzeug.utils import secure_filename
+from utils.security import decrypt_master_key, encrypt_data, decrypt_data
+from utils.helpers import normalizza_importo
+from models import User
+from utils.import_manager import anteprima_importazione_csv
+from utils.export import (
+    genera_stringa_backup_json,
+    esporta_csv, esporta_csv_per_mese, esporta_csv_lightning,
+    esporta_csv_per_mese_lightning, esporta_csv_onchain, esporta_csv_per_mese_onchain
+)
+from utils.crypto import ottieni_valore_btc_eur, euro_to_btc, _carica_storico_btc_eur, aggiorna_prezzo_bitcoin
+from db.db_utils import (
+    DB_PATH, inizializza_db, get_db_connection, get_user_by_id, inizializza_db, salva_su_db, leggi_transazioni_da_db,
+    elimina_transazione_da_db, modifica_transazione_db, get_transazioni_con_saldo,
+    salva_su_db_lightning, leggi_transazioni_da_db_lightning, modifica_transazione_db_lightning,
+    elimina_transazione_da_db_lightning, get_transazioni_con_saldo_lightning,
+    leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain,
+    elimina_transazione_da_db_onchain, modifica_transazione_db_onchain, get_transazioni_con_saldo_onchain,
+    ripristina_database_completo, get_transazioni_con_saldo_onchain,
+    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo,
+    pulisci_mese, registra_transazione_conto, get_transaction_drill_down
+
+)
+
 import os
 import io
 import json
@@ -28,54 +52,32 @@ from hashlib import sha256
 from dotenv import load_dotenv
 from bech32 import convertbits, bech32_encode, bech32_decode
 
+# Carica subito le variabili d'ambiente dal file .env
+load_dotenv()
 # Logica di Progetto (i tuoi moduli)
 
 
-from db.db_utils import (
-    DB_PATH, get_db_connection, get_user_by_id, inizializza_db, salva_su_db, leggi_transazioni_da_db,
-    elimina_transazione_da_db, modifica_transazione_db, get_transazioni_con_saldo,
-    salva_su_db_lightning, leggi_transazioni_da_db_lightning, modifica_transazione_db_lightning,
-    elimina_transazione_da_db_lightning, get_transazioni_con_saldo_lightning,
-    leggi_transazioni_da_db_onchain, salva_su_db_onchain, leggi_transazioni_filtrate_onchain,
-    elimina_transazione_da_db_onchain, modifica_transazione_db_onchain, get_transazioni_con_saldo_onchain,
-    ripristina_database_completo, get_transazioni_con_saldo_onchain,
-    get_spese_per_categoria_filtrate, get_entrate_per_sottocategoria, get_bilancio_periodo, crea_tabella_prezzi_btc, crea_tabella_mapping,
-    pulisci_mese, registra_transazione_conto, get_transaction_drill_down
-
-)
-from utils.crypto import ottieni_valore_btc_eur, euro_to_btc, _carica_storico_btc_eur, aggiorna_prezzo_bitcoin
-from utils.export import (
-    genera_stringa_backup_json,
-    esporta_csv, esporta_csv_per_mese, esporta_csv_lightning,
-    esporta_csv_per_mese_lightning, esporta_csv_onchain, esporta_csv_per_mese_onchain
-)
-from utils.import_manager import anteprima_importazione_csv
-
-from models import User
-from utils.helpers import normalizza_importo
-from utils.security import decrypt_master_key, encrypt_data, decrypt_data
-
-from werkzeug.utils import secure_filename
-
 load_dotenv()
+# Importazioni dei tuoi moduli DB
+
+# --- CONFIGURAZIONE COSTANTI ---
+VERSIONE_APP = "0.1.1"
 
 CATEGORIE = {
     'Entrate': [
-        'Cedole O Dividendi', 'Interessi attivi', 'Stipendio',  'Rimborso capitale investito', 'Regalo', 'Donazioni',
-        'Claim giochi online', 'Plusvalenze Investimenti', 'Altro'
+        'Cedole O Dividendi', 'Interessi attivi', 'Stipendio', 'Rimborso capitale investito',
+        'Regalo', 'Donazioni', 'Claim giochi online', 'Plusvalenze Investimenti', 'Altro'
     ],
     'Abitazione': [
-        'Affitto/Mutuo', 'Bollette: Luce', 'Bollette: acqua',
-        'Bollette: Gas', 'Bollette: Rifiuti', 'Manutenzione',
-        'Spese condominiali', 'Assicurazione casa', 'IMU'
+        'Affitto/Mutuo', 'Bollette: Luce', 'Bollette: acqua', 'Bollette: Gas',
+        'Bollette: Rifiuti', 'Manutenzione', 'Spese condominiali', 'Assicurazione casa', 'IMU'
     ],
     'Alimentari': [
         'Supermercato', 'Ristorante - Bar', 'Spesa online', 'Altro'
     ],
     'Trasporti': [
-        'Carburante', 'Mezzi pubblici', 'Manutenzione auto / moto',
-        'Assicurazione auto', 'Bollo auto', 'Taxi / Uber',
-        'Noleggi', 'Parcheggi / pedaggi', 'Altro'
+        'Carburante', 'Mezzi pubblici', 'Manutenzione auto / moto', 'Assicurazione auto',
+        'Bollo auto', 'Taxi / Uber', 'Noleggi', 'Parcheggi / pedaggi', 'Altro'
     ],
     'Spese Personali': [
         'Abbigliamento / Scarpe', 'Igiene personale', 'Parrucchiere / estetista',
@@ -87,19 +89,17 @@ CATEGORIE = {
     ],
     'Patrimonio & Finanze': [
         'Commissioni bancarie', 'Interessi passivi', 'Minusvalenze investimenti', 'Imposte di bollo / IVAFE',
-        'Acquisto Titoli/Fondi (Giroconto)', 'Versamento Pensione (Giroconto)',
-        'Investimento Crypto', 'Prelievo Contante'
+        'Acquisto Titoli/Fondi (Giroconto)', 'Versamento Pensione (Giroconto)', 'Investimento Crypto', 'Prelievo Contante'
     ],
     'Tasse & Stato': [
         'IRPEF (Saldo/Acconto)', 'Capital Gain (Tassazione)', 'Multe', 'Altro'
     ],
     'Lavoro & Studio': [
-        'Ufficio / Coworking', 'Formazione / Corsi', 'Materiali didattici',
-        'Trasporti lavoro', 'Pasti lavoro'
+        'Ufficio / Coworking', 'Formazione / Corsi', 'Materiali didattici', 'Trasporti lavoro', 'Pasti lavoro'
     ],
     'Famiglia': [
-        'Spese scolastiche', 'Abbigliamento bambino', 'Salute bambino',
-        'Giocattoli', 'Baby sitter / Asilo', 'Regali fatti', 'Altro'
+        'Spese scolastiche', 'Abbigliamento bambino', 'Salute bambino', 'Giocattoli',
+        'Baby sitter / Asilo', 'Regali fatti', 'Altro'
     ],
     'Salute': [
         'Farmacia', 'Visita medica', 'Assicurazione Sanitaria', 'Altro'
@@ -109,16 +109,25 @@ CATEGORIE = {
     ]
 }
 
-
+# --- INIZIALIZZAZIONE FLASK ---
 app = Flask(__name__)
 app.config['DB_PATH'] = DB_PATH
-VERSIONE_APP = "0.1.1"  # Modificherai SOLO questa stringa quando avanzi di versione!
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default-key-per-test')
 
-# Questa funzione magica controlla la lingua preferita del browser dell'utente
+# Cookie & CSRF Settings
+app.config['WTF_CSRF_ENABLED'] = True
+csrf = CSRFProtect(app)
+
+# Nota: Se riscontri problemi con il Login in locale (127.0.0.1),
+# imposta SESSION_COOKIE_SECURE solo quando BEESY_ENV è 'production'
+if os.environ.get('BEESY_ENV') == 'production':
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+    app.config["SESSION_COOKIE_SECURE"] = True
+
+# --- TRADUZIONI & BABEL ---
 
 
 def get_locale():
-    # Controlla la lingua del browser: se l'utente preferisce 'en' usa inglese, altrimenti 'it'
     return 'en'
     # return request.accept_languages.best_match(['it', 'en', 'zh'])
 
@@ -127,153 +136,41 @@ babel = Babel(app, locale_selector=get_locale)
 
 
 def traduci_voce(testo):
-    from flask_babel import gettext as _
-    mappa_traduzioni = {
-        # --- Macro Categorie ---
-        'Entrate': _('Entrate'),
-        'Abitazione': _('Abitazione'),
-        'Alimentari': _('Alimentari'),
-        'Trasporti': _('Trasporti'),
-        'Spese Personali': _('Spese Personali'),
-        'Tempo Libero': _('Tempo Libero'),
-        'Patrimonio & Finanze': _('Patrimonio & Finanze'),
-        'Tasse & Stato': _('Tasse & Stato'),
-        'Lavoro & Studio': _('Lavoro & Studio'),
-        'Famiglia': _('Famiglia'),
-        'Salute': _('Salute'),
-        'Imprevisti': _('Imprevisti'),
+    # Traduzione dinamica usando Babel
+    return _(testo)
 
-        # --- Sottocategorie ---
-        'Cedole O Dividendi': _('Cedole O Dividendi'),
-        'plusvalenze investimenti': _('plusvalenze investimenti'),
-        'Interessi attivi': _('Interessi attivi'),
-        'Stipendio': _('Stipendio'),
-        'Rimborso capitale investito': _('Rimborso capitale investito'),
-        'Regalo': _('Regalo'),
-        'Donazioni': _('Donazioni'),
-        'Claim giochi online': _('Claim giochi online'),
-        'Affitto/Mutuo': _('Affitto/Mutuo'),
-        'Bollette: Luce': _('Bollette: Luce'),
-        'Bollette: acqua': _('Bollette: acqua'),
-        'Bollette: Gas': _('Bollette: Gas'),
-        'Bollette: Rifiuti': _('Bollette: Rifiuti'),
-        'Manutenzione': _('Manutenzione'),
-        'Spese condominiali': _('Spese condominiali'),
-        'Assicurazione casa': _('Assicurazione casa'),
-        'IMU': _('IMU'),
-        'Supermercato': _('Supermercato'),
-        'Ristorante - Bar': _('Ristorante - Bar'),
-        'Spesa online': _('Spesa online'),
-        'Altro': _('Altro'),
-        'Carburante': _('Carburante'),
-        'Mezzi pubblici': _('Mezzi pubblici'),
-        'Manutenzione auto / moto': _('Manutenzione auto / moto'),
-        'Assicurazione auto': _('Assicurazione auto'),
-        'Bollo auto': _('Bollo auto'),
-        'Taxi / Uber': _('Taxi / Uber'),
-        'Noleggi': _('Noleggi'),
-        'Parcheggi / pedaggi': _('Parcheggi / pedaggi'),
-        'Altro': _('Altro'),
-        'Abbigliamento / Scarpe': _('Abbigliamento / Scarpe'),
-        'Igiene personale': _('Igiene personale'),
-        'Parrucchiere / estetista': _('Parrucchiere / estetista'),
-        'Abbonamenti (Netflix, Spotify, ecc)': _('Abbonamenti (Netflix, Spotify, ecc)'),
-        'Libri / Riviste': _('Libri / Riviste'),
-        'Cinema / Teatro / Eventi': _('Cinema / Teatro / Eventi'),
-        'Sport / Palestra': _('Sport / Palestra'),
-        'Viaggi / Vacanze': _('Viaggi / Vacanze'),
-        'Hobby / Collezioni': _('Hobby / Collezioni'),
-        'Giochi / App': _('Giochi / App'),
-        'Commissioni bancarie': _('Commissioni bancarie'),
-        'Interessi passivi': _('Interessi passivi'),
-        'Minusvalenze investimenti': _('Minusvalenze investimenti'),
-        'Imposte di bollo / IVAFE': _('Imposte di bollo / IVAFE'),
-        'Acquisto Titoli/Fondi (Giroconto)': _('Acquisto Titoli/Fondi (Giroconto)'),
-        'Versamento Pensione (Giroconto)': _('Versamento Pensione (Giroconto)'),
-        'Investimento Crypto': _('Investimento Crypto'),
-        'Prelievo Contante': _('Prelievo Contante'),
-        'IRPEF (Saldo/Acconto)': _('IRPEF (Saldo/Acconto)'),
-        'Capital Gain (Tassazione)': _('Capital Gain (Tassazione)'),
-        'Multe': _('Multe'),
-        'Altro': _('Altro'),
-        'Ufficio / Coworking': _('Ufficio / Coworking'),
-        'Formazione / Corsi': _('Formazione / Corsi'),
-        'Materiali didattici': _('Materiali didattici'),
-        'Trasporti lavoro': _('Trasporti lavoro'),
-        'Pasti lavoro': _('Pasti lavoro'),
-        'Spese scolastiche': _('Spese scolastiche'),
-        'Abbigliamento bambino': _('Abbigliamento bambino'),
-        'Salute bambino': _('Salute bambino'),
-        'Giocattoli': _('Giocattoli'),
-        'Baby sitter / Asilo': _('Baby sitter / Asilo'),
-        'Regali fatti': _('Regali fatti'),
-        'Altro': _('Altro'),
-        'Farmacia': _('Farmacia'),
-        'Visita medica': _('Visita medica'),
-        'Assicurazione Sanitaria': _('Assicurazione Sanitaria'),
-        'Altro': _('Altro'),
-        'Riparazioni urgenti': _('Riparazioni urgenti'),
-        'Emergenze': _('Emergenze'),
-        'Sostituzione tech': _('Sostituzione tech')
-    }
-    # Se la voce è nella mappa restituisce la versione tradotta da Babel, altrimenti il testo originale
-    return mappa_traduzioni.get(testo, testo)
-
-# Esportiamo la funzione in Jinja così da poterla usare direttamente nei file HTML
+# Unico Context Processor per iniettare le variabili nei Template HTML
 
 
 @app.context_processor
-def inject_translation_helper():
-    return dict(traduci=traduci_voce,
-                CATEGORIE=CATEGORIE)
-
-
-@app.context_processor
-def inject_version():
-    """Rende la versione dell'app disponibile in ogni template HTML"""
-    return dict(versione_beesy=VERSIONE_APP)
-
-
-@app.context_processor
-def inject_env():
-    # Questo rende 'beesy_env' disponibile in TUTTI i template HTML del progetto!
-    return dict(beesy_env=os.environ.get('BEESY_ENV', 'production'))
+def inject_global_vars():
+    return dict(
+        traduci=traduci_voce,
+        CATEGORIE=CATEGORIE,
+        versione_beesy=VERSIONE_APP,
+        beesy_env=os.environ.get('BEESY_ENV', 'production')
+    )
 
 
 @app.after_request
 def add_header(response):
-    # Questo comando dice a ngrok di saltare la pagina di avviso
     response.headers['ngrok-skip-browser-warning'] = 'true'
     return response
 
-
-# Prende la chiave dal file .env.
-# Se non la trova, usa un valore di backup (solo per sviluppo!)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default-key-per-test')
-
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = True
-
-# Inizializziamo il modulo
-csrf = CSRFProtect(app)
-
-app.config['WTF_CSRF_ENABLED'] = True
-
-# --- INIZIALIZZAZIONE AUTOMATICA (Plug & Play) ---
+# --- INIZIALIZZAZIONE AUTOMATICA DATABASE ---
 
 
 def setup_application():
-    """Crea le cartelle necessarie e inizializza i database se non esistono."""
-    # 1. Crea la cartella static/img se non esiste (per le icone)
+    """Crea le cartelle necessarie e assicura la presenza di tutte le tabelle nel DB."""
     os.makedirs(os.path.join('static', 'img'), exist_ok=True)
 
-    # 2. Controlla e inizializza i database
     if not os.path.exists(DB_PATH):
         print("🟡 Database non trovato. Inizializzazione in corso...")
         inizializza_db()
         print("🟢 Database creato con successo!")
     else:
-        print("🔵 Database esistente rilevato.")
+        print("🔵 Database esistente rilevato. Eseguo controllo aggiornamenti...")
+        inizializza_db()
 
 
 # Esegui il setup prima di far partire il server
@@ -427,8 +324,6 @@ def load_user(user_id):
     # Usiamo il metodo from_db_row che abbiamo aggiornato in auth.py
     # che ora include anche encrypted_master_key
     return User.from_db_row(row)
-
-    crea_tabella_prezzi_btc()
 
 
 @app.route('/')
@@ -1230,11 +1125,10 @@ def analytics(tipo):
     print(
         f"🚨 URL ARGS INTERCETTATI -> Mese Grezzo: {mese_selezionato} | Anno Grezzo: {anno_selezionato}")
 
-    # 3. Logica di esclusione reciproca (se c'è il mese, puliamo l'anno e viceversa)
+    # 3. Logica di esclusione reciproca
     if mese_selezionato:
-        # Se l'utente ha usato l'input month, puliamo eventuali stringhe vuote
         mese_selezionato = mese_selezionato.strip()
-        if not mese_selezionato:  # Se era solo uno spazio vuoto
+        if not mese_selezionato:
             mese_selezionato = None
         else:
             anno_selezionato = None
@@ -1250,7 +1144,7 @@ def analytics(tipo):
     print(
         f"🔮 VARIABILI PULITE PRONTE PER IL DB -> Mese: {mese_selezionato} | Anno: {anno_selezionato}")
 
-    # 1. Recupero dati grafici e bilancio standard
+    # 1. Recupero dati grafici e bilancio standard (questi rimangono giusti sul singolo mese/anno)
     labels_spese, valori_spese = get_spese_per_categoria_filtrate(
         current_user.id, tipo, mese=mese_selezionato, anno=anno_selezionato)
 
@@ -1263,7 +1157,7 @@ def analytics(tipo):
     delta = tot_entrate - tot_spese
     saving_rate = (delta / tot_entrate * 100) if tot_entrate > 0 else 0
 
-    # Inizializziamo le variabili per i grafici Bitcoin (vuote di default per l'Euro)
+    # Inizializziamo le variabili per i grafici Bitcoin
     date_btc = []
     saldi_btc = []
     saldi_eur_btc = []
@@ -1279,21 +1173,31 @@ def analytics(tipo):
     tipo = tipo.upper().strip()
 
     if tipo in ['ONCHAIN', 'LIGHTNING']:
-        conn = get_db_connection()  # <-- Connessione corretta e sicura!
+        conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 1. Prendiamo l'ultimo prezzo BTC (serve per i calcoli veloci)
+        # 1. Prezzo BTC attuale
         cursor.execute(
             "SELECT prezzo_eur FROM prezzi_btc ORDER BY data DESC LIMIT 1")
         prezzo_record = cursor.fetchone()
         prezzo_attuale_btc = prezzo_record[0] if prezzo_record else 0
 
-        # 2. Recuperiamo anche TUTTI i prezzi storici per generare la linea temporale del grafico
+        # 2. Prezzi storici
         cursor.execute(
             "SELECT data, prezzo_eur FROM prezzi_btc ORDER BY data ASC")
         prezzi_rows = cursor.fetchall()
         prezzi_storici = {row['data']: row['prezzo_eur']
                           for row in prezzi_rows}
+
+        # Gestione data limite per Bitcoin se filtrato per mese o anno
+        filtro_btc = ""
+        params_btc = [current_user.id]
+        if mese_selezionato:
+            filtro_btc = "AND SUBSTR(data, 1, 7) <= ?"
+            params_btc.append(mese_selezionato)
+        elif anno_selezionato:
+            filtro_btc = "AND SUBSTR(data, 1, 4) <= ?"
+            params_btc.append(anno_selezionato)
 
         if tipo == 'ONCHAIN':
             from db.db_utils import get_transazioni_con_saldo_onchain
@@ -1306,20 +1210,20 @@ def analytics(tipo):
             costo_storico_eur = res[0] if res[0] else 0
             valore_attuale_eur = saldo_asset * prezzo_attuale_btc
 
-            # Query Storica Grafico On-chain (Sottraiamo le fee se registrate come costo positivo)
-            cursor.execute('''
+            cursor.execute(f'''
                 SELECT SUBSTR(h.data_rilevazione, 1, 10) as giorno, SUM(h.valore_rilevato) as totale
                 FROM assets_history h
                 WHERE h.id IN (
                     SELECT MAX(id)
                     FROM assets_history
                     WHERE SUBSTR(data_rilevazione, 1, 10) = SUBSTR(h.data_rilevazione, 1, 10)
-                GROUP BY asset_id
+                    GROUP BY asset_id
                 )
                 GROUP BY giorno ORDER BY giorno ASC
             ''')
             dati_grafico_fiat = cursor.fetchall()
             tx_storiche = cursor.fetchall()
+
         elif tipo == 'LIGHTNING':
             from db.db_utils import get_transazioni_con_saldo_lightning
             scarto_ln1, saldo_asset, scarto_ln2 = get_transazioni_con_saldo_lightning(
@@ -1331,27 +1235,26 @@ def analytics(tipo):
             costo_storico_eur = res[0] if res[0] else 0
             valore_attuale_eur = (saldo_asset / 100000000) * prezzo_attuale_btc
 
-            # Query Storica Grafico Lightning (Convertiamo i satoshi in BTC fluttuanti)
-            cursor.execute('''
+            # Query Storica Lightning FINO alla data selezionata
+            cursor.execute(f'''
                 SELECT SUBSTR(data, 1, 10) as giorno,
                        SUM(satoshi * 0.00000001) as flusso
                 FROM transazioni_lightning
-                WHERE user_id = ?
+                WHERE user_id = ? {filtro_btc}
                 GROUP BY giorno ORDER BY giorno ASC
-            ''', (current_user.id,))
+            ''', tuple(params_btc))
             tx_storiche = cursor.fetchall()
+
         else:
-            # Se arriva un tipo sconosciuto, evita il crash!
             flash("Tipo di analisi non valido", "error")
             return redirect(url_for('index'))
-        # Calcoliamo il saldo progressivo temporale per il grafico Bitcoin
+
         saldo_temporale_btc = 0.0
         for tx in tx_storiche:
             giorno = tx['giorno']
             flusso = tx['flusso']
             saldo_temporale_btc += flusso
 
-            # Troviamo il prezzo di quel giorno specifico nel DB, se manca usiamo l'ultimo noto
             prezzo_quel_giorno = prezzi_storici.get(giorno, prezzo_attuale_btc)
             controvalore_fiat_storico = saldo_temporale_btc * prezzo_quel_giorno
 
@@ -1359,7 +1262,6 @@ def analytics(tipo):
             saldi_btc.append(round(saldo_temporale_btc, 8))
             saldi_eur_btc.append(round(controvalore_fiat_storico, 2))
 
-        # Calcoli finali comuni del box rendimento
         rendimento = valore_attuale_eur - costo_storico_eur
         if costo_storico_eur > 0:
             percentuale = (rendimento / costo_storico_eur) * 100
@@ -1380,7 +1282,6 @@ def analytics(tipo):
             "SELECT * FROM assets_watch WHERE user_id = ?", (current_user.id,))
         investimenti_fiat = cursor.fetchall()
 
-        # Calcoliamo dinamicamente il totale cumulativo per la tabella performance Euro
         costo_storico_eur = sum(
             float(asset['capitale_investito']) for asset in investimenti_fiat)
         valore_attuale_eur = sum(
@@ -1398,23 +1299,21 @@ def analytics(tipo):
         except Exception as e:
             print(f"Nota nel recupero cronologia: {e}")
 
-        # --- FILTRO TEMPORALE DINAMICO PER IL GRAFICO ---
+        # 🚀 MODIFICA CHIAVE: Filtro "FINO A..." (<=) invece che "SOLO IL..."
         filtro_tempo_grafico = ""
-        # Passiamo i parametri due volte: la prima per la sottoquery, la seconda per la query principale
         parametri_grafico = [current_user.id]
 
-        if mese_selezionato:  # E.g., "2026-04"
-            filtro_tempo_grafico = "AND data_rilevazione LIKE ?"
-            parametri_grafico.append(f"{mese_selezionato}%")
-        elif anno_selezionato:  # E.g., "2026"
-            filtro_tempo_grafico = "AND data_rilevazione LIKE ?"
-            parametri_grafico.append(f"{anno_selezionato}%")
+        if mese_selezionato:  # es. "2026-04"
+            filtro_tempo_grafico = "AND SUBSTR(h.data_rilevazione, 1, 7) <= ?"
+            parametri_grafico.append(mese_selezionato)
+        elif anno_selezionato:  # es. "2026"
+            filtro_tempo_grafico = "AND SUBSTR(h.data_rilevazione, 1, 4) <= ?"
+            parametri_grafico.append(anno_selezionato)
 
-        # Duplichiamo i parametri perché la query ora li usa sia dentro che fuori
+        # Duplichiamo i parametri per la sottoquery
         tutti_i_parametri = [current_user.id] + \
             [p for p in parametri_grafico[1:]] + parametri_grafico
 
-        # Query corazzata: filtra il tempo sia dentro il calcolo del MAX(id) sia fuori
         cursor.execute(f'''
             SELECT SUBSTR(h.data_rilevazione, 1, 10) as giorno, SUM(h.valore_rilevato) as totale
             FROM assets_history h
@@ -1435,7 +1334,6 @@ def analytics(tipo):
         date_fiat = [str(row['giorno']) for row in dati_grafico_fiat]
         valori_fiat = [float(row['totale']) for row in dati_grafico_fiat]
 
-        # Ricalcoliamo rendimento e percentuale aggregata per l'Euro prima di chiudere
         rendimento = valore_attuale_eur - costo_storico_eur
         if costo_storico_eur > 0:
             percentuale = (rendimento / costo_storico_eur) * 100
@@ -1469,7 +1367,6 @@ def analytics(tipo):
                            cronologia_fiat=cronologia_fiat,
                            date_fiat=date_fiat,
                            valori_fiat=valori_fiat,
-                           # --- NUOVI DATI PASSATI A JINJA PER I GRAFICI BITCOIN ---
                            date_btc=date_btc,
                            saldi_btc=saldi_btc,
                            saldi_eur_btc=saldi_eur_btc
@@ -1836,26 +1733,116 @@ def inject_dev_mode():
 
 
 @app.route('/api/analytics/drill-down')
+@login_required
 def api_drill_down():
-    # Recuperiamo l'ID usando Flask-Login o il fallback sulla chiave '_user_id'
-    user_id = None
-    if current_user.is_authenticated:
-        user_id = current_user.id
-    else:
-        user_id = session.get('_user_id') or session.get('user_id')
-
-    if not user_id:
-        return jsonify({'error': 'Utente non autenticato'}), 401
-
     categoria = request.args.get('categoria')
     anno = request.args.get('anno')
     mese = request.args.get('mese')
+    # Prendiamo anche la direzione: 'spese' o 'entrate'
+    tipo_movimento = request.args.get('tipo_movimento')
 
     if not categoria:
-        return jsonify({'error': 'Categoria mancante'}), 400
+        return jsonify({'euro': [], 'lightning': [], 'onchain': []})
 
-    dati = get_transaction_drill_down(user_id, categoria, anno, mese)
-    return jsonify(dati)
+    categoria = categoria.strip()
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Condizione SQL per la categoria/sottocategoria
+    if categoria.lower() == 'altro':
+        condizione_cat = "(categoria = 'Altro' OR (sottocategoria = 'Altro' AND sottocategoria IS NOT NULL AND sottocategoria != ''))"
+        params_base = [current_user.id]
+    else:
+        condizione_cat = "(categoria = ? OR (sottocategoria = ? AND sottocategoria IS NOT NULL AND sottocategoria != ''))"
+        params_base = [current_user.id, categoria, categoria]
+
+    # --- FILTRO SEGNO (Entrate > 0 / Spese < 0) ---
+    filtro_segno_fiat = ""
+    filtro_segno_ln = ""
+    filtro_segno_btc = ""
+
+    # --- DEFINIZIONE FILTRI SEGNO SPECIFICI PER OGNI TABELLA ---
+    if tipo_movimento == 'entrate':
+        filtro_segno_fiat = "AND importo > 0"
+        filtro_segno_ln = "AND satoshi > 0"
+        filtro_segno_btc = "AND importo_btc > 0"
+    elif tipo_movimento == 'spese':
+        filtro_segno_fiat = "AND importo < 0"
+        filtro_segno_ln = "AND satoshi < 0"
+        filtro_segno_btc = "AND importo_btc < 0"
+    else:
+        filtro_segno_fiat = ""
+        filtro_segno_ln = ""
+        filtro_segno_btc = ""
+
+    # --- 1. TRANSAZIONI FIAT (EURO) ---
+    where_fiat = ["user_id = ?", condizione_cat]
+    params_fiat = list(params_base)
+
+    if mese:
+        where_fiat.append("SUBSTR(data, 1, 7) = ?")
+        params_fiat.append(mese)
+    elif anno:
+        where_fiat.append("SUBSTR(data, 1, 4) = ?")
+        params_fiat.append(anno)
+
+    query_fiat = f"""
+        SELECT data, descrizione, importo 
+        FROM transazioni 
+        WHERE {" AND ".join(where_fiat)} {filtro_segno_fiat}
+        ORDER BY data DESC
+    """
+    cursor.execute(query_fiat, tuple(params_fiat))
+    euro_rows = cursor.fetchall()
+
+    # --- 2. TRANSAZIONI LIGHTNING ---
+    where_ln = ["user_id = ?", condizione_cat]
+    params_ln = list(params_base)
+
+    if mese:
+        where_ln.append("SUBSTR(data, 1, 7) = ?")
+        params_ln.append(mese)
+    elif anno:
+        where_ln.append("SUBSTR(data, 1, 4) = ?")
+        params_ln.append(anno)
+
+    query_ln = f"""
+        SELECT data, descrizione, satoshi
+        FROM transazioni_lightning 
+        WHERE {" AND ".join(where_ln)} {filtro_segno_ln}
+        ORDER BY data DESC
+    """
+    cursor.execute(query_ln, tuple(params_ln))
+    ln_rows = cursor.fetchall()
+
+    # --- 3. TRANSAZIONI BITCOIN ON-CHAIN ---
+    where_btc = ["user_id = ?", condizione_cat]
+    params_btc = list(params_base)
+
+    if mese:
+        where_btc.append("SUBSTR(data, 1, 7) = ?")
+        params_btc.append(mese)
+    elif anno:
+        where_btc.append("SUBSTR(data, 1, 4) = ?")
+        params_btc.append(anno)
+
+    query_btc = f"""
+        SELECT data, descrizione, importo_btc 
+        FROM transazioni_onchain 
+        WHERE {" AND ".join(where_btc)} {filtro_segno_btc}
+        ORDER BY data DESC
+    """
+    cursor.execute(query_btc, tuple(params_btc))
+    btc_rows = cursor.fetchall()
+
+    conn.close()
+
+    return jsonify({
+        'euro': [{'data': str(r['data']), 'descrizione': r['descrizione'], 'importo': r['importo']} for r in euro_rows],
+        'lightning': [{'data': str(r['data']), 'descrizione': r['descrizione'], 'satoshi': r['satoshi']} for r in ln_rows],
+        'onchain': [{'data': str(r['data']), 'descrizione': r['descrizione'], 'importo_btc': r['importo_btc']} for r in btc_rows]
+    })
 
 
 if __name__ == '__main__':

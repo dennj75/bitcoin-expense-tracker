@@ -238,106 +238,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // 1. Generiamo la mappa di traduzione ereditata dal dizionario CATEGORIE di Python
-    const mappaTraduzioniGrafici = {
-      {% if CATEGORIE %}
-        {% for macro, sottocat_list in CATEGORIE.items() %}
-          "{{ macro }}": "{{ traduci(macro) }}",
-          {% for sotto in sottocat_list %}
-            "{{ sotto }}": "{{ traduci(sotto) }}",
-          {% endfor %}
-        {% endfor %}
-      {% endif %}
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- GRAFICO SPESE ---
-        {% if labels_spese %}
-        const canvasSpese = document.getElementById('chartAnalytics');
-        if (canvasSpese) {
-            // Prendiamo le labels originali da Flask e le traduciamo una per una al volo
-            const labelsSpeseOriginali = {{ labels_spese | tojson }};
-            const labelsSpeseTradotte = labelsSpeseOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
-
-            new Chart(canvasSpese.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: labelsSpeseTradotte, // Usiamo quelle tradotte!
-                    datasets: [{
-                        label: "{{ _('Totale Speso') }}", // Traduciamo anche il testo del tooltip
-                        data: {{ valori_spese | tojson }},
-                        backgroundColor: '#f39c12',
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    onHover: (event, chartElement) => {
-      event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
-  },
-                    plugins: { legend: { display: false } },
-
-                    // 👇 ECCO LA MODIFICA: INTERCETTIAMO IL CLICK
-                    onClick: (event, elements, chart) => {
-                        if (elements && elements.length > 0) {
-                            const index = elements[0].index;
-
-                            // Prendiamo il nome originale salvato nel DB usando l'indice cliccato!
-                            const categoriaDb = labelsSpeseOriginali[index];
-
-                            // Mostriamo a schermo il nome tradotto per cortesia dell'utente
-                            const categoriaVisualizzata = labelsSpeseTradotte[index];
-
-                            console.log(`Cliccato su: ${categoriaVisualizzata} (DB: ${categoriaDb})`);
-
-                            // 🚀 Lanciamo la funzione del pop-up passandole il nome del DB!
-                            apriDrillDown(categoriaDb);
-                        }
-                    },
-                    // 👆 FINE MODIFICA
-
-                    scales: {
-                        x: { ticks: { color: '#888' }, grid: { color: '#333' } },
-                        y: { ticks: { color: '#eee' }, grid: { display: false } }
-                    }
-                }
-            });
-        }
-        {% endif %}
-
-        // --- GRAFICO ENTRATE ---
-        {% if labels_entrate %}
-        const canvasEntrate = document.getElementById('chartEntrate');
-        if (canvasEntrate) {
-            // Stessa cosa: prendiamo le labels delle entrate e le traduciamo
-            const labelsEntrateOriginali = {{ labels_entrate | tojson }};
-            const labelsEntrateTradotte = labelsEntrateOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
-
-            new Chart(canvasEntrate.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: labelsEntrateTradotte, // Usiamo quelle tradotte!
-                    datasets: [{
-                        data: {{ valori_entrate | tojson }},
-                        backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
-                        borderColor: '#1a1a1a',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } }
-                }
-            });
-        }
-        {% endif %}
-    });
-</script>
-
 {% if tipo == 'EURO' %}
 <div
   class="card shadow p-4 mb-4"
@@ -567,10 +467,10 @@
                   action="{{ url_for('elimina_cronologia', history_id=hist['id'], tipo='EURO') }}"
                   method="POST"
                   onsubmit="
-                    return confirm(
-                      '{{ _('Sicuro di voler eliminare questa rilevazione?') }}',
-                    );
-                  "
+                      return confirm(
+                        '{{ _('Sicuro di voler eliminare questa rilevazione?') }}',
+                      );
+                    "
                   class="m-0"
                 >
                   <button
@@ -599,233 +499,383 @@
 </div>
 <!-- Modal per il Dettaglio Transazioni (Drill-down) -->
 <div
-  id="drillDownModal"
+  id="modalDettagli"
   class="modal fade"
   tabindex="-1"
   aria-labelledby="drillDownModalLabel"
   aria-hidden="true"
 >
+  <!-- Dizionario stringhe i18n per JavaScript -->
+  <div
+    id="i18n-drilldown"
+    data-title-prefix="{{ _('Dettaglio Categoria:') }}"
+    data-loading="{{ _('Caricamento in corso...') }}"
+    data-fiat-title="{{ _('💶 Transazioni Fiat (EUR)') }}"
+    data-ln-title="{{ _('⚡ Transazioni Lightning Network') }}"
+    data-btc-title="{{ _('🔗 Transazioni Bitcoin On-Chain') }}"
+    data-col-date="{{ _('Data') }}"
+    data-col-desc="{{ _('Descrizione') }}"
+    data-col-amount="{{ _('Importo') }}"
+    data-col-sats="{{ _('Satoshi') }}"
+    data-col-btc="{{ _('BTC') }}"
+    data-no-data="{{ _('Nessuna transazione trovata per questa categoria nel periodo selezionato.') }}"
+    data-error="{{ _('Si è verificato un errore durante il caricamento dei dati.') }}"
+    style="display: none"
+  ></div>
+
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content bg-dark text-white border-secondary">
       <!-- Intestazione -->
       <div class="modal-header border-secondary">
-        <h5 class="modal-title" id="drillDownModalLabel">
-          🔍 Dettaglio Categoria:
+        <h5 class="modal-title" id="modalDettagliTitolo">
+          🔍 <span id="i18nModalPrefix">{{ _('Dettaglio Categoria:') }}</span>
           <span id="modalCategoriaNome" class="text-warning"></span>
         </h5>
         <button
           type="button"
+          type="button"
           class="btn-close btn-close-white"
           data-bs-dismiss="modal"
-          aria-label="Close"
+          aria-label="{{ _('Chiudi') }}"
         ></button>
       </div>
 
       <!-- Corpo del Pop-up -->
       <div class="modal-body" style="max-height: 450px; overflow-y: auto">
-        <!-- Qui dentro Javascript inietterà le tabelle -->
         <div id="modalDettagliContenuto"></div>
       </div>
 
       <!-- Piè di pagina -->
       <div class="modal-footer border-secondary">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Chiudi
+          {{ _('Chiudi') }}
         </button>
       </div>
     </div>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const tipoAmbiente = "{{ tipo }}";
-      const canvas = document.getElementById('chartStoricoPatrimonio');
+    // 1. Mappa di traduzione ereditata dal dizionario CATEGORIE di Python
+    const mappaTraduzioniGrafici = {
+      {% if CATEGORIE %}
+        {% for macro, sottocat_list in CATEGORIE.items() %}
+          "{{ macro }}": "{{ traduci(macro) }}",
+          {% for sotto in sottocat_list %}
+            "{{ sotto }}": "{{ traduci(sotto) }}",
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+    };
 
-      if (!canvas) {
-          console.error("Errore critico: Canvas non trovato nel DOM!");
-          return;
+    // Recuperiamo i filtri correnti passati dal backend Jinja
+    const annoFiltroCorrente = "{{ anno_selezionato if anno_selezionato else '' }}";
+    const meseFiltroCorrente = "{{ mese_selezionato if mese_selezionato else '' }}";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GRAFICO SPESE ---
+        {% if labels_spese %}
+        const canvasSpese = document.getElementById('chartAnalytics');
+        if (canvasSpese) {
+            const labelsSpeseOriginali = {{ labels_spese | tojson }};
+            const labelsSpeseTradotte = labelsSpeseOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+
+            new Chart(canvasSpese.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labelsSpeseTradotte,
+                    datasets: [{
+                        label: "{{ _('Totale Speso') }}",
+                        data: {{ valori_spese | tojson }},
+                        backgroundColor: '#f39c12',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    onHover: (event, chartElement) => {
+                        event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
+                    },
+                    plugins: { legend: { display: false } },
+                    onClick: (event, elements, chart) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const categoriaDb = labelsSpeseOriginali[index];
+                            const categoriaVisualizzata = labelsSpeseTradotte[index];
+
+                            console.log(`Cliccato su: ${categoriaVisualizzata} (DB: ${categoriaDb})`);
+
+                            // Passiamo categoria, tipo 'spese', ed eventuali filtri anno/mese
+                            apriDrillDown(categoriaDb, 'spese', annoFiltroCorrente, meseFiltroCorrente);
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                        y: { ticks: { color: '#eee' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+        {% endif %}
+
+        // --- GRAFICO ENTRATE ---
+        {% if labels_entrate %}
+        const canvasEntrate = document.getElementById('chartEntrate');
+        if (canvasEntrate) {
+            const labelsEntrateOriginali = {{ labels_entrate | tojson }};
+            const labelsEntrateTradotte = labelsEntrateOriginali.map(cat => mappaTraduzioniGrafici[cat] || cat);
+
+            new Chart(canvasEntrate.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labelsEntrateTradotte,
+                    datasets: [{
+                        data: {{ valori_entrate | tojson }},
+                        backgroundColor: ['#2ecc71', '#27ae60', '#16a085', '#1abc9c', '#3498db'],
+                        borderColor: '#1a1a1a',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onHover: (event, chartElement) => {
+                        event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { color: '#eee' } } },
+                    onClick: (event, elements, chart) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const categoriaDb = labelsEntrateOriginali[index];
+
+                            console.log(`[Entrate] Cliccato su: ${labelsEntrateTradotte[index]} (DB: ${categoriaDb})`);
+
+                            // Passiamo categoria, tipo 'entrate', ed eventuali filtri anno/mese
+                            apriDrillDown(categoriaDb, 'entrate', annoFiltroCorrente, meseFiltroCorrente);
+                        }
+                    }
+                }
+            });
+        }
+        {% endif %}
+
+        // --- GRAFICO STORICO PATRIMONIO ---
+        const tipoAmbiente = "{{ tipo }}";
+        const canvasStorico = document.getElementById('chartStoricoPatrimonio');
+
+        if (canvasStorico) {
+            const ctx = canvasStorico.getContext('2d');
+
+            if (window.myLineChart instanceof Chart) {
+                window.myLineChart.destroy();
+            }
+
+            if (tipoAmbiente === 'EURO') {
+                const dateLabels = {{ date_fiat | tojson | safe if date_fiat else '[]' }};
+                const valoriData = {{ valori_fiat | tojson | safe if valori_fiat else '[]' }};
+
+                if (!dateLabels || dateLabels.length === 0) {
+                    ctx.clearRect(0, 0, canvasStorico.width, canvasStorico.height);
+                    ctx.font = "14px sans-serif";
+                    ctx.fillStyle = "#888";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Nessuno storico disponibile per il periodo selezionato.", canvasStorico.width / 2, canvasStorico.height / 2);
+                } else {
+                    window.myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dateLabels,
+                            datasets: [{
+                                label: 'Patrimonio Totale (€)',
+                                data: valoriData,
+                                borderColor: '#3498db',
+                                backgroundColor: 'rgba(52, 152, 219, 0.05)',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: '#3498db',
+                                pointRadius: 4,
+                                tension: 0.15,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } },
+                                y: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } }
+                            }
+                        }
+                    });
+                }
+            } else {
+                const etichetteDate = {{ date_btc | tojson | safe if date_btc else '[]' }};
+                const datiControvaloreEur = {{ saldi_eur_btc | tojson | safe if saldi_eur_btc else '[]' }};
+                const datiQuantitaBtc = {{ saldi_btc | tojson | safe if saldi_btc else '[]' }};
+
+                if (!etichetteDate || etichetteDate.length === 0) {
+                    ctx.clearRect(0, 0, canvasStorico.width, canvasStorico.height);
+                    ctx.font = "14px sans-serif";
+                    ctx.fillStyle = "#888";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Nessuno storico disponibile per il periodo selezionato.", canvasStorico.width / 2, canvasStorico.height / 2);
+                } else {
+                    window.myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: etichetteDate,
+                            datasets: [{
+                                label: tipoAmbiente === 'ONCHAIN' ? 'Bilancio On-chain (€)' : 'Bilancio Lightning (€)',
+                                data: datiControvaloreEur,
+                                borderColor: '#f39c12',
+                                backgroundColor: 'rgba(243, 156, 18, 0.05)',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: '#f39c12',
+                                pointRadius: 4,
+                                tension: 0.15,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let index = context.dataIndex;
+                                            let valBtc = datiQuantitaBtc[index];
+                                            if (tipoAmbiente === 'LIGHTNING') {
+                                                let sats = Math.round(valBtc * 100000000);
+                                                return ` Valore: ${datiControvaloreEur[index]} € (${sats.toLocaleString()} sats)`;
+                                            }
+                                            return ` Valore: ${datiControvaloreEur[index]} € (${valBtc.toFixed(8)} BTC)`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } },
+                                y: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    });
+
+    // 2. FUNZIONE DRILL-DOWN GLOBALE
+  function apriDrillDown(categoria, tipoMovimento, anno = '', mese = '') {
+      const contenitore = document.getElementById('modalDettagliContenuto');
+      const titoloModal = document.getElementById('modalDettagliTitolo');
+
+      // Recupera le traduzioni dall'HTML
+      const i18nEl = document.getElementById('i18n-drilldown');
+      const t = i18nEl ? i18nEl.dataset : {};
+
+      if (!anno) {
+          const selectAnno = document.querySelector('[name="anno"], #anno');
+          if (selectAnno) anno = selectAnno.value;
       }
-      const ctx = canvas.getContext('2d');
+      if (!mese) {
+          const selectMese = document.querySelector('[name="mese"], #mese');
+          if (selectMese) mese = selectMese.value;
+      }
 
-      if (tipoAmbiente === 'EURO') {
-          // DATI EURO FIAT
-          const dateLabels = {{ date_fiat | tojson | safe if date_fiat else '[]' }};
-          const valoriData = {{ valori_fiat | tojson | safe if valori_fiat else '[]' }};
+      if (titoloModal) {
+          const prefix = t.titlePrefix || 'Dettaglio Categoria:';
+          titoloModal.innerHTML = `🔍 ${prefix} <span class="text-warning">${categoria}</span>`;
+      }
 
-          window.myLineChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: dateLabels,
-                  datasets: [{
-                      label: 'Patrimonio Totale (€)',
-                      data: valoriData,
-                      borderColor: '#3498db',
-                      backgroundColor: 'rgba(52, 152, 219, 0.05)',
-                      borderWidth: 3,
-                      pointBackgroundColor: '#ffffff',
-                      pointBorderColor: '#3498db',
-                      pointRadius: 4,
-                      tension: 0.15,
-                      fill: true
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { display: false } },
-                  scales: {
-                      x: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } },
-                      y: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } }
-                  }
+      if (contenitore) {
+          const loadingText = t.loading || 'Caricamento in corso...';
+          contenitore.innerHTML = `<p class="text-center text-muted">${loadingText}</p>`;
+      }
+
+      // Mostra Modal Bootstrap
+      const modalElement = document.getElementById('modalDettagli');
+      if (modalElement) {
+          const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+          modalInstance.show();
+      }
+
+      // Costruzione URL con parametri
+      let params = new URLSearchParams();
+      if (categoria) params.append('categoria', categoria);
+      if (tipoMovimento) params.append('tipo_movimento', tipoMovimento);
+      if (anno) params.append('anno', anno);
+      if (mese) params.append('mese', mese);
+
+      let url = `/api/analytics/drill-down?${params.toString()}`;
+      console.log("🚀 Chiamata Drill-Down inviata a:", url);
+
+      fetch(url)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error("Errore HTTP: " + response.status);
               }
-          });
-
-      } else {
-          // DATI BITCOIN (ONCHAIN & LIGHTNING)
-          const etichetteDate = {{ date_btc | tojson | safe if date_btc else '[]' }};
-          const datiControvaloreEur = {{ saldi_eur_btc | tojson | safe if saldi_eur_btc else '[]' }};
-          const datiQuantitaBtc = {{ saldi_btc | tojson | safe if saldi_btc else '[]' }};
-
-          if (etichetteDate.length === 0) {
-              ctx.font = "16px sans-serif";
-              ctx.fillStyle = "#888";
-              ctx.textAlign = "center";
-              ctx.fillText("Nessuna transazione passata per generare il grafico storico.", canvas.width/2, 100);
-          } else {
-              window.myLineChart = new Chart(ctx, {
-                  type: 'line',
-                  data: {
-                      labels: etichetteDate,
-                      datasets: [{
-                          label: tipoAmbiente === 'ONCHAIN' ? 'Bilancio On-chain (€)' : 'Bilancio Lightning (€)',
-                          data: datiControvaloreEur,
-                          borderColor: '#f39c12', // Arancione BTC
-                          backgroundColor: 'rgba(243, 156, 18, 0.05)',
-                          borderWidth: 3,
-                          pointBackgroundColor: '#ffffff',
-                          pointBorderColor: '#f39c12',
-                          pointRadius: 4,
-                          tension: 0.15,
-                          fill: true
-                      }]
-                  },
-                  options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                          legend: { display: false },
-                          tooltip: {
-                              callbacks: {
-                                  label: function(context) {
-                                      let index = context.dataIndex;
-                                      let valBtc = datiQuantitaBtc[index];
-                                      if (tipoAmbiente === 'LIGHTNING') {
-                                          let sats = Math.round(valBtc * 100000000);
-                                          return ` Valore: ${datiControvaloreEur[index]} € (${sats.toLocaleString()} sats)`;
-                                      }
-                                      return ` Valore: ${datiControvaloreEur[index]} € (${valBtc.toFixed(8)} BTC)`;
-                                  }
-                              }
-                          }
-                      },
-                      scales: {
-                          x: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } },
-                          y: { grid: { color: '#2a2a2a' }, ticks: { color: '#aaa' } }
-                      }
-                  }
-              });
-          }
-      }
-  });
-  // 1. Definiamo la funzione in modo GLOBALE sulla finestra del browser
-  window.apriDrillDown = function(categoria, anno = '', mese = '') {
-    // 💡 RECUPERO AUTOMATICO DAI FILTRI SE NON PASSATI
-    // Cerca gli elementi input/select dei filtri presenti nella pagina HTML
-    if (!anno) {
-        const inputAnno = document.getElementById('anno') || document.querySelector('[name="anno"]');
-        if (inputAnno && inputAnno.value) anno = inputAnno.value;
-    }
-    if (!mese) {
-        const inputMese = document.getElementById('mese') || document.querySelector('[name="mese"]');
-        if (inputMese && inputMese.value) mese = inputMese.value;
-    }
-
-    // Impostiamo il titolo del modal
-    document.getElementById('modalCategoriaNome').innerText = categoria;
-
-    // Puliamo il contenuto precedente e mettiamo una scritta di caricamento
-    const contenitore = document.getElementById('modalDettagliContenuto');
-    contenitore.innerHTML = '<p class="text-center text-muted">Caricamento in corso...</p>';
-
-    // Prepariamo l'URL per l'API
-    let url = `/api/analytics/drill-down?categoria=${encodeURIComponent(categoria)}`;
-    if (anno) url += `&anno=${encodeURIComponent(anno)}`;
-    if (mese) url += `&mese=${encodeURIComponent(mese)}`;
-
-    // Stampa di controllo nella Console del Browser (Premere F12 per vederla)
-    console.log("🚀 Chiamata Drill-Down inviata a:", url);
-
-    // Fetch al backend... (il resto del tuo codice rimane identico)
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-              contenitore.innerHTML = ''; // Svuotiamo il caricamento
+              return response.json();
+          })
+          .then(data => {
+              if (!contenitore) return;
+              contenitore.innerHTML = '';
 
               let htmlGenerato = '';
 
-              // --- SEZIONE FIAT (EURO) ---
+              // --- 1. TABELLA EURO ---
               if (data.euro && data.euro.length > 0) {
-                  htmlGenerato += '<h6 class="text-info border-bottom border-secondary pb-1 mt-2">💶 Transazioni Fiat (EUR)</h6>';
-                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
-                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Importo</th></tr></thead><tbody>';
-                  data.euro.forEach(t => {
-                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-danger">€ ${Math.abs(t.importo).toFixed(2)}</td></tr>`;
+                  htmlGenerato += `<h5>${t.fiatTitle || '💶 Transazioni Fiat (EUR)'}</h5>`;
+                  htmlGenerato += `<table class="table table-dark table-striped mb-4">
+                      <thead><tr><th>${t.colDate || 'Data'}</th><th>${t.colDesc || 'Descrizione'}</th><th class="text-end">${t.colAmount || 'Importo'}</th></tr></thead><tbody>`;
+                  data.euro.forEach(tr => {
+                      htmlGenerato += `<tr><td>${tr.data}</td><td>${tr.descrizione}</td><td class="text-end">€ ${parseFloat(tr.importo).toFixed(2)}</td></tr>`;
                   });
                   htmlGenerato += '</tbody></table>';
               }
 
-              // --- SEZIONE LIGHTNING (SATS) ---
+              // --- 2. TABELLA LIGHTNING ---
               if (data.lightning && data.lightning.length > 0) {
-                  htmlGenerato += '<h6 class="text-warning border-bottom border-secondary pb-1 mt-4">⚡ Transazioni Lightning Network</h6>';
-                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
-                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Satoshi</th></tr></thead><tbody>';
-                  data.lightning.forEach(t => {
-                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-warning">${t.satoshi.toLocaleString()} sats</td></tr>`;
+                  htmlGenerato += `<h5>${t.lnTitle || '⚡ Transazioni Lightning Network'}</h5>`;
+                  htmlGenerato += `<table class="table table-dark table-striped mb-4">
+                      <thead><tr><th>${t.colDate || 'Data'}</th><th>${t.colDesc || 'Descrizione'}</th><th class="text-end">${t.colSats || 'Satoshi'}</th></tr></thead><tbody>`;
+                  data.lightning.forEach(tr => {
+                      htmlGenerato += `<tr><td>${tr.data}</td><td>${tr.descrizione}</td><td class="text-end">⚡ ${tr.satoshi}</td></tr>`;
                   });
                   htmlGenerato += '</tbody></table>';
               }
 
-              // --- SEZIONE ONCHAIN (BTC) ---
+              // --- 3. TABELLA ONCHAIN ---
               if (data.onchain && data.onchain.length > 0) {
-                  htmlGenerato += '<h6 class="text-warning border-bottom border-secondary pb-1 mt-4">⛓️ Transazioni On-Chain (BTC)</h6>';
-                  htmlGenerato += '<table class="table table-dark table-sm table-striped table-hover">';
-                  htmlGenerato += '<thead><tr><th>Data</th><th>Descrizione</th><th class="text-end">Importo BTC</th></tr></thead><tbody>';
-                  data.onchain.forEach(t => {
-                      htmlGenerato += `<tr><td>${t.data}</td><td>${t.descrizione}</td><td class="text-end text-warning">₿ ${t.importo_btc.toFixed(8)}</td></tr>`;
+                  htmlGenerato += `<h5>${t.btcTitle || '🔗 Transazioni Bitcoin On-Chain'}</h5>`;
+                  htmlGenerato += `<table class="table table-dark table-striped mb-4">
+                      <thead><tr><th>${t.colDate || 'Data'}</th><th>${t.colDesc || 'Descrizione'}</th><th class="text-end">${t.colBtc || 'BTC'}</th></tr></thead><tbody>`;
+                  data.onchain.forEach(tr => {
+                      htmlGenerato += `<tr><td>${tr.data}</td><td>${tr.descrizione}</td><td class="text-end">₿ ${tr.importo_btc}</td></tr>`;
                   });
                   htmlGenerato += '</tbody></table>';
               }
 
-              // Se tutte le liste sono vuote
-              if (htmlGenerato === '') {
-                  htmlGenerato = '<p class="text-center text-muted my-4">Nessuna transazione dettagliata trovata per questa categoria.</p>';
+              if (!htmlGenerato) {
+                  const noDataText = t.noData || 'Nessuna transazione trovata per questa categoria nel periodo selezionato.';
+                  htmlGenerato = `<p class="text-center text-warning mb-0">${noDataText}</p>`;
               }
 
-              // Inseriamo tutto l'HTML generato nel corpo del modal
               contenitore.innerHTML = htmlGenerato;
-
-              // 4. Mostriamo finalmente il modal a schermo usando Bootstrap
-              const mioModal = new bootstrap.Modal(document.getElementById('drillDownModal'));
-              mioModal.show();
           })
-          .catch(err => {
-              console.error('Errore nel drill-down:', err);
-              contenitore.innerHTML = '<p class="text-center text-danger">Si è verificato un errore nel caricamento dei dettagli.</p>';
+          .catch(error => {
+              console.error("❌ Errore durante il recupero dei dati:", error);
+              if (contenitore) {
+                  const errorText = t.error || 'Si è verificato un errore durante il caricamento dei dati.';
+                  contenitore.innerHTML = `<p class="text-center text-danger mb-0">${errorText}</p>`;
+              }
           });
-  };
+  }
 </script>
 
-<!-- Spostiamo lo script di Bootstrap fuori, pulito ed elegante prima della fine del blocco -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
